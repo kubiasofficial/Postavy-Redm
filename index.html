@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Character Menu</title>
+  <style>
+    :root {
+      --bg-1: #090908;
+      --bg-2: #141412;
+      --bg-3: #241f1a;
+      --panel: rgba(72, 55, 39, 0.88);
+      --panel-dark: rgba(16, 17, 16, 0.97);
+      --ink: #201813;
+      --line: rgba(49, 35, 24, 0.18);
+      --line-strong: rgba(145, 28, 37, 0.48);
+      --gold: #a97839;
+      --red: #8f1f2d;
+      --text: #f5ead6;
+      --paper-text: #ead9bb;
+      --muted: #9f8d73;
+      --paper-muted: #b7a184;
+      --shadow: 0 34px 80px rgba(0, 0, 0, 0.5);
+      --glow: 0 0 0 1px rgba(169, 120, 57, 0.22), 0 18px 44px rgba(0, 0, 0, 0.22);
+      --radius-xl: 8px;
+      --radius-lg: 8px;
+      --radius-md: 6px;
+      --ease: 260ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      color: var(--text);
+      font-family: "Trebuchet MS", Georgia, "Times New Roman", serif;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        radial-gradient(circle at top left, rgba(143, 31, 45, 0.18), transparent 28%),
+        radial-gradient(circle at 82% 18%, rgba(169, 120, 57, 0.13), transparent 26%),
+        linear-gradient(145deg, var(--bg-1), var(--bg-2) 44%, var(--bg-3));
+      background-size: 44px 44px, 44px 44px, auto, auto, auto;
+    }
+
+    body {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow-x: hidden;
+      animation: page-fade 700ms ease both;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(10px);
+      animation: ambient-pulse 12s ease-in-out infinite alternate;
+    }
+
+    body::before {
+      top: -7rem;
+      right: -8rem;
+      width: 28rem;
+      height: 28rem;
+      background: radial-gradient(circle, rgba(143, 31, 45, 0.18), transparent 70%);
+    }
+
+    body::after {
+      left: -9rem;
+      bottom: -8rem;
+      width: 26rem;
+      height: 26rem;
+      background: radial-gradient(circle, rgba(169, 120, 57, 0.16), transparent 72%);
+      animation-delay: 1.8s;
+    }
+
+    .mist {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+      background:
+        linear-gradient(115deg, transparent 0 46%, rgba(255, 255, 255, 0.025) 47% 48%, transparent 49% 100%),
+        radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.035), transparent 16%),
+        radial-gradient(circle at 78% 60%, rgba(169, 120, 57, 0.03), transparent 22%);
+      animation: mist-drift 22s linear infinite alternate;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      width: min(1380px, 100%);
+      min-height: min(850px, calc(100vh - 48px));
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr) 340px;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 10px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 18%),
+        linear-gradient(145deg, rgba(32, 29, 25, 0.96), rgba(9, 9, 8, 0.99));
+      box-shadow: var(--shadow);
+    }
+
+    .sidebar,
+    .content,
+    .visual {
+      min-width: 0;
+    }
+
+    .content,
+    .visual {
+      border-left: 1px solid var(--line);
+    }
+
+    .sidebar {
+      padding: 28px 16px;
+      background:
+        linear-gradient(180deg, rgba(24, 24, 22, 0.98), rgba(13, 13, 12, 0.98)),
+        var(--panel);
+    }
+
+    .content {
+      padding: 40px 44px;
+      color: var(--paper-text);
+      background:
+        linear-gradient(rgba(255, 242, 207, 0.035) 1px, transparent 1px),
+        radial-gradient(circle at top left, rgba(143, 31, 45, 0.12), transparent 30%),
+        linear-gradient(180deg, rgba(255, 232, 184, 0.08), rgba(0, 0, 0, 0.1)),
+        var(--panel);
+      background-size: 100% 30px, auto, auto, auto;
+    }
+
+    .visual {
+      padding: 26px 22px;
+      background:
+        linear-gradient(180deg, rgba(18, 18, 17, 0.98), rgba(11, 11, 10, 0.98)),
+        var(--panel-dark);
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--gold);
+      font-size: 0.76rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .sidebar-title {
+      margin: 0;
+      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      line-height: 1;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .character-list {
+      position: relative;
+      z-index: 3;
+      display: grid;
+      gap: 8px;
+      margin-top: 26px;
+    }
+
+    .character-item {
+      width: 100%;
+      padding: 13px 12px;
+      border: 1px solid transparent;
+      border-left: 3px solid transparent;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--muted);
+      text-align: left;
+      cursor: pointer;
+      font: inherit;
+      font-size: 1rem;
+      line-height: 1.4;
+      transition:
+        color var(--ease),
+        border-color var(--ease),
+        transform var(--ease),
+        text-shadow var(--ease);
+    }
+
+    .character-item:hover,
+    .character-item:focus-visible {
+      color: var(--text);
+      transform: translateX(4px);
+      background: rgba(255, 255, 255, 0.055);
+      outline: none;
+    }
+
+    .character-item.is-active {
+      color: var(--text);
+      border-color: rgba(169, 120, 57, 0.24);
+      border-left-color: var(--red);
+      background: linear-gradient(90deg, rgba(143, 31, 45, 0.2), rgba(255, 255, 255, 0.035));
+      text-shadow: 0 0 18px rgba(143, 31, 45, 0.18);
+    }
+
+    .content-header {
+      margin-bottom: 28px;
+    }
+
+    .content-title {
+      margin: 6px 0 10px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.4rem, 4vw, 4.15rem);
+      line-height: 0.95;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .content-role {
+      margin: 0;
+      color: var(--paper-muted);
+      font-size: 1rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .meta-line {
+      margin: 0;
+      color: var(--paper-muted);
+      font-size: 0.98rem;
+      line-height: 1.8;
+      letter-spacing: 0.03em;
+    }
+
+    .meta-line strong {
+      color: #fff0cf;
+      font-weight: 600;
+    }
+
+    .tabs {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 24px 0 18px;
+      padding: 5px;
+      border: 1px solid rgba(49, 35, 24, 0.12);
+      border-radius: var(--radius-lg);
+      background: rgba(15, 13, 11, 0.24);
+    }
+
+    .tab-button {
+      position: relative;
+      z-index: 1;
+      padding: 11px 16px;
+      border: 1px solid transparent;
+      border-radius: var(--radius-md);
+      background: transparent;
+      color: var(--paper-muted);
+      cursor: pointer;
+      font: inherit;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition:
+        transform var(--ease),
+        border-color var(--ease),
+        background var(--ease),
+        color var(--ease),
+        box-shadow var(--ease);
+    }
+
+    .tab-button:hover,
+    .tab-button:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(143, 31, 45, 0.2);
+      color: #fff0cf;
+      background: rgba(143, 31, 45, 0.075);
+      outline: none;
+    }
+
+    .tab-button.is-active {
+      color: #fff8e8;
+      border-color: var(--line-strong);
+      background:
+        linear-gradient(145deg, rgba(143, 31, 45, 0.96), rgba(93, 22, 28, 0.96)),
+        rgba(255, 255, 255, 0.03);
+      box-shadow: 0 10px 24px rgba(91, 20, 27, 0.18);
+    }
+
+    .panel-card {
+      min-height: 420px;
+      border: 1px solid rgba(49, 35, 24, 0.17);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255, 232, 184, 0.08), transparent 24%),
+        rgba(20, 17, 14, 0.24);
+      box-shadow: var(--glow);
+    }
+
+    .tab-panel {
+      display: none;
+      padding: 28px 30px 32px;
+      animation: tab-fade 280ms var(--ease) both;
+    }
+
+    .tab-panel.is-active {
+      display: block;
+    }
+
+    .tab-heading {
+      margin: 0 0 14px;
+      color: var(--red);
+      font-size: 0.86rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .tab-text {
+      margin: 0;
+      color: var(--paper-text);
+      font-size: 1rem;
+      line-height: 1.85;
+      white-space: pre-line;
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    .overview-card {
+      padding: 18px 18px 20px;
+      border: 1px solid rgba(49, 35, 24, 0.13);
+      border-radius: var(--radius-md);
+      background: rgba(18, 15, 12, 0.2);
+    }
+
+    .overview-card h4 {
+      margin: 0 0 10px;
+      color: var(--red);
+      font-size: 0.8rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .overview-card p {
+      margin: 0;
+      color: var(--paper-text);
+      line-height: 1.75;
+    }
+
+    .scroll-box {
+      max-height: 350px;
+      overflow-y: auto;
+      padding-right: 8px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(143, 31, 45, 0.5) rgba(36, 25, 16, 0.14);
+    }
+
+    .scroll-box::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .scroll-box::-webkit-scrollbar-track {
+      background: rgba(36, 25, 16, 0.14);
+      border-radius: 999px;
+    }
+
+    .scroll-box::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, rgba(143, 31, 45, 0.74), rgba(92, 22, 28, 0.94));
+      border-radius: 999px;
+      border: 1px solid rgba(255, 247, 227, 0.35);
+    }
+
+    .scroll-box::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, rgba(169, 48, 58, 0.82), rgba(92, 22, 28, 0.98));
+    }
+
+    .visual-card {
+      display: grid;
+      align-content: start;
+      gap: 16px;
+      height: 100%;
+    }
+
+    .portrait-frame {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius-lg);
+      aspect-ratio: 4 / 5;
+      border: 1px solid rgba(169, 120, 57, 0.3);
+      background:
+        linear-gradient(180deg, rgba(169, 120, 57, 0.16), transparent 28%),
+        linear-gradient(180deg, #28231d, #11110f);
+      box-shadow: 0 28px 58px rgba(0, 0, 0, 0.44);
+    }
+
+    .portrait-frame::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border: 10px solid rgba(12, 12, 11, 0.34);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 30%),
+        linear-gradient(0deg, rgba(0, 0, 0, 0.28), transparent 40%);
+    }
+
+    .portrait-frame img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: center top;
+      transition: transform 800ms ease;
+    }
+
+    .portrait-frame:hover img {
+      transform: scale(1.035);
+    }
+
+    .quote {
+      margin: 0;
+      padding: 0 4px;
+      color: #c8b99d;
+      line-height: 1.8;
+      font-style: italic;
+    }
+
+    @keyframes page-fade {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes tab-fade {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes ambient-pulse {
+      from {
+        transform: scale(1) translate3d(0, 0, 0);
+        opacity: 0.7;
+      }
+      to {
+        transform: scale(1.08) translate3d(0, 10px, 0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes mist-drift {
+      from {
+        transform: translate3d(-1.5%, 0, 0);
+      }
+      to {
+        transform: translate3d(1.5%, -1.5%, 0);
+      }
+    }
+
+    @media (max-width: 1180px) {
+      .app {
+        grid-template-columns: 170px minmax(0, 1fr);
+      }
+
+      .visual {
+        grid-column: 1 / -1;
+        border-left: 0;
+        border-top: 1px solid var(--line);
+      }
+    }
+
+    @media (max-width: 920px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .content,
+      .visual {
+        border-left: 0;
+        border-top: 1px solid var(--line);
+      }
+    }
+
+    @media (max-width: 680px) {
+      body {
+        padding: 12px;
+      }
+
+      .sidebar,
+      .content,
+      .visual {
+        padding: 22px 18px;
+      }
+
+      .overview-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .content-title {
+        font-size: 2.3rem;
+      }
+
+      .tabs {
+        gap: 8px;
+      }
+
+      .tab-button {
+        flex: 1 1 calc(50% - 8px);
+        text-align: center;
+      }
+
+      .panel-card {
+        min-height: 0;
+      }
+
+      .tab-panel {
+        padding: 22px 20px 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="mist" aria-hidden="true"></div>
+
+  <main class="app" aria-label="Character menu">
+    <aside class="sidebar">
+      <p class="eyebrow">Character Roster</p>
+      <h1 class="sidebar-title">Postavy</h1>
+
+      <div class="character-list" id="characterList" role="tablist" aria-label="Seznam postav"></div>
+    </aside>
+
+    <section class="content">
+      <header class="content-header">
+        <p class="eyebrow">Wanted Record</p>
+        <h2 class="content-title" id="characterName"></h2>
+        <p class="content-role" id="characterRole"></p>
+      </header>
+
+      <p class="meta-line" id="characterMeta"></p>
+
+      <nav class="tabs" aria-label="Sekce postavy">
+        <button class="tab-button is-active" type="button" data-tab="overview" aria-selected="true">Přehled</button>
+        <button class="tab-button" type="button" data-tab="lore" aria-selected="false">Lore</button>
+        <button class="tab-button" type="button" data-tab="appearance" aria-selected="false">Vzhled</button>
+        <button class="tab-button" type="button" data-tab="personality" aria-selected="false">Povaha</button>
+      </nav>
+
+      <section class="panel-card">
+        <article class="tab-panel is-active" data-panel="overview">
+          <h3 class="tab-heading">Přehled</h3>
+          <p class="tab-text" id="overviewText"></p>
+
+          <div class="overview-grid">
+            <article class="overview-card">
+              <h4 id="overviewTitleOne"></h4>
+              <p id="overviewTextOne"></p>
+            </article>
+            <article class="overview-card">
+              <h4 id="overviewTitleTwo"></h4>
+              <p id="overviewTextTwo"></p>
+            </article>
+          </div>
+        </article>
+
+        <article class="tab-panel" data-panel="lore">
+          <h3 class="tab-heading">Lore</h3>
+          <div class="scroll-box">
+            <p class="tab-text" id="loreText"></p>
+          </div>
+        </article>
+
+        <article class="tab-panel" data-panel="appearance">
+          <h3 class="tab-heading">Vzhled</h3>
+          <p class="tab-text" id="appearanceText"></p>
+        </article>
+
+        <article class="tab-panel" data-panel="personality">
+          <h3 class="tab-heading">Povaha</h3>
+          <p class="tab-text" id="personalityText"></p>
+        </article>
+      </section>
+    </section>
+
+    <aside class="visual">
+      <div class="visual-card">
+        <p class="eyebrow">Visual Profile</p>
+        <div class="portrait-frame">
+          <img id="portraitImage" src="zeke.png" alt="">
+        </div>
+        <p class="quote" id="characterQuote"></p>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    const characters = [
+      {
+        id: "zeke",
+        listName: "Ezekiel Crowe",
+        name: "Ezekiel “Zeke” Crowe",
+        role: "Psanec / samotářský tulák",
+        age: "33 let",
+        origin: "Louisiana",
+        year: "1899",
+        status: "Na útěku",
+        overview:
+          "Tichý, nebezpečný a kontrolovaný muž, který přežil vlastní smrt a je pronásledován svou minulostí. Ezekiel “Zeke” Crowe přichází rokem 1899 jako psanec bez domova, bez klidu a bez odpovědí, které už roky hledá.",
+        overviewBlocks: [
+          {
+            title: "Současnost",
+            text: "Bez domova, bez jistoty a bez místa, kde by mohl zakotvit. Žije na cestě a drží se stranou lidí i zákona."
+          },
+          {
+            title: "Motivace",
+            text: "Přežít, zjistit pravdu o noci roku 1895 a najít člověka nebo zradu, která všechno spustila."
+          }
+        ],
+        lore:
+          `Ezekiel “Zeke” Crowe se narodil roku 1866 v Louisianě, krátce po konci občanské války. Přišel na svět v zapadlé oblasti u bažin, daleko od bohatství, zákona i naděje na lepší život. Jeho dětství nebylo ničím jiným než bojem o přežití. Otec byl násilnický opilec, který pracoval jen tehdy, když musel, a většinu času topil vztek v lahvi. Matka byla tichá a zlomená žena, která jednoho dne prostě zmizela. Nikdo ji nikdy nehledal a nikdo Zekovi nikdy neřekl, co se s ní skutečně stalo.
+
+Už jako dítě působil Zeke jinak než ostatní. Neplakal, ani když měl. Nedával najevo strach, ani když ho ostatní cítili až v kostech. Brzy pochopil, že ve světě, kde vyrůstal, je slabost pozvánka k utrpení. Naučil se krást, prát se a přežít bez pomoci druhých. Ve věku kolem třinácti let poprvé někoho vážně zranil. Neudělal to ze zuřivosti, ale z chladného rozhodnutí. A právě tehdy se v něm něco zlomilo natrvalo.
+
+Když dospíval, zmizel z rodného kraje a přidal se ke skupině psanců. Nebyla to ale obyčejná banda zlodějů a opilců. Byli to muži, kteří nechtěli jen peníze. Bavilo je šířit strach, ovládat ostatní a ukazovat, že zákon končí tam, kde začíná jejich vůle. Zeke mezi ně zapadl až příliš snadno. Nemluvil zbytečně, nikdy neváhal a při násilí působil až nepřirozeně klidně. Ostatní v bandě si ho postupně začali vážit, ale zároveň se ho báli.
+
+Roky plynuly a Zeke se stal jedním z nejnebezpečnějších členů celé skupiny. Podílel se na přepadech, únosech i špinavé práci, o které se lidé neodvažovali mluvit nahlas. Časem se kolem jeho jména začaly šířit povídačky. Někteří tvrdili, že se dívá lidem skrz duši. Jiní říkali, že při výslechu nikdy nezvyšuje hlas, protože to ani nepotřebuje.
+
+Pak přišel rok 1895. Noc, která ho změnila navždy. Banda tábořila daleko od civilizace, když přišlo ticho, výstřely a oheň. Tábor se proměnil v peklo. Muži umírali ve zmatku, křiku a plamenech. Ráno po útoku nezůstalo nic než spálené dřevo, mrtvá těla a pach krve. Všichni byli považováni za mrtvé. I Zeke.
+
+Byl nalezen mezi ostatními, bez známek života, těžce raněný a popálený. Jenže nějakým způsobem přežil. Nikdo přesně neví jak. A možná to neví ani on sám. Probral se jako člověk, který sice dýchá, ale část jeho duše v tom ohni už zůstala navždy.
+
+Od té noci už nikdy nebyl stejný. Začal slyšet hlasy mrtvých, nebo si to alespoň myslel. Trápily ho výpadky paměti a útržky vzpomínek, které přicházely bez varování. Některé okamžiky si nepamatoval vůbec. Jiné se mu vracely tak živě, jako by se odehrávaly znovu přímo před ním. Bolest ho přestala zajímat. Strach téměř zmizel.
+
+V následujících letech se toulal od místa k místu. Nezůstával dlouho nikde. Bral práce, které jiní odmítali. Občas jako nájemná ruka, občas jako ochranka, občas prostě jako člověk, kterého si někdo najal na věci, které bylo lepší nepojmenovávat. Nikdy si nevytvářel vazby a nikdy se nesnažil zapadnout. Měl jen dva cíle: přežít a zjistit, co se tehdy opravdu stalo.
+
+Do roku 1899 tak přichází jako muž bez domova, bez skutečné minulosti, kterou by chtěl vyprávět, a bez budoucnosti, kterou by si plánoval. Navenek působí klidně, tiše a ovládaně. Uvnitř je ale plný prázdna, vzteku a neklidu, který se nikdy úplně neztiší.`,
+        appearance:
+          "Vysoký, hubený, ale pevný muž s ostře řezanými rysy. Tmavé oči, chladný a prázdný pohled, který je ostatním nepříjemný. Přes pravé oko se táhne výrazná jizva a na kůži jsou jemné stopy starých popálenin. Nosí středně dlouhé tmavé vlasy, vousy, dlouhý tmavý kabát, černou košili, vestu a opotřebovaný klobouk, který vrhá stín do obličeje.",
+        personality:
+          "Tichý, nebezpečný a kontrolovaný. Nemluví zbytečně a nikdy nezvyšuje hlas, protože nepotřebuje křik, aby vzbudil respekt. Není to bezhlavý vrah ani šílenec, který by střílel kolem sebe bez důvodu. Je mnohem horší v tom, že jedná promyšleně. V lidech vyvolává napětí už jen svou přítomností.",
+        quote:
+          "„Muž, který přežil vlastní smrt a od té doby hledí na svět, jako by se do něj už nikdy úplně nevrátil.“",
+        portrait: "zeke.png",
+        portraitAlt: "Portrét postavy Ezekiel Zeke Crowe"
+      },
+      {
+        id: "silas",
+        listName: "Silas Crowe",
+        name: "Silas “Sil” Crowe",
+        role: "Vyjednavač / manipulátor",
+        age: "31 let",
+        origin: "Louisiana",
+        year: "1899",
+        status: "Hledá pravdu",
+        overview:
+          "Silas “Sil” Crowe je mladší bratr Ezekiela Crowea, muž s klidnou tváří a nebezpečně bystrou myslí. Roku 1899 přichází do nového kraje ne kvůli smíření, ale kvůli pravdě o noci, která měla pohřbít jeho bratra i celou jeho minulost.",
+        overviewBlocks: [
+          {
+            title: "Současnost",
+            text: "Drží se ve stínu, naslouchá, sbírá útržky informací a vstupuje mezi lidi tak nenápadně, že si často ani nevšimnou, kdy začali mluvit víc, než chtěli."
+          },
+          {
+            title: "Motivace",
+            text: "Zjistit, kdo naplánoval masakr roku 1895, proč měl Zeke zemřít a co z minulosti zůstalo ukryté i před jeho vlastním bratrem."
+          }
+        ],
+        lore:
+          `Silas “Sil” Crowe se narodil roku 1868 v Louisianě, ve stejném světě jako jeho starší bratr Ezekiel. Vyrůstali spolu v prostředí, kde nebylo místo pro slabost ani chyby. Jejich otec byl násilnický a nepředvídatelný muž, který si respekt vynucoval silou. Matka byla tichá, zlomená žena, která jednoho dne zmizela beze stopy. Nikdo ji nehledal. A oba bratři pochopili, že na světě zůstali sami.
+
+Zatímco Zeke se uzavíral do sebe a učil se přežít v tichu, Silas si zvolil jinou cestu. Naučil se mluvit, přizpůsobovat se a číst lidi kolem sebe. Už jako mladý pochopil, že přežít neznamená jen vydržet bolest, ale také vědět, kdy se usmát, kdy mlčet a kdy říct přesně to, co chce druhý slyšet.
+
+Bratři si byli blízcí, ale nikdy nebyli stejní. Zeke byl stín. Silas byl tvář, kterou ten stín skrýval.
+
+Když Zeke odešel z domova a postupně se dostal mezi psance, Silas zůstal. Ne proto, že by nemohl odejít, ale proto, že pochopil jednu věc: svět nepatří těm, kdo utíkají, ale těm, kdo se naučí hrát jeho hru.
+
+Začal se pohybovat mezi lidmi, obchodníky, hráči a muži, kteří stáli jednou nohou v zákoně a druhou v něčem mnohem horším. Naučil se vyjednávat, manipulovat a přežít bez nutnosti sahat po zbrani jako první. Nebyl to střelec jako jeho bratr. Byl něco nebezpečnějšího: člověk, který dokáže ostatní přesvědčit, aby stříleli za něj.
+
+Rok 1895 změnil všechno.
+
+Zpráva o zničení bandy, ve které byl i Zeke, se k němu dostala rychle. Mluvilo se o ohni, krvi a tom, že nikdo nepřežil. Silas tomu věřil alespoň zpočátku. Ale něco mu nesedělo.
+
+Znal svého bratra příliš dobře.
+
+Začal pátrat. Ne nahlas, ne otevřeně. Sbíral útržky informací, naslouchal, sledoval a čekal. A čím víc se dozvídal, tím víc si byl jistý, že ta noc nebyla jen obyčejný masakr.
+
+Někdo to naplánoval.
+
+A někdo mohl přežít.
+
+Roky ubíhaly a Silas se stal mužem, který ví víc, než říká. Držel se ve stínu, ale nikdy neztratil přehled. A pak přišla zpráva, která změnila směr jeho cesty.
+
+Chlap. Jméno Crowe. Naživu.
+
+Silas se nevydal na cestu z emocí. Nevydal se proto, že by chtěl bratra obejmout.
+
+Vydal se, protože chtěl pravdu.
+
+V roce 1899 přichází do nového kraje. Klidný, upravený, téměř nenápadný muž, který na první pohled nepůsobí nebezpečně. Ale pod povrchem je někdo, kdo si pamatuje víc, než by měl.
+
+Setkání se Zekem není náhodné.
+
+Je to začátek něčeho, co nikdy neskončilo.
+
+Silas ví, že minulost ještě neřekla poslední slovo.
+
+A možná ví i to, co Zeke ne.
+
+Otázka není, jestli jsou bratři na stejné straně.
+
+Otázka je, jestli vůbec někdy byli.`,
+        appearance:
+          "Klidný, upravený a téměř nenápadný muž, který nepůsobí hrozivě na první pohled. Jeho síla není v divokosti, ale v kontrole. Nosí oblečení, které mu dovoluje zapadnout mezi obchodníky, hráče i muže na hraně zákona, a jeho výraz často působí přátelsky právě ve chvíli, kdy už si druhé pečlivě měří.",
+        personality:
+          "Pozorný, přizpůsobivý a nebezpečně přesvědčivý. Silas umí mluvit tak, aby lidé slyšeli přesně to, co slyšet chtějí. Nepotřebuje sahat po zbrani jako první, protože mnohem raději zařídí, aby ji vytáhl někdo jiný. Ví víc, než říká, a málokdy ukáže, co si skutečně myslí.",
+        quote:
+          "„Svět nepatří těm, kdo utíkají. Patří těm, kdo se naučí hrát jeho hru.“",
+        portrait: "Silas.png",
+        portraitAlt: "Portrét postavy Silas Sil Crowe"
+      },
+      {
+        id: "william",
+        listName: "William Hart",
+        name: "William Hart",
+        role: "Vyjednavač / ochránce / stratég",
+        age: "28 let",
+        origin: "Texas",
+        year: "1899",
+        status: "Připravený",
+        overview:
+          "William Hart je klidný, silný a spolehlivý muž, který si prošel světem obchodu, dluhů i zrad. Naučil se spoléhat jen na sebe, svou hlavu a klid v každé situaci. Nehledá problémy, ale když přijdou samy, bývá připraven.",
+        overviewBlocks: [
+          {
+            title: "Vztahy",
+            text: "Violet je jeho snoubenka a člověk, kterému důvěřuje víc než komukoli jinému. Miluje ji, ale nikdy by ji k ničemu nenutil a respektuje její sílu i temnotu."
+          },
+          {
+            title: "Motivace",
+            text: "Udržet sebe i své blízké naživu, chránit ty, na kterých mu záleží, a zůstat o krok napřed před lidmi, kteří se nechají ovládat ziskem."
+          }
+        ],
+        lore:
+          `William Hart pochází z Texasu a už od mládí poznal, že klid bývá v nebezpečném světě cennější než rychlá ruka u zbraně. Nevyrostl jako muž, který touží po slávě. Naučil se pozorovat, naslouchat a číst lidi dřív, než ukážou své skutečné úmysly.
+
+Časem se pohyboval mezi obchodem, dluhy a lidmi, kteří slibovali víc, než kdy mohli splnit. Viděl, jak snadno se z dohody stane past a jak rychle se přátelé mění v nepřátele, když jde o peníze nebo moc. Právě tam se naučil vyjednávat, zachovávat chladnou hlavu i ve chvílích, kdy ostatní sahali po zbrani, a poznat, kdy má slovo větší cenu než výstřel.
+
+Setkal se s Violet v Louisianě během obchodní cesty. Nebylo to přátelství na první pohled, ale něco mezi nimi začalo růst. Když se Violet rozhodla jít s ním, William věděl, že ji nenechá samotnou. Ne proto, že by ji považoval za slabou, ale protože pochopil, že některé pouto se nevyjednává.
+
+Roku 1899 působí jako muž, který mluví málo, ale když už promluví, lidé poslouchají. Je loajální k těm, na kterých mu záleží, a nebezpečný pro každého, kdo by se jim pokusil ublížit.`,
+        appearance:
+          "Štíhlý, pevný muž vysoký 185 cm s klidným výrazem, ostrými rysy a tmavým pohledem. Nosí tmavý kabát, vestu, klobouk a oblečení, které působí upraveně, ale ne okázale. Celý jeho vzhled říká, že je připravený odejít, jednat nebo bojovat bez zbytečného varování.",
+        personality:
+          "Klidný, trpělivý a rozvážný. William je výborný ve vyjednávání, umí číst lidi i situace a zachovává chladnou hlavu i v nebezpečí. Je loajální k těm, na kterých mu záleží, a nerad mluví o své minulosti, ale nikdy nelže, když už se rozhodne říct pravdu.",
+        quote:
+          "„Ne každý, kdo mlčí, je slabý. Někdy jen víc pozoruje.“",
+        portrait: "William.png",
+        portraitAlt: "Portrét postavy William Hart"
+      },
+      {
+        id: "thomas-mercer",
+        listName: "Thomas Mercer",
+        name: "Thomas “Tom” Mercer",
+        role: "Rančer / věrný přítel / neklidný ochránce",
+        age: "Neznámý",
+        origin: "Texas",
+        year: "1899",
+        status: "Ve West Havenu",
+        overview:
+          "Thomas “Tom” Mercer vyrůstal s Williamem Hartem od dětství. Nebyla to jen obyčejná známost, byli jako bratři. Když William zmizel a začaly se šířit zvěsti o rodině Croweových, Tom se vydal do West Havenu, protože měl pocit, že jeho starý přítel není v bezpečí.",
+        overviewBlocks: [
+          {
+            title: "Vztahy",
+            text: "William Hart je pro něj víc než přítel. Tom mu věří i ve chvíli, kdy nedokáže věřit nikomu kolem něj."
+          },
+          {
+            title: "Motivace",
+            text: "Najít Williama, pochopit, co ho drží u Croweových, a dostat ho z nebezpečí dřív, než West Haven pohltí i jeho."
+          }
+        ],
+        lore:
+          `Thomas “Tom” Mercer vyrůstal s Williamem Hartem od dětství.
+
+Nebyla to jen obyčejná známost. Byli jako bratři. Společně pracovali na rančích, několikrát se poprali v saloonech, několikrát utíkali před problémy a vždy drželi při sobě. Zatímco William býval klidnější a rozumnější, Tom byl ten, kdo častěji jednal dřív, než přemýšlel.
+
+Přesto měl vždy dobré srdce.
+
+Když William jednoho dne zmizel a začaly se šířit zvěsti, že se pohybuje s podivnou rodinou jménem Crowe, Thomas tomu nejdřív nevěřil. Ale čím víc příběhů slyšel, tím větší měl pocit, že William není v bezpečí.
+
+A tak se vydal do West Havenu.
+
+Po příjezdu rychle zjistil, že Croweovi nejsou normální rodina.
+
+Ezekiel “Zeke” Crowe v něm od prvního setkání vyvolává neklid. Tom nikdy neví, jestli ho Zeke jen pozoruje, nebo přemýšlí, jestli ho zastřelit.
+
+Silas Crowe je ještě horší. Tichý, zvláštní a nepředvídatelný. Tom má pocit, že mu Silas vidí až do hlavy.
+
+Violet Crowe na něj působí klidněji než její bratři, ale zároveň má pocit, že i ona v sobě skrývá něco temného.
+
+Jediný důvod, proč Tom zůstává, je William.
+
+Ne proto, že by Croweovým věřil.
+
+Ale protože věří jemu.
+
+Thomas není psanec ani vrah. Není to člověk, který hledá problémy. Problémy si většinou najdou jeho. Přesto začíná chápat, že ve West Havenu člověk dlouho čistý nezůstane.
+
+A možná je už pozdě odejít.`,
+        appearance:
+          "Muž z rančů a prašných cest, který nepůsobí jako uhlazený pistolník ani jako skutečný psanec. Jeho oblečení je praktické, unavené cestou a připravené na práci i útěk. V postoji má tvrdohlavost člověka, který se nechce nechat zastrašit, i když mu instinkt říká, že by měl raději odejít.",
+        personality:
+          "Impulzivní, loajální a tvrdohlavý. Tom často jedná dřív, než si všechno promyslí, ale málokdy ze zlého úmyslu. Má dobré srdce, silný smysl pro přátelství a nebezpečný zvyk zůstávat tam, odkud by rozumnější člověk utekl. Croweovým nevěří, ale Williamovi ano.",
+        quote:
+          "„Ne každý, kdo sedí u ohně s Croweovými, je jeden z nich.“",
+        portrait: "Thomas.png",
+        portraitAlt: "Portrét postavy Thomas Tom Mercer"
+      },
+      {
+        id: "violet",
+        listName: "Violet Crowe",
+        name: "Violet Crowe",
+        role: "Manipulátorka / střelkyně / stratég",
+        age: "24 let",
+        origin: "Louisiana",
+        year: "1899",
+        status: "Ve stínu",
+        overview:
+          "Violet Crowe je nejmladší ze sourozenců Croweových. Vyrůstala ve světě, kde přežití bylo důležitější než nevinnost. Je tichá, bystrá a nebezpečně klidná, ale pod tvrdým povrchem se skrývá žena, která se naučila, že největší moc nemá ten, kdo křičí nejhlasitěji.",
+        overviewBlocks: [
+          {
+            title: "Vztahy",
+            text: "K Zekemu cítí respekt a vidí v něm člověka, který jí rozumí beze slov. Silase respektuje, ale ví, že si před ním musí hlídat i to, co zůstane nevyřčené."
+          },
+          {
+            title: "Motivace",
+            text: "Udržet si svobodu, chránit svůj klid a přežít bez toho, aby ji někdo znovu proměnil v nástroj pro cizí vůli."
+          }
+        ],
+        lore:
+          `Violet Crowe vyrůstala s vědomím, že chyba může člověka stát víc než jen bolest. Jako nejmladší ze sourozenců Croweových se brzy naučila pozorovat, skrývat emoce a odhadovat nebezpečí dřív, než dostane jméno.
+
+Naučila se spíš číst ticho než slova. Když ostatní křičeli, mlčela. Když se kolem ní lidé snažili získat převahu silou, hledala slabé místo v jejich jistotě. Právě proto je nebezpečná jinak než Zeke nebo Silas. Nepotřebuje být nejhlasitější v místnosti. Stačí jí vědět, co kdo chce, čeho se bojí a kdy ztratí kontrolu.
+
+William Hart se pro ni stal někým, komu dokázala věřit víc než ostatním. Ne proto, že by ji zachránil, ale protože se ji nikdy nepokusil vlastnit. Jejich pouto je tiché, komplikované a pevné právě tím, že stojí na respektu.
+
+V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrností i jistotou. Umí manipulovat, dokáže získat důvěru během několika minut a když už musí sáhnout po zbrani, většinou je pozdě na lítost.`,
+        appearance:
+          "Štíhlá žena vysoká 165 cm s tmavými vlasy, bledší tváří a neklidným, přesto soustředěným pohledem. Nosí tmavé elegantní oblečení s fialovými detaily, praktický pásek se zbraní a doplňky, které působí jemně, dokud si člověk nevšimne, jak připravená ve skutečnosti je.",
+        personality:
+          "Výborná v manipulaci a čtení lidí. Dokáže získat důvěru během několika minut, skvěle pozoruje okolí a umí lhát bez emocí. Je strategická plánovačka, preferuje slova před zbraní, ale není bezbranná. Navenek je nebezpečně klidná, uvnitř mnohem citlivější, než dává najevo.",
+        quote:
+          "„Lidé říkají mnohem víc, když si myslí, že neposloucháš.“",
+        portrait: "Violet.png",
+        portraitAlt: "Portrét postavy Violet Crowe"
+      }
+    ];
+
+    const listElement = document.getElementById("characterList");
+    const refs = {
+      name: document.getElementById("characterName"),
+      role: document.getElementById("characterRole"),
+      meta: document.getElementById("characterMeta"),
+      overview: document.getElementById("overviewText"),
+      overviewTitleOne: document.getElementById("overviewTitleOne"),
+      overviewTextOne: document.getElementById("overviewTextOne"),
+      overviewTitleTwo: document.getElementById("overviewTitleTwo"),
+      overviewTextTwo: document.getElementById("overviewTextTwo"),
+      lore: document.getElementById("loreText"),
+      appearance: document.getElementById("appearanceText"),
+      personality: document.getElementById("personalityText"),
+      portrait: document.getElementById("portraitImage"),
+      quote: document.getElementById("characterQuote")
+    };
+
+    const tabButtons = document.querySelectorAll("[data-tab]");
+    const tabPanels = document.querySelectorAll("[data-panel]");
+    let activeCharacterId = "zeke";
+
+    const setActiveTab = (tabId) => {
+      tabButtons.forEach((button) => {
+        const isActive = button.dataset.tab === tabId;
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-selected", String(isActive));
+      });
+
+      tabPanels.forEach((panel) => {
+        panel.classList.toggle("is-active", panel.dataset.panel === tabId);
+      });
+    };
+
+    const renderList = () => {
+      listElement.innerHTML = "";
+
+      characters.forEach((character) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `character-item${character.id === activeCharacterId ? " is-active" : ""}`;
+        button.dataset.character = character.id;
+        button.textContent = character.listName;
+        button.setAttribute("aria-selected", String(character.id === activeCharacterId));
+        listElement.appendChild(button);
+      });
+    };
+
+    const renderCharacter = () => {
+      const character = characters.find((item) => item.id === activeCharacterId);
+      if (!character) return;
+
+      refs.name.textContent = character.name;
+      refs.role.textContent = character.role;
+      refs.meta.innerHTML = `<strong>Věk:</strong> ${character.age} &nbsp;&nbsp;•&nbsp;&nbsp; <strong>Původ:</strong> ${character.origin} &nbsp;&nbsp;•&nbsp;&nbsp; <strong>Rok:</strong> ${character.year} &nbsp;&nbsp;•&nbsp;&nbsp; <strong>Status:</strong> ${character.status}`;
+      refs.overview.textContent = character.overview;
+      refs.overviewTitleOne.textContent = character.overviewBlocks[0].title;
+      refs.overviewTextOne.textContent = character.overviewBlocks[0].text;
+      refs.overviewTitleTwo.textContent = character.overviewBlocks[1].title;
+      refs.overviewTextTwo.textContent = character.overviewBlocks[1].text;
+      refs.lore.textContent = character.lore;
+      refs.appearance.textContent = character.appearance;
+      refs.personality.textContent = character.personality;
+      refs.quote.textContent = character.quote;
+      refs.portrait.src = character.portrait;
+      refs.portrait.alt = character.portraitAlt;
+    };
+
+    document.addEventListener("click", (event) => {
+      const characterButton = event.target.closest("[data-character]");
+      if (characterButton) {
+        activeCharacterId = characterButton.dataset.character;
+        renderCharacter();
+        renderList();
+        return;
+      }
+
+      const tabButton = event.target.closest("[data-tab]");
+      if (tabButton) {
+        setActiveTab(tabButton.dataset.tab);
+      }
+    });
+
+    renderCharacter();
+    renderList();
+    setActiveTab("overview");
+  </script>
+</body>
+</html>
