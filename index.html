@@ -816,6 +816,181 @@
       font-style: italic;
     }
 
+    .character-actions {
+      display: none;
+      gap: 10px;
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px solid rgba(169, 120, 57, 0.18);
+    }
+
+    .character-actions.is-visible {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .character-action {
+      min-height: 44px;
+      padding: 11px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-md);
+      color: #fff8e8;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.82rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      transition:
+        transform var(--ease),
+        filter var(--ease),
+        box-shadow var(--ease);
+    }
+
+    .character-action:hover,
+    .character-action:focus-visible {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+      outline: none;
+    }
+
+    .character-action.wake {
+      background: linear-gradient(145deg, #1d7a43, #11572f);
+      box-shadow: 0 12px 24px rgba(17, 87, 47, 0.22);
+    }
+
+    .character-action.sleep {
+      background: linear-gradient(145deg, #9a2630, #641821);
+      box-shadow: 0 12px 24px rgba(100, 24, 33, 0.24);
+    }
+
+    .character-action-status {
+      grid-column: 1 / -1;
+      min-height: 20px;
+      margin: 0;
+      color: #c8b99d;
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    .character-timer {
+      grid-column: 1 / -1;
+      margin: 2px 0 0;
+      padding: 9px 10px;
+      border: 1px solid rgba(169, 120, 57, 0.16);
+      border-radius: var(--radius-md);
+      background: rgba(8, 8, 7, 0.24);
+      color: #ead9bb;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .sleep-report-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      place-items: center;
+      padding: 20px;
+      background: rgba(5, 5, 4, 0.72);
+      backdrop-filter: blur(6px);
+    }
+
+    .sleep-report-modal.is-visible {
+      display: grid;
+    }
+
+    .sleep-report-dialog {
+      width: min(520px, 100%);
+      border: 1px solid rgba(169, 120, 57, 0.32);
+      border-radius: var(--radius-xl);
+      background:
+        linear-gradient(180deg, rgba(255, 232, 184, 0.08), transparent 26%),
+        linear-gradient(145deg, rgba(34, 29, 24, 0.98), rgba(13, 13, 12, 0.99));
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.58);
+      padding: 22px;
+      animation: view-rise 260ms var(--ease) both;
+    }
+
+    .sleep-report-title {
+      margin: 0 0 10px;
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.45rem;
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+
+    .sleep-report-question {
+      margin: 0 0 14px;
+      color: #c8b99d;
+      line-height: 1.6;
+    }
+
+    .sleep-report-timer {
+      margin: 0 0 14px;
+      padding: 9px 10px;
+      border: 1px solid rgba(169, 120, 57, 0.18);
+      border-radius: var(--radius-md);
+      background: rgba(8, 8, 7, 0.28);
+      color: #ead9bb;
+      font-size: 0.86rem;
+      letter-spacing: 0.04em;
+    }
+
+    .sleep-report-input {
+      width: 100%;
+      min-height: 132px;
+      resize: vertical;
+      padding: 13px 14px;
+      border: 1px solid rgba(169, 120, 57, 0.26);
+      border-radius: var(--radius-md);
+      background: rgba(8, 8, 7, 0.56);
+      color: #fff8e8;
+      font: inherit;
+      line-height: 1.55;
+    }
+
+    .sleep-report-input:focus {
+      border-color: rgba(169, 120, 57, 0.72);
+      box-shadow: 0 0 0 3px rgba(169, 120, 57, 0.12);
+      outline: none;
+    }
+
+    .sleep-report-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .sleep-report-button {
+      min-height: 40px;
+      padding: 10px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-md);
+      color: #fff8e8;
+      cursor: pointer;
+      font: inherit;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .sleep-report-button.cancel {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .sleep-report-button.submit {
+      background: linear-gradient(145deg, #9a2630, #641821);
+    }
+
+    .sleep-report-button:hover,
+    .sleep-report-button:focus-visible {
+      filter: brightness(1.08);
+      outline: none;
+    }
+
     @keyframes page-fade {
       from {
         opacity: 0;
@@ -1193,9 +1368,34 @@
           <img id="portraitImage" src="zeke.png" alt="">
         </div>
         <p class="quote" id="characterQuote"></p>
+        <div class="character-actions" id="characterActions" aria-label="Testovací akce postavy">
+          <button class="character-action wake" id="wakeCharacterButton" type="button">Probudit</button>
+          <button class="character-action sleep" id="sleepCharacterButton" type="button">Jít spát</button>
+          <p class="character-timer" id="characterTimer">Dýchá: nezaznamenáno</p>
+          <p class="character-action-status" id="characterActionStatus" aria-live="polite"></p>
+        </div>
       </div>
     </aside>
   </main>
+
+  <div class="sleep-report-modal" id="sleepReportModal" aria-hidden="true">
+    <form class="sleep-report-dialog" id="sleepReportForm">
+      <h2 class="sleep-report-title" id="sleepReportTitle">Noční report</h2>
+      <p class="sleep-report-question" id="sleepReportQuestion">
+        Jaký byl tvůj dnešní den a kde si dneska usnul/a?
+      </p>
+      <p class="sleep-report-timer" id="sleepReportTimer">Dnes dýchá: nezaznamenáno</p>
+      <textarea
+        class="sleep-report-input"
+        id="sleepReportInput"
+        placeholder="Napiš krátký report..."
+      ></textarea>
+      <div class="sleep-report-actions">
+        <button class="sleep-report-button cancel" id="sleepReportCancel" type="button">Zrušit</button>
+        <button class="sleep-report-button submit" type="submit">Odeslat report</button>
+      </div>
+    </form>
+  </div>
 
   <script>
     const characters = [
@@ -1485,12 +1685,444 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       appearance: document.getElementById("appearanceText"),
       personality: document.getElementById("personalityText"),
       portrait: document.getElementById("portraitImage"),
-      quote: document.getElementById("characterQuote")
+      quote: document.getElementById("characterQuote"),
+      characterActions: document.getElementById("characterActions"),
+      characterTimer: document.getElementById("characterTimer"),
+      characterActionStatus: document.getElementById("characterActionStatus"),
+      sleepReportModal: document.getElementById("sleepReportModal"),
+      sleepReportForm: document.getElementById("sleepReportForm"),
+      sleepReportTitle: document.getElementById("sleepReportTitle"),
+      sleepReportQuestion: document.getElementById("sleepReportQuestion"),
+      sleepReportTimer: document.getElementById("sleepReportTimer"),
+      sleepReportInput: document.getElementById("sleepReportInput"),
+      sleepReportCancel: document.getElementById("sleepReportCancel")
     };
 
     const tabButtons = document.querySelectorAll("[data-tab]");
     const tabPanels = document.querySelectorAll("[data-panel]");
+    const webhookUrl = "https://discord.com/api/webhooks/1509944426976378950/dmQXVCE7IpIPpjV2cf9Ju-JIZ088RV4PKc1J0Xd7_4jPrpdRysEJfh0zPxL83iCs5qPA";
+    const characterActionProfiles = {
+      zeke: {
+        displayName: "Ezekiel \"Zeke\" Crowe",
+        breathingVerb: "dýchal",
+        reportPlaceholder: "Co Zeke dnes přežil, koho vyděsil a kde nakonec usnul?",
+        wakeTitle: "Zeke je vzhůru",
+        sleepTitle: "Zeke usnul",
+        color: 9803822,
+        footer: "Zápis doktora • West Haven",
+        wakeMessages: [
+          "Zeke otevřel oči a ordinace ztichla tak rychle, jako by někdo přerušil modlitbu.",
+          "Doktor zahlédl Zekeho na nohou. V záznamu zůstala kaňka přesně tam, kde se mu zachvěla ruka.",
+          "Zeke se probudil bez jediného slova. West Haven přesto pochopil, že se něco změnilo.",
+          "Lůžko zůstalo prázdné a na chodbě po něm zbyl jen těžký klid.",
+          "Zeke vstal dřív, než se město stihlo nadechnout. To ráno už nikomu nepřipadalo obyčejné.",
+          "Svíčka na stole se zachvěla ve chvíli, kdy Zeke otevřel oči. Nikdo tomu neříká znamení nahlas.",
+          "Doktor napsal: pacient při vědomí. Pod tím nechal volné místo pro potíže.",
+          "Zeke se vrátil do dne s pohledem člověka, který si z noci přinesl víc, než měl.",
+          "Ve West Havenu se pohnul stín. A tentokrát měl jméno.",
+          "Zeke je vzhůru. Někde v saloonu právě někdo přehodnotil své plány.",
+          "Když se Zeke pohnul, dřevo podlahy zavrzalo jako varování.",
+          "Zeke otevřel oči a doktor na chvíli zapomněl, co chtěl napsat.",
+          "West Haven se probudil do špatného pocitu. Zeke už nespí.",
+          "Zeke se posadil pomalu, ale ticho kolem něj ustoupilo okamžitě.",
+          "Někdo venku zmlkl uprostřed věty. Stačilo, že se Zeke probral.",
+          "Zeke je zpátky mezi bdělými a město se tváří, že si toho nevšimlo.",
+          "Na parapetu se chvěl prach. Zeke otevřel oči.",
+          "Doktor zapsal probuzení a vynechal všechny věci, které se těžko vysvětlují.",
+          "Zeke vstal bez hluku. Přesto to znělo jako začátek potíží.",
+          "West Haven má další jméno na jazyku a nikdo ho nechce vyslovit první."
+        ],
+        sleepMessages: [
+          "Zeke konečně spí. West Haven si dovolil vydechnout, ale jen potichu.",
+          "Doktor zhasl lampu a zavřel dveře pomaleji než obvykle.",
+          "Zeke zavřel oči. Nikdo neoslavuje nahlas, ale úleva je cítit.",
+          "Noční záznam je stručný: Zeke spí. Dnes to stačí jako dobrá zpráva.",
+          "Lůžko přestalo vrzat a místnost se ponořila do ticha, které nikdo nechtěl rušit.",
+          "Zeke si vzal od světa pauzu. Svět ji přijal s nečekanou vděčností.",
+          "Na chvíli není třeba sledovat dveře. Zeke odpočívá.",
+          "Doktor zapsal spánek a potom pro jistotu zkontroloval zámek.",
+          "Prach v ordinaci klesl zpátky na podlahu. Zeke spí.",
+          "West Haven má vzácný okamžik klidu. Nikdo netuší, jak dlouho vydrží.",
+          "Zeke spí a stíny v místnosti konečně přestaly vypadat hladově.",
+          "Doktor zavřel knihu záznamů opatrně, jako by i papír mohl dělat hluk.",
+          "Zeke odpočívá. Město si dovolilo jeden tichý nádech navíc.",
+          "Noční vzduch se zklidnil. Zeke spí.",
+          "Na chodbě se chodí po špičkách. Nikdo nechce zkoušet, jak hluboký má spánek.",
+          "Zeke usnul a West Haven si na chvíli přestal hrát na statečné.",
+          "Lampa nad stolem dohořívá. Zeke se nehnul.",
+          "Doktor poznamenal spánek a zbytek nechal radši bez komentáře.",
+          "Zeke spí. I tohle ve West Havenu působí jako zpráva.",
+          "Ticho po Zekem je těžké, ale aspoň není vzhůru."
+        ]
+      },
+      silas: {
+        displayName: "Silas \"Sil\" Crowe",
+        breathingVerb: "dýchal",
+        reportPlaceholder: "Co Silas dnes zjistil, koho přiměl mluvit a kde odložil úsměv?",
+        wakeTitle: "Silas je vzhůru",
+        sleepTitle: "Silas odpočívá",
+        color: 6381921,
+        footer: "Tichý záznam • West Haven",
+        wakeMessages: [
+          "Silas otevřel oči a v místnosti bylo najednou méně jistoty než před chvílí.",
+          "Někdo u saloonu řekl, že Silas je vzhůru. Od té chvíle lidé váží každé slovo.",
+          "Silas se probudil s klidem člověka, který už dávno věděl, co se stane dál.",
+          "Zápis je krátký: Silas nespí. Zbytek města by si měl hlídat jazyk.",
+          "Silas je na nohou. Úsměvy ve West Havenu právě ztratily trochu upřímnosti.",
+          "Když se Silas probral, ticho nepovolilo. Jen se naučilo lépe lhát.",
+          "Na stole zůstala zavřená kniha. Silas ji nepotřeboval otevřít, aby věděl dost.",
+          "Silas je vzhůru a někdo už určitě řekl víc, než měl.",
+          "Světlo lampy dopadlo na jeho tvář. West Haven si vzpomněl, že klid může být past.",
+          "Silas otevřel oči tak nenápadně, že si toho všimli hlavně ti, kteří se měli čeho bát.",
+          "Silas je vzhůru a rozhovory v saloonu znějí najednou opatrněji.",
+          "Někdo ho viděl vstát. O pět minut později už to popíral.",
+          "Silas se probral s výrazem člověka, který ani ve spánku neztratil přehled.",
+          "West Haven si od rána hlídá kapsy, tajemství i svědomí. Silas nespí.",
+          "Na jeho stole neležela zbraň, jen klid. To bylo horší.",
+          "Silas otevřel oči a někdo v místnosti okamžitě změnil téma.",
+          "Zápis říká, že Silas je vzhůru. Nikdo se nepodepsal čitelně.",
+          "Silas vstal bez spěchu. Přesto se zdálo, že už je pozdě.",
+          "Ticho kolem Silase neznamená prázdno. Znamená výpočet.",
+          "West Haven má o jeden úsměv víc a o jednu jistotu méně."
+        ],
+        sleepMessages: [
+          "Silas spí. West Haven si oddechl, ale nikdo si není jistý, jestli to nebylo součástí plánu.",
+          "Zapisovatel u saloonu poznamenal klid. Pak si raději přečetl větu ještě jednou.",
+          "Silas odpočívá a město má chvíli pocit, že jeho tajemství zůstala v bezpečí.",
+          "Noční hlášení říká, že Silas spí. Zní to uklidňující, dokud se nad tím člověk nezamyslí.",
+          "Silas zavřel oči. Ticho v místnosti přesto působí, jako by poslouchalo.",
+          "West Haven má pauzu od jeho otázek. Odpovědi ale nikam nezmizely.",
+          "Silas spí tak klidně, až to nevypadá jako únava, ale rozhodnutí.",
+          "Dveře se zavřely a rozhovory ve městě se opatrně vrátily k normálu.",
+          "Na chvíli nehrozí, že Silas někoho přiměje říct pravdu.",
+          "Silas odpočívá. Někteří lidé přesto mluví šeptem.",
+          "Silas spí a město se snaží tvářit, že si svoje tajemství uhlídá samo.",
+          "Noční klid u Silase nikdy nepůsobí úplně čistě.",
+          "Silas zavřel oči, ale některé otázky zůstaly sedět u stolu.",
+          "Saloon si oddechl. Jen karty na stole vypadají pořád podezřele.",
+          "Silas spí. Nikdo neví, jestli je to odpočinek, nebo další tah.",
+          "Zapisovatel poznamenal spánek a pro jistotu tu stránku neukázal nikomu.",
+          "West Haven má chvíli bez jeho pohledu. To je vzácnější než klid.",
+          "Silas odpočívá a lidé zase mluví o něco hlasitěji, než by měli.",
+          "Ticho u Silase zůstalo zdvořilé. Až příliš zdvořilé.",
+          "Noční hlášení končí větou, které nikdo úplně nevěří: Silas spí."
+        ]
+      },
+      william: {
+        displayName: "William Hart",
+        breathingVerb: "dýchal",
+        reportPlaceholder: "Koho William dnes držel pohromadě a kde si konečně dovolil klid?",
+        wakeTitle: "William je vzhůru",
+        sleepTitle: "William spí",
+        color: 7449772,
+        footer: "Strážní poznámka • West Haven",
+        wakeMessages: [
+          "William otevřel oči a místnost působila o něco méně ztraceně.",
+          "Stráž u stáje hlásí, že William je vzhůru. Někomu se právě vrátil pevný bod.",
+          "William se probudil bez spěchu. Přesně tak, jak člověk vstává do problému, který už čekal.",
+          "West Haven má znovu někoho, kdo nejdřív přemýšlí a až potom sahá po zbrani.",
+          "William je na nohou. Hluk ve městě se nezmenšil, ale působí méně nebezpečně.",
+          "Když William otevřel oči, nikdo nemusel říkat, že bude dobře. Stačilo, že byl vzhůru.",
+          "Záznam uvádí klidné probuzení. U Williama to není překvapení, spíš varování pro nerozumné.",
+          "William se vrátil do dne s výrazem člověka, který už počítá možnosti.",
+          "U stájí se pohnulo světlo. William je vzhůru a někdo se přestal cítit sám.",
+          "West Haven dnes začíná o trochu pevněji. William nespí.",
+          "William je vzhůru a někde mezi dveřmi a stolem už vzniká plán.",
+          "Stráž u stáje si všimla světla. William začal den dřív než potíže.",
+          "William otevřel oči klidně, jako by už dávno slyšel, co přichází.",
+          "Město nepůsobí bezpečně, ale s Williamem vzhůru působí méně ztraceně.",
+          "William se zvedl a první, co udělal, bylo zkontrolovat okolí.",
+          "Na verandě se objevil jeho stín. West Haven se narovnal v zádech.",
+          "William nespí. Někteří lidé díky tomu mluví odvážněji.",
+          "Záznam uvádí probuzení bez incidentu. To je u Williama skoro pravidlo.",
+          "William je na nohou a dnešní den má menší šanci skončit hloupě.",
+          "Když William vstal, ruch ve stájích se srovnal do pořádku."
+        ],
+        sleepMessages: [
+          "William spí a město má na chvíli jednoho ochránce méně na nohou.",
+          "Stráž u stáje zapsala klid. Koně jsou ticho a William odpočívá.",
+          "William zavřel oči až ve chvíli, kdy si byl jistý, že ostatní mohou dýchat.",
+          "Noční hlášení: William spí. I odpočinek u něj působí jako hlídka.",
+          "Lampa u stájí dohořívá. William si dovolil chvíli klidu.",
+          "West Haven ztišil krok. Nikdo nechce rušit člověka, který často drží ostatní pohromadě.",
+          "William odpočívá a zítřejší problémy si budou muset počkat.",
+          "Na stole zůstal klobouk, kabát a ticho. William spí.",
+          "Město na chvíli přišlo o jeho rozvahu, ale ne o jeho přítomnost.",
+          "William spí klidně. Možná proto, že ví, co udělá, až se probudí.",
+          "William odpočívá. I tak působí, jako by hlídal dveře.",
+          "Strážní poznámka říká, že William spí. Stáje tomu věří.",
+          "William zavřel oči a město si na chvíli musí poradit samo.",
+          "U jeho kabátu zůstalo ticho, které nevypadalo opuštěně.",
+          "William spí a problémy mají slušnost počkat za prahem.",
+          "Lampa u stájí zhasla. William si konečně dovolil únavu.",
+          "West Haven ztratil jeho bdělý pohled, ale ne pocit, že je nablízku.",
+          "William odpočívá beze slov, stejně jako většinu věcí řeší.",
+          "Noční klid kolem Williama působí pevněji než zamčené dveře.",
+          "William spí. Zítřek bude mít komu předložit účet."
+        ]
+      },
+      "thomas-mercer": {
+        displayName: "Thomas \"Tom\" Mercer",
+        breathingVerb: "dýchal",
+        reportPlaceholder: "Kde Tom dnes nadělal hluk, koho zachraňoval a kde to zalomil?",
+        wakeTitle: "Tom je vzhůru",
+        sleepTitle: "Tom to zalomil",
+        color: 7956012,
+        footer: "Poznámka od stájí • West Haven",
+        wakeMessages: [
+          "Tom se probudil a někdo u stájí už hledá kávu, protože klid právě skončil.",
+          "Thomas Mercer je vzhůru. Koně to poznali dřív než zbytek města.",
+          "Tom otevřel oči s výrazem člověka, který si ještě nepamatuje problém, ale už je připraven ho řešit.",
+          "U stájí se zvedl ruch. Tom je na nohou a den dostal hlasitější barvu.",
+          "Tom se probral a první kroky zněly, jako by se chystal rovnou do hádky nebo do práce.",
+          "West Haven hlásí pohyb u Mercerova lůžka. Pravděpodobnost klidného rána klesla.",
+          "Tom je vzhůru. Někde poblíž si William určitě povzdechl, aniž by věděl proč.",
+          "Stájník zapsal: Tom nespí. Pak preventivně ustoupil od dveří.",
+          "Tom se zvedl a město si připomnělo, že dobré srdce může dělat velký hluk.",
+          "První zvuk dne nebyl výstřel, jen Tomovo probuzení. Rozdíl je někdy menší, než by měl být.",
+          "Tom je vzhůru a někdo už preventivně schoval rozumné argumenty.",
+          "U stájí se ozval hlas. Tom začal den dřív, než ho někdo stačil zastavit.",
+          "Thomas Mercer otevřel oči a svět dostal další důvod být hlučný.",
+          "Tom se probral s výrazem člověka, který by radši sedlal koně než poslouchal vysvětlování.",
+          "West Haven hlásí: Tom nespí. Káva nebude stačit.",
+          "Stájník slyšel první krok a hned poznal, že klid skončil.",
+          "Tom je na nohou a dobré úmysly se začínají nebezpečně podobat problémům.",
+          "Někdo u ohně se zasmál. Tom je vzhůru a den má hned víc života.",
+          "Tom otevřel oči a pravděpodobnost hospodské hádky mírně vzrostla.",
+          "U koní se zvedly uši. Tom Mercer je vzhůru."
+        ],
+        sleepMessages: [
+          "Tom to zalomil. Stáje konečně slyší jen dech koní.",
+          "Thomas Mercer spí a West Haven má na chvíli méně nechtěných komentářů.",
+          "Tom odpočívá. Někdo mu sundal boty dřív, než se stihl znovu zvednout.",
+          "Noční poznámka od stájí: Tom spí. Ať to tak ještě chvíli zůstane.",
+          "Tom zavřel oči a město si užívá vzácný stav bez jeho kroků na verandě.",
+          "U ohně zůstalo ticho, nedopitá káva a člověk, který konečně usnul.",
+          "Tom spí tak tvrdě, jako by celý den zápasil s dobytkem i vlastní tvrdohlavostí.",
+          "West Haven si oddechl. Tom dnes už snad nikoho nepůjde zachraňovat pěstmi.",
+          "Stájník zapsal klid a přísahá, že tentokrát to není lež.",
+          "Tom odpočívá. Zítřek bude mít dost práce, až ho zase pustí na nohy.",
+          "Tom spí a stáje poprvé za celý den nepůsobí uraženě.",
+          "Noční poznámka tvrdí, že Tom je v klidu. Všichni doufají, že to vydrží.",
+          "Tom odpočívá tak tvrdě, jako by ho spánek konečně přemohl silou.",
+          "U ohně zbylo ticho, pár stop v prachu a Tom konečně mimo provoz.",
+          "West Haven má chvíli bez jeho tvrdohlavosti. Je to zvláštní pocit.",
+          "Tom spí. Nikdo ho teď nemůže přesvědčit k dobrému ani špatnému nápadu.",
+          "Stájník zavřel dveře a poprvé se nebál, že Tom hned vyjde zpátky.",
+          "Thomas Mercer odpočívá. Koně to berou jako zasloužené vítězství.",
+          "Tom to zalomil a město si užívá podezřele pohodlné ticho.",
+          "Noční klid má dnes boty od bláta a jméno Thomas Mercer."
+        ]
+      },
+      violet: {
+        displayName: "Violet Crowe",
+        breathingVerb: "dýchala",
+        reportPlaceholder: "Co Violet dnes neřekla nahlas a kde usnula, když město ztichlo?",
+        wakeTitle: "Violet je vzhůru",
+        sleepTitle: "Violet spí",
+        color: 8990303,
+        footer: "Noční zápis • West Haven",
+        wakeMessages: [
+          "Violet otevřela oči a místnost se tvářila klidněji, než měla.",
+          "Noční služba hlásí, že Violet je vzhůru. Nikdo si není jistý, kdo si toho všiml první.",
+          "Violet se probudila bez hluku. Přesto se zdálo, že všechna tajemství udělala krok zpátky.",
+          "West Haven má další důvod mluvit opatrně. Violet nespí.",
+          "Na tváři měla klid, který nepůsobil jako odpočinek, ale jako plán.",
+          "Violet je vzhůru. Úsměvy ve městě budou dnes muset být přesnější.",
+          "Když otevřela oči, ticho nezmizelo. Jen se stalo ostřejším.",
+          "Zápis uvádí probuzení. Neuvádí, proč se zapisovateli nechtělo zvednout pohled.",
+          "Violet se vrátila do dne jako stín, který ví, kam dopadne světlo.",
+          "Místnost zůstala stejná, ale lidé v ní najednou působili čitelněji.",
+          "Violet je vzhůru a každé nevyřčené slovo v místnosti působí hlasitěji.",
+          "Noční služba zahlédla pohyb. Violet otevřela oči a klid změnil tvar.",
+          "Violet se probrala tiše, jako by i ráno mělo umět držet jazyk za zuby.",
+          "West Haven si uhladil límec. Violet nespí.",
+          "Když Violet vstala, světlo v místnosti působilo opatrněji.",
+          "Zápis uvádí probuzení, ale neuvádí ten pocit, že už ví všechno.",
+          "Violet otevřela oči a někdo poblíž se rozhodl nelhat zbytečně nahlas.",
+          "Ticho kolem ní nebylo prázdné. Bylo přesné.",
+          "Violet je vzhůru a město najednou vypadá jako špatně zahraná partie.",
+          "Na stole zůstal stín její ruky. West Haven má další důvod být zdvořilý."
+        ],
+        sleepMessages: [
+          "Violet spí a West Haven se tváří, že to nic neznamená.",
+          "Noční služba zapsala klid. U Violet to slovo nikdy nepůsobí úplně nevinně.",
+          "Violet zavřela oči. Někteří lidé přesto dál hlídají, co říkají.",
+          "Město na chvíli získalo sametové ticho. Nikdo se ho neodvážil pokazit.",
+          "Violet odpočívá. Její klid působí upraveněji než pravda.",
+          "Lampa pohasla a místnost změkla. Violet spí.",
+          "West Haven má přestávku od jejího pohledu. Ne od věcí, které už viděla.",
+          "Violet spí tak tiše, že to skoro vypadá jako další způsob, jak poslouchat.",
+          "Noční zápis končí krátce: Violet odpočívá. Zbytek zůstává nevyřčený.",
+          "Dveře se zavřely a ticho po Violet zůstalo v místnosti ještě chvíli stát.",
+          "Violet odpočívá a město se učí dýchat tak, aby to nepůsobilo provinile.",
+          "Noční zápis je krátký, ale elegantní: Violet spí.",
+          "Violet zavřela oči. Některé pohledy přesto zůstaly sklopené.",
+          "West Haven má chvíli bez jejího klidu. Přesto se nikomu nechce mluvit moc nahlas.",
+          "Lampa pohasla a všechno v místnosti působilo upraveněji, než předtím.",
+          "Violet spí. Pravda v okolí se na chvíli přestala hýbat.",
+          "Noční služba zapsala odpočinek a radši nepřidala vlastní názor.",
+          "Violet odpočívá tak tiše, že to působí skoro jako varování.",
+          "Město se tváří klidně. U Violet se ale klid nikdy nečte snadno.",
+          "Dnešní noc má měkký hlas. Violet spí."
+        ]
+      }
+    };
     let activeCharacterId = null;
+    let sleepReportResolver = null;
+    let timerIntervalId = null;
+
+    const pickRandom = (items) => items[Math.floor(Math.random() * items.length)];
+
+    const getWakeTimerKey = (characterId) => `westHavenWakeStartedAt:${characterId}`;
+
+    const startWakeTimer = (characterId) => {
+      localStorage.setItem(getWakeTimerKey(characterId), String(Date.now()));
+    };
+
+    const stopWakeTimer = (characterId) => {
+      const key = getWakeTimerKey(characterId);
+      const startedAt = Number(localStorage.getItem(key));
+      localStorage.removeItem(key);
+      return Number.isFinite(startedAt) && startedAt > 0 ? Date.now() - startedAt : null;
+    };
+
+    const getWakeDuration = (characterId) => {
+      const startedAt = Number(localStorage.getItem(getWakeTimerKey(characterId)));
+      return Number.isFinite(startedAt) && startedAt > 0 ? Date.now() - startedAt : null;
+    };
+
+    const formatDuration = (durationMs) => {
+      if (!durationMs) return "čas nebyl zaznamenán";
+
+      const totalMinutes = Math.max(1, Math.floor(durationMs / 60000));
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      const parts = [];
+
+      if (hours > 0) parts.push(`${hours}h`);
+      if (minutes > 0 || hours === 0) parts.push(`${minutes}min`);
+
+      return parts.join(" ");
+    };
+
+    const updateCharacterTimer = () => {
+      const profile = characterActionProfiles[activeCharacterId];
+      const duration = getWakeDuration(activeCharacterId);
+
+      if (!profile || !duration) {
+        refs.characterTimer.textContent = "Dýchá: nezaznamenáno";
+        return;
+      }
+
+      refs.characterTimer.textContent = `Dýchá: ${formatDuration(duration)}`;
+    };
+
+    const startTimerDisplay = () => {
+      clearInterval(timerIntervalId);
+      updateCharacterTimer();
+      timerIntervalId = setInterval(updateCharacterTimer, 1000);
+    };
+
+    const closeSleepReportModal = (value) => {
+      refs.sleepReportModal.classList.remove("is-visible");
+      refs.sleepReportModal.setAttribute("aria-hidden", "true");
+
+      if (sleepReportResolver) {
+        sleepReportResolver(value);
+        sleepReportResolver = null;
+      }
+    };
+
+    const requestSleepReport = (profile) => {
+      refs.sleepReportTitle.textContent = `Noční report: ${profile.displayName}`;
+      refs.sleepReportQuestion.textContent = "Jaký byl tvůj dnešní den a kde si dneska usnul/a?";
+      refs.sleepReportTimer.textContent = `Dnes zatím ${profile.breathingVerb}: ${formatDuration(getWakeDuration(activeCharacterId))}`;
+      refs.sleepReportInput.placeholder = profile.reportPlaceholder;
+      refs.sleepReportInput.value = "";
+      refs.sleepReportModal.classList.add("is-visible");
+      refs.sleepReportModal.setAttribute("aria-hidden", "false");
+
+      setTimeout(() => refs.sleepReportInput.focus(), 0);
+
+      return new Promise((resolve) => {
+        sleepReportResolver = resolve;
+      });
+    };
+
+    const buildWakeEmbed = (profile, message) => ({
+      title: profile.wakeTitle,
+      description: `> ${message}`,
+      color: profile.color,
+      author: {
+        name: "West Haven Morning Notice"
+      },
+      footer: {
+        text: `${profile.footer} • timer spuštěn`
+      },
+      timestamp: new Date().toISOString()
+    });
+
+    const sanitizeReportText = (text) => (
+      (text || "Bez zápisu.").replaceAll("```", "'''").slice(0, 900)
+    );
+
+    const buildSleepEmbed = (profile, message, reportText, durationText) => {
+      const cleanReportText = sanitizeReportText(reportText);
+
+      return {
+        title: `Night Report • ${profile.displayName}`,
+        description: [
+          `> ${message}`,
+          "",
+          "**Night report podklad**",
+          "```",
+          cleanReportText,
+          "```",
+          `**Dnes ${profile.breathingVerb}:** \`${durationText}\``
+        ].join("\n"),
+        color: profile.color,
+        author: {
+          name: "West Haven Night Office"
+        },
+        footer: {
+          text: `${profile.footer} • report uzavřen`
+        },
+        timestamp: new Date().toISOString()
+      };
+    };
+
+    const sendCharacterWebhook = async (type, reportText = "") => {
+      const character = characters.find((item) => item.id === activeCharacterId);
+      const profile = characterActionProfiles[activeCharacterId];
+      if (!character || !profile) return;
+
+      const message = pickRandom(type === "wake" ? profile.wakeMessages : profile.sleepMessages);
+      const durationText = type === "sleep" ? formatDuration(stopWakeTimer(activeCharacterId)) : "";
+      if (type === "sleep") updateCharacterTimer();
+      const embed = type === "wake"
+        ? buildWakeEmbed(profile, message)
+        : buildSleepEmbed(profile, message, reportText, durationText);
+      const payload = {
+        username: "West Haven",
+        embeds: [embed]
+      };
+      const body = new FormData();
+      body.append("payload_json", JSON.stringify(payload));
+
+      refs.characterActionStatus.textContent = "Odesílám zprávu...";
+
+      try {
+        await fetch(webhookUrl, {
+          method: "POST",
+          mode: "no-cors",
+          body
+        });
+        refs.characterActionStatus.textContent = `Odesláno: ${message}`;
+      } catch (error) {
+        refs.characterActionStatus.textContent = "Zprávu se nepodařilo odeslat.";
+      }
+    };
 
     const setActiveTab = (tabId) => {
       tabButtons.forEach((button) => {
@@ -1598,9 +2230,33 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.quote.textContent = character.quote;
       refs.portrait.src = character.portrait;
       refs.portrait.alt = character.portraitAlt;
+      refs.characterActions.classList.add("is-visible");
+      refs.characterActionStatus.textContent = "";
+      startTimerDisplay();
     };
 
-    document.addEventListener("click", (event) => {
+    refs.sleepReportForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      closeSleepReportModal(refs.sleepReportInput.value.trim());
+    });
+
+    refs.sleepReportCancel.addEventListener("click", () => {
+      closeSleepReportModal(null);
+    });
+
+    refs.sleepReportModal.addEventListener("click", (event) => {
+      if (event.target === refs.sleepReportModal) {
+        closeSleepReportModal(null);
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && refs.sleepReportModal.classList.contains("is-visible")) {
+        closeSleepReportModal(null);
+      }
+    });
+
+    document.addEventListener("click", async (event) => {
       const characterCard = event.target.closest("[data-character-card]");
       if (characterCard) {
         showDetail(characterCard.dataset.characterCard);
@@ -1617,6 +2273,27 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       const tabButton = event.target.closest("[data-tab]");
       if (tabButton) {
         setActiveTab(tabButton.dataset.tab);
+        return;
+      }
+
+      if (event.target.closest("#wakeCharacterButton")) {
+        startWakeTimer(activeCharacterId);
+        updateCharacterTimer();
+        sendCharacterWebhook("wake");
+        return;
+      }
+
+      if (event.target.closest("#sleepCharacterButton")) {
+        const profile = characterActionProfiles[activeCharacterId];
+        if (!profile) return;
+
+        const reportText = await requestSleepReport(profile);
+        if (reportText === null) {
+          refs.characterActionStatus.textContent = "Noční report zrušen.";
+          return;
+        }
+
+        sendCharacterWebhook("sleep", reportText);
       }
     });
 
