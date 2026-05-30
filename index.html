@@ -2924,6 +2924,18 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
     const getWakeTimerKey = (characterId) => `westHavenWakeStartedAt:${characterId}`;
 
+    const getPragueDateKey = (timestamp = Date.now()) => {
+      const parts = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Europe/Prague",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).formatToParts(new Date(timestamp));
+      const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+
+      return `${values.year}-${values.month}-${values.day}`;
+    };
+
     const startWakeTimer = (characterId) => {
       const startedAt = Date.now();
       localStorage.setItem(getWakeTimerKey(characterId), String(startedAt));
@@ -2949,6 +2961,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         status: "asleep",
         wakeStartedAt: null,
         totalPlayedMs: 0,
+        dailyPlayedMs: 0,
+        dailyDate: getPragueDateKey(),
         level: 1,
         updatedAt: null
       }
@@ -3390,7 +3404,10 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       const sleepDurationMs = type === "sleep" ? stopWakeTimer(activeCharacterId) : null;
       const durationText = type === "sleep" ? formatDuration(sleepDurationMs) : "";
       if (type === "sleep") {
-        const previousTotal = Number(getCharacterState(activeCharacterId).totalPlayedMs || 0);
+        const state = getCharacterState(activeCharacterId);
+        const currentDateKey = getPragueDateKey();
+        const previousTotal = Number(state.totalPlayedMs || 0);
+        const previousDaily = state.dailyDate === currentDateKey ? Number(state.dailyPlayedMs || 0) : 0;
         const previousLevel = getLevelForTotal(previousTotal);
         const newTotal = previousTotal + (sleepDurationMs || 0);
         const newLevel = getLevelForTotal(newTotal);
@@ -3398,6 +3415,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           status: "asleep",
           wakeStartedAt: null,
           totalPlayedMs: newTotal,
+          dailyPlayedMs: previousDaily + (sleepDurationMs || 0),
+          dailyDate: currentDateKey,
           level: newLevel
         });
         if (newLevel > previousLevel) {
@@ -3879,7 +3898,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         const startedAt = startWakeTimer(activeCharacterId);
         await setRemoteCharacterState(activeCharacterId, {
           status: "awake",
-          wakeStartedAt: startedAt
+          wakeStartedAt: startedAt,
+          dailyDate: getPragueDateKey(startedAt)
         });
         updateCharacterTimer();
         sendCharacterAlert(activeCharacterId, "wake");
