@@ -343,7 +343,7 @@
     .time-ledger {
       position: relative;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
       gap: 10px;
       margin-top: 18px;
     }
@@ -351,12 +351,14 @@
     .time-ledger-item {
       position: relative;
       overflow: hidden;
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
       padding: 11px 12px;
       border: 1px solid rgba(169, 120, 57, 0.14);
       border-radius: var(--radius-md);
-      background:
-        linear-gradient(135deg, rgba(143, 31, 45, 0.11), transparent 46%),
-        rgba(8, 8, 7, 0.28);
+      background: rgba(8, 8, 7, 0.28);
       transition:
         transform var(--ease),
         border-color var(--ease),
@@ -389,73 +391,40 @@
       transform: translateX(80%);
     }
 
-    .time-ledger-item.is-level-2,
-    .time-ledger-item.is-level-3 {
-      border-color: rgba(67, 194, 121, 0.2);
-      background:
-        linear-gradient(135deg, rgba(67, 194, 121, 0.11), transparent 48%),
-        rgba(8, 8, 7, 0.3);
-    }
-
-    .time-ledger-item.is-level-4,
-    .time-ledger-item.is-level-5,
-    .time-ledger-item.is-level-6 {
-      border-color: rgba(169, 120, 57, 0.28);
-      background:
-        linear-gradient(135deg, rgba(169, 120, 57, 0.14), transparent 48%),
-        rgba(8, 8, 7, 0.31);
-    }
-
-    .time-ledger-item.is-level-7,
-    .time-ledger-item.is-level-8,
-    .time-ledger-item.is-level-9 {
-      border-color: rgba(113, 135, 190, 0.3);
-      background:
-        linear-gradient(135deg, rgba(113, 135, 190, 0.14), transparent 48%),
-        rgba(8, 8, 7, 0.31);
-    }
-
-    .time-ledger-item.is-level-10 {
-      border-color: rgba(220, 188, 112, 0.46);
-      background:
-        linear-gradient(135deg, rgba(220, 188, 112, 0.18), transparent 48%),
-        rgba(8, 8, 7, 0.33);
-      box-shadow: inset 0 0 28px rgba(220, 188, 112, 0.08);
-    }
-
     .time-ledger-name {
       margin: 0 0 6px;
       color: #ead9bb;
-      font-size: 0.78rem;
+      font-size: 0.72rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .time-ledger-value {
       margin: 0;
       color: #fff0cf;
       font-family: Georgia, "Times New Roman", serif;
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       line-height: 1;
     }
 
-    .time-ledger-progress {
-      position: relative;
-      height: 4px;
-      margin-top: 10px;
+    .time-ledger-avatar {
+      width: 42px;
+      height: 42px;
       overflow: hidden;
+      border: 1px solid rgba(255, 238, 196, 0.52);
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.07);
+      background: rgba(8, 8, 7, 0.62);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.36);
     }
 
-    .time-ledger-progress span {
-      display: block;
-      width: var(--ledger-progress, 0%);
+    .time-ledger-avatar img {
+      width: 100%;
       height: 100%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, rgba(143, 31, 45, 0.9), rgba(169, 120, 57, 0.95));
-      box-shadow: 0 0 16px rgba(169, 120, 57, 0.28);
-      transition: width 700ms var(--ease);
+      display: block;
+      object-fit: cover;
     }
 
     .roster-card {
@@ -3023,17 +2992,6 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       return level;
     };
 
-    const getLevelProgress = (totalPlayedMs) => {
-      const currentLevel = getLevelForTotal(totalPlayedMs);
-      const currentThreshold = levelThresholds[currentLevel - 1] || 0;
-      const nextThreshold = levelThresholds[currentLevel];
-
-      if (!nextThreshold) return 100;
-
-      const progress = ((totalPlayedMs - currentThreshold) / (nextThreshold - currentThreshold)) * 100;
-      return Math.max(2, Math.min(100, progress));
-    };
-
     const getLevelMessage = (characterName, level) => (
       `${characterName} získává novou úroveň. Tohle není náhoda ani krátká chvíle slávy, ale stopa dlouhých nocí, probuzení a rozhodnutí, která se ve West Havenu počítají.`
     );
@@ -3155,13 +3113,24 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       characters.forEach((character, index) => {
         let item = refs.timeLedger.querySelector(`[data-ledger-character="${character.id}"]`);
         let value = item?.querySelector("[data-ledger-value]");
-        let progressFill = item?.querySelector("[data-ledger-progress-fill]");
+        let avatarImage = item?.querySelector("[data-ledger-avatar-image]");
 
         if (!item) {
           item = document.createElement("article");
           item.className = "time-ledger-item";
           item.dataset.ledgerCharacter = character.id;
           item.style.setProperty("--ledger-index", String(index));
+
+          const avatar = document.createElement("span");
+          avatar.className = "time-ledger-avatar";
+
+          avatarImage = document.createElement("img");
+          avatarImage.dataset.ledgerAvatarImage = character.id;
+          avatarImage.src = character.portrait;
+          avatarImage.alt = character.portraitAlt;
+          avatar.appendChild(avatarImage);
+
+          const content = document.createElement("div");
 
           const name = document.createElement("p");
           name.className = "time-ledger-name";
@@ -3171,36 +3140,18 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           value.className = "time-ledger-value";
           value.dataset.ledgerValue = character.id;
 
-          const progress = document.createElement("div");
-          progress.className = "time-ledger-progress";
-          progress.setAttribute("aria-hidden", "true");
-
-          progressFill = document.createElement("span");
-          progressFill.dataset.ledgerProgressFill = character.id;
-          progress.appendChild(progressFill);
-
-          item.append(name, value, progress);
+          content.append(name, value);
+          item.append(avatar, content);
           refs.timeLedger.appendChild(item);
         }
 
+        const discordPlayer = characterDiscordPlayers[character.id];
         const totalPlayedMs = getTotalPlayedMs(character.id);
-        const level = getLevelForTotal(totalPlayedMs);
-        value.textContent = `${formatLedgerDuration(totalPlayedMs)} | LVL ${level}`;
-        progressFill.style.setProperty("--ledger-progress", `${getLevelProgress(totalPlayedMs)}%`);
-
-        item.classList.remove(
-          "is-level-1",
-          "is-level-2",
-          "is-level-3",
-          "is-level-4",
-          "is-level-5",
-          "is-level-6",
-          "is-level-7",
-          "is-level-8",
-          "is-level-9",
-          "is-level-10"
-        );
-        item.classList.add(`is-level-${Math.min(level, 10)}`);
+        value.textContent = formatLedgerDuration(totalPlayedMs);
+        avatarImage.src = discordPlayer?.avatarUrl || character.portrait;
+        avatarImage.alt = discordPlayer
+          ? `Discord profil ${discordPlayer.displayName}`
+          : character.portraitAlt;
       });
     };
 
