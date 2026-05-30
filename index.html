@@ -541,7 +541,7 @@
       transform: translateX(45%);
     }
 
-    .roster-card img {
+    .roster-card > img {
       width: 100%;
       height: 100%;
       min-height: 380px;
@@ -554,10 +554,38 @@
         filter var(--ease);
     }
 
-    .roster-card:hover img,
-    .roster-card:focus-visible img {
+    .roster-card:hover > img,
+    .roster-card:focus-visible > img {
       transform: scale(1.065);
       filter: contrast(1.14) saturate(1.02);
+    }
+
+    .roster-player-avatar {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 5;
+      width: 48px;
+      height: 48px;
+      display: none;
+      border: 2px solid rgba(255, 238, 196, 0.82);
+      border-radius: 999px;
+      background: rgba(8, 8, 7, 0.62);
+      box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.46),
+        0 0 18px rgba(169, 120, 57, 0.22);
+      overflow: hidden;
+    }
+
+    .roster-player-avatar.is-visible {
+      display: block;
+    }
+
+    .roster-player-avatar img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
     }
 
     .roster-card::after {
@@ -1932,7 +1960,7 @@
       }
 
       .roster-card,
-      .roster-card img {
+      .roster-card > img {
         min-height: 330px;
       }
 
@@ -2865,6 +2893,15 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     let playerProfile = readPlayerProfile();
     let currentPlayerCharacterId = null;
     let pendingPlayerCharacterId = null;
+    let discordPlayers = [];
+    const characterDiscordPlayers = {};
+    const characterDiscordAliases = {
+      zeke: ["ezekiel", "zeke"],
+      silas: ["silas", "sil"],
+      "thomas-mercer": ["thomas", "tom", "mercer"],
+      violet: ["violet"],
+      william: ["william", "hart"]
+    };
 
     const hour = 60 * 60 * 1000;
     const levelThresholds = [
@@ -2886,6 +2923,45 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     ];
 
     const pickRandom = (items) => items[Math.floor(Math.random() * items.length)];
+
+    const normalizeText = (value) => (
+      String(value || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+    );
+
+    const syncDiscordPlayersToCharacters = () => {
+      Object.keys(characterDiscordPlayers).forEach((key) => {
+        delete characterDiscordPlayers[key];
+      });
+
+      characters.forEach((character) => {
+        const aliases = characterDiscordAliases[character.id] || [character.listName];
+        const player = discordPlayers.find((discordPlayer) => {
+          const displayName = normalizeText(discordPlayer.displayName);
+          return aliases.some((alias) => displayName.includes(normalizeText(alias)));
+        });
+
+        if (player) {
+          characterDiscordPlayers[character.id] = player;
+        }
+      });
+    };
+
+    const loadDiscordPlayers = async () => {
+      try {
+        const response = await fetch("/api/discord-members");
+        if (!response.ok) return;
+
+        const data = await response.json();
+        discordPlayers = Array.isArray(data.players) ? data.players : [];
+        syncDiscordPlayersToCharacters();
+        updateRosterStates();
+      } catch (error) {
+        console.warn("Discord players could not be loaded:", error);
+      }
+    };
 
     const getWakeTimerKey = (characterId) => `westHavenWakeStartedAt:${characterId}`;
 
@@ -3148,13 +3224,22 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         const status = card.querySelector("[data-roster-status]");
         const statusText = card.querySelector("[data-roster-status-text]");
         const timer = card.querySelector("[data-roster-timer]");
+        const playerAvatar = card.querySelector("[data-roster-player-avatar]");
+        const playerAvatarImage = card.querySelector("[data-roster-player-avatar-image]");
         const isPlayerCharacter = character.id === currentPlayerCharacterId;
         const isLocked = Boolean(currentPlayerCharacterId && !isPlayerCharacter);
+        const discordPlayer = characterDiscordPlayers[character.id];
 
         card.classList.toggle("is-player-character", isPlayerCharacter);
         card.classList.toggle("is-locked", isLocked);
         card.disabled = isLocked;
         card.setAttribute("aria-disabled", String(isLocked));
+        playerAvatar.classList.toggle("is-visible", Boolean(discordPlayer));
+        if (discordPlayer) {
+          playerAvatar.title = `Hraje: ${discordPlayer.displayName}`;
+          playerAvatarImage.src = discordPlayer.avatarUrl;
+          playerAvatarImage.alt = `Discord profil ${discordPlayer.displayName}`;
+        }
         status.classList.toggle("is-awake", isAwake);
         status.classList.toggle("is-asleep", !isAwake);
         statusText.textContent = `Stav: ${isAwake ? "Vzhůru" : "Spí"}`;
@@ -3432,6 +3517,16 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         image.src = character.portrait;
         image.alt = character.portraitAlt;
 
+        const playerAvatar = document.createElement("span");
+        playerAvatar.className = "roster-player-avatar";
+        playerAvatar.dataset.rosterPlayerAvatar = character.id;
+
+        const playerAvatarImage = document.createElement("img");
+        playerAvatarImage.src = "";
+        playerAvatarImage.alt = "";
+        playerAvatarImage.dataset.rosterPlayerAvatarImage = character.id;
+        playerAvatar.appendChild(playerAvatarImage);
+
         const name = document.createElement("span");
         name.className = "roster-name";
         name.textContent = character.listName;
@@ -3455,7 +3550,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
         status.appendChild(statusText);
 
-        button.append(image, name, role, liveTimer, status);
+        button.append(image, playerAvatar, name, role, liveTimer, status);
 
         rosterGrid.appendChild(button);
       });
@@ -3943,6 +4038,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     renderDust();
     applyAlertVolume();
     startRosterTimerDisplay();
+    loadDiscordPlayers();
 
     const initialCharacterId = window.location.hash.replace("#", "");
     if (initialCharacterId) {
