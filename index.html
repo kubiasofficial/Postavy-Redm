@@ -41,10 +41,14 @@
       background:
         linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(rgba(9, 9, 8, 0.78), rgba(9, 9, 8, 0.88)),
+        url("west-haven-1899-banner.png"),
         radial-gradient(circle at top left, rgba(143, 31, 45, 0.18), transparent 28%),
         radial-gradient(circle at 82% 18%, rgba(169, 120, 57, 0.13), transparent 26%),
         linear-gradient(145deg, var(--bg-1), var(--bg-2) 44%, var(--bg-3));
-      background-size: 44px 44px, 44px 44px, auto, auto, auto;
+      background-size: 44px 44px, 44px 44px, auto, cover, auto, auto, auto;
+      background-position: center, center, center, center, center, center, center;
+      background-attachment: fixed, fixed, fixed, fixed, fixed, fixed, fixed;
     }
 
     body {
@@ -281,12 +285,7 @@
     .home-lore {
       position: relative;
       z-index: 1;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 26px;
-      align-items: end;
       margin-top: 28px;
-      min-height: 170px;
       padding: 26px 28px;
       border: 1px solid rgba(169, 120, 57, 0.14);
       border-radius: var(--radius-lg);
@@ -316,19 +315,19 @@
     .home-lore-text {
       position: relative;
       margin: 0;
-      max-width: 720px;
       color: #e8d8ba;
       font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.35rem, 2vw, 2.2rem);
-      line-height: 1.25;
+      font-size: clamp(1.25rem, 2vw, 1.9rem);
+      line-height: 1.15;
       text-shadow: 0 8px 26px rgba(0, 0, 0, 0.58);
     }
 
     .home-lore-meta {
       position: relative;
-      display: grid;
-      gap: 8px;
-      justify-items: end;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      margin-top: 18px;
       color: var(--gold);
       font-size: 0.72rem;
       letter-spacing: 0.16em;
@@ -339,6 +338,124 @@
       padding-top: 8px;
       border-top: 1px solid rgba(169, 120, 57, 0.32);
       white-space: nowrap;
+    }
+
+    .time-ledger {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .time-ledger-item {
+      position: relative;
+      overflow: hidden;
+      padding: 11px 12px;
+      border: 1px solid rgba(169, 120, 57, 0.14);
+      border-radius: var(--radius-md);
+      background:
+        linear-gradient(135deg, rgba(143, 31, 45, 0.11), transparent 46%),
+        rgba(8, 8, 7, 0.28);
+      transition:
+        transform var(--ease),
+        border-color var(--ease),
+        box-shadow var(--ease);
+      animation: ledger-rise 560ms var(--ease) both;
+      animation-delay: calc(var(--ledger-index, 0) * 70ms + 120ms);
+    }
+
+    .time-ledger-item::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      background: linear-gradient(115deg, transparent 30%, rgba(255, 238, 196, 0.12), transparent 62%);
+      transform: translateX(-80%);
+      transition:
+        opacity var(--ease),
+        transform 900ms ease;
+    }
+
+    .time-ledger-item:hover {
+      transform: translateY(-3px);
+      border-color: rgba(169, 120, 57, 0.34);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.24);
+    }
+
+    .time-ledger-item:hover::after {
+      opacity: 1;
+      transform: translateX(80%);
+    }
+
+    .time-ledger-item.is-level-2,
+    .time-ledger-item.is-level-3 {
+      border-color: rgba(67, 194, 121, 0.2);
+      background:
+        linear-gradient(135deg, rgba(67, 194, 121, 0.11), transparent 48%),
+        rgba(8, 8, 7, 0.3);
+    }
+
+    .time-ledger-item.is-level-4,
+    .time-ledger-item.is-level-5,
+    .time-ledger-item.is-level-6 {
+      border-color: rgba(169, 120, 57, 0.28);
+      background:
+        linear-gradient(135deg, rgba(169, 120, 57, 0.14), transparent 48%),
+        rgba(8, 8, 7, 0.31);
+    }
+
+    .time-ledger-item.is-level-7,
+    .time-ledger-item.is-level-8,
+    .time-ledger-item.is-level-9 {
+      border-color: rgba(113, 135, 190, 0.3);
+      background:
+        linear-gradient(135deg, rgba(113, 135, 190, 0.14), transparent 48%),
+        rgba(8, 8, 7, 0.31);
+    }
+
+    .time-ledger-item.is-level-10 {
+      border-color: rgba(220, 188, 112, 0.46);
+      background:
+        linear-gradient(135deg, rgba(220, 188, 112, 0.18), transparent 48%),
+        rgba(8, 8, 7, 0.33);
+      box-shadow: inset 0 0 28px rgba(220, 188, 112, 0.08);
+    }
+
+    .time-ledger-name {
+      margin: 0 0 6px;
+      color: #ead9bb;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .time-ledger-value {
+      margin: 0;
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    .time-ledger-progress {
+      position: relative;
+      height: 4px;
+      margin-top: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .time-ledger-progress span {
+      display: block;
+      width: var(--ledger-progress, 0%);
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(143, 31, 45, 0.9), rgba(169, 120, 57, 0.95));
+      box-shadow: 0 0 16px rgba(169, 120, 57, 0.28);
+      transition: width 700ms var(--ease);
     }
 
     .roster-card {
@@ -376,6 +493,18 @@
         0 0 0 1px rgba(255, 225, 165, 0.12),
         0 0 38px rgba(169, 120, 57, 0.16);
       outline: none;
+    }
+
+    .roster-card.is-player-character {
+      border-color: rgba(255, 222, 154, 0.78);
+      box-shadow:
+        0 24px 54px rgba(0, 0, 0, 0.32),
+        0 0 0 1px rgba(255, 222, 154, 0.24),
+        0 0 34px rgba(169, 120, 57, 0.2);
+      animation:
+        card-enter 620ms var(--ease) both,
+        player-pulse 2.8s ease-in-out infinite;
+      animation-delay: calc(var(--card-index, 0) * 80ms + 160ms), 0s;
     }
 
     .roster-card::before {
@@ -433,7 +562,7 @@
       position: absolute;
       left: 16px;
       right: 16px;
-      bottom: 42px;
+      bottom: 86px;
       z-index: 3;
       font-family: Georgia, "Times New Roman", serif;
       font-size: clamp(1.25rem, 2vw, 1.7rem);
@@ -453,7 +582,7 @@
       position: absolute;
       left: 16px;
       right: 16px;
-      bottom: 16px;
+      bottom: 60px;
       z-index: 3;
       overflow: hidden;
       color: #d3bd93;
@@ -464,6 +593,75 @@
       white-space: nowrap;
       text-shadow: 0 3px 12px rgba(0, 0, 0, 0.86);
       opacity: 0.86;
+    }
+
+    .roster-status {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 12px;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-md);
+      background: rgba(8, 8, 7, 0.68);
+      color: #ead9bb;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      backdrop-filter: blur(6px);
+    }
+
+    .roster-status::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      flex: 0 0 auto;
+      border-radius: 999px;
+      background: #7b6c5a;
+      box-shadow: 0 0 0 3px rgba(123, 108, 90, 0.14);
+    }
+
+    .roster-status.is-awake::before {
+      background: #43c279;
+      box-shadow: 0 0 0 3px rgba(67, 194, 121, 0.15), 0 0 14px rgba(67, 194, 121, 0.28);
+    }
+
+    .roster-status.is-asleep::before {
+      background: #a9424d;
+      box-shadow: 0 0 0 3px rgba(169, 66, 77, 0.14);
+    }
+
+    .roster-status-text {
+      flex: 1 1 auto;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .roster-live-timer {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 4;
+      display: none;
+      padding: 7px 9px;
+      border: 1px solid rgba(67, 194, 121, 0.22);
+      border-radius: var(--radius-md);
+      background: rgba(8, 8, 7, 0.62);
+      color: #c9f2d9;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      backdrop-filter: blur(6px);
+    }
+
+    .roster-live-timer.is-visible {
+      display: block;
     }
 
     .content,
@@ -886,6 +1084,492 @@
       text-transform: uppercase;
     }
 
+    .character-alert {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 40;
+      width: min(380px, calc(100vw - 32px));
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr);
+      gap: 14px;
+      align-items: center;
+      padding: 12px 14px 12px 12px;
+      border: 1px solid rgba(169, 120, 57, 0.28);
+      border-left: 4px solid #43c279;
+      border-radius: var(--radius-lg);
+      background:
+        linear-gradient(145deg, rgba(31, 27, 23, 0.94), rgba(9, 9, 8, 0.96)),
+        rgba(8, 8, 7, 0.92);
+      box-shadow: 0 22px 70px rgba(0, 0, 0, 0.54);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate3d(18px, -10px, 0) scale(0.98);
+      transition:
+        opacity 260ms var(--ease),
+        transform 260ms var(--ease);
+    }
+
+    .character-alert.is-visible {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    .character-alert.is-sleep {
+      border-left-color: #a9424d;
+    }
+
+    .character-alert img {
+      width: 72px;
+      height: 72px;
+      display: block;
+      object-fit: cover;
+      object-position: center top;
+      border: 1px solid rgba(169, 120, 57, 0.26);
+      border-radius: var(--radius-md);
+    }
+
+    .character-alert-kicker {
+      margin: 0 0 5px;
+      color: var(--gold);
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .character-alert-title {
+      margin: 0;
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.25rem;
+      line-height: 1.12;
+      text-transform: uppercase;
+    }
+
+    .character-alert-text {
+      margin: 6px 0 0;
+      color: #c8b99d;
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    .other-level-alert {
+      position: fixed;
+      top: 24px;
+      left: 24px;
+      z-index: 42;
+      width: min(360px, calc(100vw - 32px));
+      display: grid;
+      grid-template-columns: 64px minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid rgba(169, 120, 57, 0.28);
+      border-left: 4px solid rgba(220, 188, 112, 0.9);
+      border-radius: var(--radius-lg);
+      background: linear-gradient(145deg, rgba(31, 27, 23, 0.95), rgba(9, 9, 8, 0.97));
+      box-shadow: 0 22px 70px rgba(0, 0, 0, 0.54);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate3d(-18px, -10px, 0) scale(0.98);
+      transition:
+        opacity 260ms var(--ease),
+        transform 260ms var(--ease);
+    }
+
+    .other-level-alert.is-visible {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    .other-level-alert img {
+      width: 64px;
+      height: 64px;
+      display: block;
+      object-fit: cover;
+      object-position: center top;
+      border: 1px solid rgba(169, 120, 57, 0.28);
+      border-radius: var(--radius-md);
+    }
+
+    .other-level-kicker {
+      margin: 0 0 5px;
+      color: var(--gold);
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .other-level-title {
+      margin: 0;
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.08rem;
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+
+    .other-level-text {
+      margin: 5px 0 0;
+      color: #c8b99d;
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+
+    .sound-panel {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 35;
+      display: grid;
+      justify-items: end;
+      gap: 8px;
+    }
+
+    .sound-toggle {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(169, 120, 57, 0.28);
+      border-radius: 999px;
+      background: rgba(8, 8, 7, 0.72);
+      color: #fff0cf;
+      cursor: pointer;
+      font-size: 1.1rem;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.34);
+      backdrop-filter: blur(7px);
+    }
+
+    .sound-controls {
+      display: none;
+      width: min(250px, calc(100vw - 32px));
+      padding: 12px;
+      border: 1px solid rgba(169, 120, 57, 0.24);
+      border-radius: var(--radius-lg);
+      background: rgba(12, 11, 10, 0.92);
+      box-shadow: 0 16px 42px rgba(0, 0, 0, 0.42);
+      backdrop-filter: blur(8px);
+    }
+
+    .sound-panel.is-open .sound-controls {
+      display: grid;
+      gap: 10px;
+    }
+
+    .sound-row {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      color: #ead9bb;
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .sound-volume {
+      width: 100%;
+      accent-color: var(--gold);
+    }
+
+    .sound-test-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .sound-test {
+      min-height: 34px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff8e8;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .sound-test:hover,
+    .sound-test:focus-visible,
+    .sound-toggle:hover,
+    .sound-toggle:focus-visible {
+      filter: brightness(1.12);
+      outline: none;
+    }
+
+    .level-alert {
+      position: fixed;
+      inset: 0;
+      z-index: 55;
+      display: none;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 50% 30%, rgba(169, 120, 57, 0.2), transparent 32%),
+        rgba(4, 4, 3, 0.82);
+      backdrop-filter: blur(8px);
+    }
+
+    .level-alert.is-visible {
+      display: grid;
+    }
+
+    .level-alert-card {
+      position: relative;
+      width: min(720px, 100%);
+      display: grid;
+      grid-template-columns: minmax(150px, 220px) minmax(0, 1fr);
+      gap: 24px;
+      align-items: center;
+      padding: 24px;
+      border: 1px solid rgba(169, 120, 57, 0.44);
+      border-radius: var(--radius-xl);
+      background:
+        linear-gradient(180deg, rgba(255, 232, 184, 0.1), transparent 28%),
+        linear-gradient(145deg, rgba(34, 29, 24, 0.98), rgba(10, 10, 9, 0.99));
+      box-shadow: 0 34px 110px rgba(0, 0, 0, 0.72), 0 0 80px rgba(169, 120, 57, 0.16);
+      animation: view-rise 320ms var(--ease) both;
+    }
+
+    .level-alert-portrait {
+      overflow: hidden;
+      aspect-ratio: 4 / 5;
+      border: 1px solid rgba(169, 120, 57, 0.38);
+      border-radius: var(--radius-lg);
+      background: #15110e;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    }
+
+    .level-alert-x {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      background: rgba(7, 7, 6, 0.62);
+      color: #fff8e8;
+      cursor: pointer;
+      font: inherit;
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .level-alert-portrait img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: center top;
+    }
+
+    .level-alert-kicker {
+      margin: 0 0 10px;
+      color: var(--gold);
+      font-size: 0.76rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .level-alert-title {
+      margin: 0;
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.1rem, 6vw, 4rem);
+      line-height: 0.95;
+      text-transform: uppercase;
+    }
+
+    .level-alert-level {
+      margin: 12px 0 0;
+      color: #ead9bb;
+      font-size: 1.1rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .level-alert-text {
+      margin: 18px 0 0;
+      color: #c8b99d;
+      line-height: 1.7;
+    }
+
+    .level-alert-close {
+      margin-top: 22px;
+      min-height: 42px;
+      padding: 10px 15px;
+      border: 1px solid rgba(169, 120, 57, 0.34);
+      border-radius: var(--radius-md);
+      background: rgba(143, 31, 45, 0.28);
+      color: #fff8e8;
+      cursor: pointer;
+      font: inherit;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .level-alert-close:hover,
+    .level-alert-close:focus-visible,
+    .level-alert-x:hover,
+    .level-alert-x:focus-visible {
+      filter: brightness(1.12);
+      outline: none;
+    }
+
+    .auth-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      display: none;
+      place-items: center;
+      padding: 20px;
+      background:
+        radial-gradient(circle at 50% 24%, rgba(169, 120, 57, 0.14), transparent 34%),
+        rgba(5, 5, 4, 0.84);
+      backdrop-filter: blur(9px);
+    }
+
+    .auth-modal.is-visible {
+      display: grid;
+    }
+
+    .auth-card {
+      width: min(620px, 100%);
+      padding: 24px;
+      border: 1px solid rgba(169, 120, 57, 0.36);
+      border-radius: var(--radius-xl);
+      background:
+        linear-gradient(180deg, rgba(255, 232, 184, 0.08), transparent 28%),
+        linear-gradient(145deg, rgba(34, 29, 24, 0.98), rgba(10, 10, 9, 0.99));
+      box-shadow: 0 34px 110px rgba(0, 0, 0, 0.72);
+      animation: view-rise 320ms var(--ease) both;
+    }
+
+    .auth-kicker {
+      margin: 0 0 10px;
+      color: var(--gold);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .auth-title {
+      margin: 0;
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.9rem, 5vw, 3.2rem);
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .auth-text {
+      margin: 14px 0 0;
+      color: #c8b99d;
+      line-height: 1.65;
+    }
+
+    .auth-form {
+      display: grid;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .auth-input {
+      width: 100%;
+      min-height: 48px;
+      padding: 11px 13px;
+      border: 1px solid rgba(169, 120, 57, 0.26);
+      border-radius: var(--radius-md);
+      background: rgba(8, 8, 7, 0.56);
+      color: #fff8e8;
+      font: inherit;
+      font-size: 1.25rem;
+      letter-spacing: 0.22em;
+      text-align: center;
+    }
+
+    .auth-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .auth-button {
+      min-height: 42px;
+      padding: 10px 14px;
+      border: 1px solid rgba(169, 120, 57, 0.3);
+      border-radius: var(--radius-md);
+      background: rgba(143, 31, 45, 0.28);
+      color: #fff8e8;
+      cursor: pointer;
+      font: inherit;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .auth-button.primary {
+      background: linear-gradient(145deg, rgba(143, 31, 45, 0.9), rgba(92, 22, 28, 0.94));
+    }
+
+    .auth-character-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .auth-character {
+      min-height: 180px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(169, 120, 57, 0.24);
+      border-radius: var(--radius-md);
+      background: #15110e;
+      color: #fff0cf;
+      cursor: pointer;
+      font: inherit;
+      text-align: left;
+    }
+
+    .auth-character img {
+      width: 100%;
+      height: 180px;
+      display: block;
+      object-fit: cover;
+      object-position: center top;
+      filter: brightness(0.76) contrast(1.08);
+    }
+
+    .auth-character span {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      z-index: 2;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1rem;
+      line-height: 1;
+      text-transform: uppercase;
+      text-shadow: 0 4px 16px rgba(0, 0, 0, 0.9);
+    }
+
+    .auth-error {
+      min-height: 20px;
+      margin: 10px 0 0;
+      color: #e88f98;
+      font-size: 0.86rem;
+      line-height: 1.4;
+    }
+
     .sleep-report-modal {
       position: fixed;
       inset: 0;
@@ -1032,6 +1716,33 @@
       to {
         opacity: 1;
         transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes player-pulse {
+      0%,
+      100% {
+        box-shadow:
+          0 24px 54px rgba(0, 0, 0, 0.32),
+          0 0 0 1px rgba(255, 222, 154, 0.22),
+          0 0 20px rgba(169, 120, 57, 0.16);
+      }
+      50% {
+        box-shadow:
+          0 30px 64px rgba(0, 0, 0, 0.42),
+          0 0 0 1px rgba(255, 222, 154, 0.46),
+          0 0 42px rgba(169, 120, 57, 0.32);
+      }
+    }
+
+    @keyframes ledger-rise {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
 
@@ -1258,6 +1969,27 @@
         min-height: 0;
       }
 
+      .level-alert-card {
+        grid-template-columns: 1fr;
+        max-height: calc(100vh - 32px);
+        overflow-y: auto;
+      }
+
+      .level-alert-portrait {
+        width: min(190px, 70vw);
+        justify-self: center;
+      }
+
+      .level-alert-title,
+      .level-alert-level,
+      .level-alert-text {
+        text-align: center;
+      }
+
+      .level-alert-close {
+        width: 100%;
+      }
+
       .tab-panel {
         padding: 22px 20px 24px;
       }
@@ -1297,11 +2029,13 @@
 
     <div class="roster-grid" id="rosterGrid"></div>
 
-    <section class="home-lore" aria-label="Atmosféra West Havenu">
-      <p class="home-lore-text">„Ve West Havenu nezůstane nikdo dlouho čistý.“</p>
+    <section class="home-lore" aria-label="Odehraný čas postav">
+      <p class="home-lore-text">Odehraný čas</p>
+      <div class="time-ledger" id="timeLedger"></div>
       <div class="home-lore-meta" aria-hidden="true">
         <span>West Haven</span>
         <span>1899</span>
+        <span>součet mezi probuzením a spánkem</span>
       </div>
     </section>
   </section>
@@ -1397,7 +2131,98 @@
     </form>
   </div>
 
-  <script>
+  <div class="character-alert" id="characterAlert" aria-live="polite" aria-hidden="true">
+    <img id="characterAlertImage" src="zeke.png" alt="">
+    <div>
+      <p class="character-alert-kicker" id="characterAlertKicker">West Haven Alert</p>
+      <h2 class="character-alert-title" id="characterAlertTitle"></h2>
+      <p class="character-alert-text" id="characterAlertText"></p>
+    </div>
+  </div>
+
+  <div class="other-level-alert" id="otherLevelAlert" aria-live="polite" aria-hidden="true">
+    <img id="otherLevelAlertImage" src="zeke.png" alt="">
+    <div>
+      <p class="other-level-kicker">Někdo získal úroveň</p>
+      <h2 class="other-level-title" id="otherLevelAlertTitle"></h2>
+      <p class="other-level-text" id="otherLevelAlertText"></p>
+    </div>
+  </div>
+
+  <audio id="alertOnlineAudio" src="alertonline.MP3" preload="auto"></audio>
+  <audio id="alertOfflineAudio" src="alertoffline.MP3" preload="auto"></audio>
+  <audio id="levelUpAudio" src="levelup.MP3" preload="auto"></audio>
+  <audio id="otherLevelAudio" src="nekdoup.MP3" preload="auto"></audio>
+
+  <div class="level-alert" id="levelAlert" aria-hidden="true">
+    <div class="level-alert-card">
+      <button class="level-alert-x" id="levelAlertX" type="button" aria-label="Zavřít level alert">&times;</button>
+      <div class="level-alert-portrait">
+        <img id="levelAlertImage" src="zeke.png" alt="">
+      </div>
+      <div>
+        <p class="level-alert-kicker">West Haven Advancement</p>
+        <h2 class="level-alert-title" id="levelAlertTitle"></h2>
+        <p class="level-alert-level" id="levelAlertLevel"></p>
+        <p class="level-alert-text" id="levelAlertText"></p>
+        <button class="level-alert-close" id="levelAlertClose" type="button">Zavřít</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sound-panel" id="soundPanel">
+    <div class="sound-controls" id="soundControls">
+      <label class="sound-row">
+        <span>Hlasitost</span>
+        <input class="sound-volume" id="soundVolume" type="range" min="0" max="100" value="70">
+      </label>
+      <div class="sound-test-row">
+        <button class="sound-test" id="testOnlineSound" type="button">Test online</button>
+        <button class="sound-test" id="testOfflineSound" type="button">Test offline</button>
+        <button class="sound-test" id="testLevelSound" type="button">Test level</button>
+      </div>
+    </div>
+    <button class="sound-toggle" id="soundToggle" type="button" aria-label="Nastavení zvuku">🔊</button>
+  </div>
+
+  <div class="auth-modal" id="authModal" aria-hidden="true">
+    <section class="auth-card" aria-labelledby="authTitle">
+      <p class="auth-kicker" id="authKicker">West Haven Login</p>
+      <h2 class="auth-title" id="authTitle"></h2>
+      <p class="auth-text" id="authText"></p>
+      <div id="authBody"></div>
+      <p class="auth-error" id="authError" aria-live="polite"></p>
+    </section>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+    import {
+      collection,
+      doc,
+      getFirestore,
+      limit,
+      onSnapshot,
+      orderBy,
+      query,
+      setDoc
+    } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBXUgRu0V3a2xQG1-r-pEXug5Vdj6nIJyE",
+      authDomain: "postavy-redm.firebaseapp.com",
+      projectId: "postavy-redm",
+      storageBucket: "postavy-redm.firebasestorage.app",
+      messagingSenderId: "639963767356",
+      appId: "1:639963767356:web:3d4090b049785150fc1939"
+    };
+
+    const firebaseApp = initializeApp(firebaseConfig);
+    const db = getFirestore(firebaseApp);
+    const characterStatesRef = collection(db, "characterStates");
+    const characterAlertsRef = collection(db, "characterAlerts");
+    const characterLevelAlertsRef = collection(db, "characterLevelAlerts");
+
     const characters = [
       {
         id: "zeke",
@@ -1686,6 +2511,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       personality: document.getElementById("personalityText"),
       portrait: document.getElementById("portraitImage"),
       quote: document.getElementById("characterQuote"),
+      timeLedger: document.getElementById("timeLedger"),
       characterActions: document.getElementById("characterActions"),
       characterTimer: document.getElementById("characterTimer"),
       characterActionStatus: document.getElementById("characterActionStatus"),
@@ -1695,7 +2521,39 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       sleepReportQuestion: document.getElementById("sleepReportQuestion"),
       sleepReportTimer: document.getElementById("sleepReportTimer"),
       sleepReportInput: document.getElementById("sleepReportInput"),
-      sleepReportCancel: document.getElementById("sleepReportCancel")
+      sleepReportCancel: document.getElementById("sleepReportCancel"),
+      characterAlert: document.getElementById("characterAlert"),
+      characterAlertImage: document.getElementById("characterAlertImage"),
+      characterAlertKicker: document.getElementById("characterAlertKicker"),
+      characterAlertTitle: document.getElementById("characterAlertTitle"),
+      characterAlertText: document.getElementById("characterAlertText"),
+      otherLevelAlert: document.getElementById("otherLevelAlert"),
+      otherLevelAlertImage: document.getElementById("otherLevelAlertImage"),
+      otherLevelAlertTitle: document.getElementById("otherLevelAlertTitle"),
+      otherLevelAlertText: document.getElementById("otherLevelAlertText"),
+      alertOnlineAudio: document.getElementById("alertOnlineAudio"),
+      alertOfflineAudio: document.getElementById("alertOfflineAudio"),
+      levelUpAudio: document.getElementById("levelUpAudio"),
+      otherLevelAudio: document.getElementById("otherLevelAudio"),
+      levelAlert: document.getElementById("levelAlert"),
+      levelAlertImage: document.getElementById("levelAlertImage"),
+      levelAlertTitle: document.getElementById("levelAlertTitle"),
+      levelAlertLevel: document.getElementById("levelAlertLevel"),
+      levelAlertText: document.getElementById("levelAlertText"),
+      levelAlertClose: document.getElementById("levelAlertClose"),
+      levelAlertX: document.getElementById("levelAlertX"),
+      soundPanel: document.getElementById("soundPanel"),
+      soundToggle: document.getElementById("soundToggle"),
+      soundVolume: document.getElementById("soundVolume"),
+      testOnlineSound: document.getElementById("testOnlineSound"),
+      testOfflineSound: document.getElementById("testOfflineSound"),
+      testLevelSound: document.getElementById("testLevelSound"),
+      authModal: document.getElementById("authModal"),
+      authKicker: document.getElementById("authKicker"),
+      authTitle: document.getElementById("authTitle"),
+      authText: document.getElementById("authText"),
+      authBody: document.getElementById("authBody"),
+      authError: document.getElementById("authError")
     };
 
     const tabButtons = document.querySelectorAll("[data-tab]");
@@ -1706,6 +2564,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         displayName: "Ezekiel \"Zeke\" Crowe",
         breathingVerb: "dýchal",
         reportPlaceholder: "Co Zeke dnes přežil, koho vyděsil a kde nakonec usnul?",
+        alertWake: "Zeke otevřel oči. West Haven ztichl.",
+        alertSleep: "Zeke usnul. Město si dovolilo dýchat.",
         wakeTitle: "Zeke je vzhůru",
         sleepTitle: "Zeke usnul",
         color: 9803822,
@@ -1759,6 +2619,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         displayName: "Silas \"Sil\" Crowe",
         breathingVerb: "dýchal",
         reportPlaceholder: "Co Silas dnes zjistil, koho přiměl mluvit a kde odložil úsměv?",
+        alertWake: "Silas je vzhůru. Někdo už určitě řekl víc, než měl.",
+        alertSleep: "Silas odpočívá. Tajemství zůstala sedět u stolu.",
         wakeTitle: "Silas je vzhůru",
         sleepTitle: "Silas odpočívá",
         color: 6381921,
@@ -1812,6 +2674,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         displayName: "William Hart",
         breathingVerb: "dýchal",
         reportPlaceholder: "Koho William dnes držel pohromadě a kde si konečně dovolil klid?",
+        alertWake: "William je vzhůru. West Haven má pevnější půdu pod nohama.",
+        alertSleep: "William spí. I jeho odpočinek působí jako hlídka.",
         wakeTitle: "William je vzhůru",
         sleepTitle: "William spí",
         color: 7449772,
@@ -1865,6 +2729,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         displayName: "Thomas \"Tom\" Mercer",
         breathingVerb: "dýchal",
         reportPlaceholder: "Kde Tom dnes nadělal hluk, koho zachraňoval a kde to zalomil?",
+        alertWake: "Tom je vzhůru. U stájí už někdo hledá kávu.",
+        alertSleep: "Tom to zalomil. Stáje konečně slyší jen dech koní.",
         wakeTitle: "Tom je vzhůru",
         sleepTitle: "Tom to zalomil",
         color: 7956012,
@@ -1918,6 +2784,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         displayName: "Violet Crowe",
         breathingVerb: "dýchala",
         reportPlaceholder: "Co Violet dnes neřekla nahlas a kde usnula, když město ztichlo?",
+        alertWake: "Violet je vzhůru. Ticho v místnosti se stalo ostřejším.",
+        alertSleep: "Violet spí. Některé pohledy přesto zůstaly sklopené.",
         wakeTitle: "Violet je vzhůru",
         sleepTitle: "Violet spí",
         color: 8990303,
@@ -1971,26 +2839,87 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     let activeCharacterId = null;
     let sleepReportResolver = null;
     let timerIntervalId = null;
+    let rosterTimerIntervalId = null;
+    let characterAlertTimeoutId = null;
+    let levelAlertTimeoutId = null;
+    let otherLevelAlertTimeoutId = null;
+    let isCharacterAlertShowing = false;
+    let isLevelAlertShowing = false;
+    let isOtherLevelAlertShowing = false;
+    const characterAlertQueue = [];
+    const levelAlertQueue = [];
+    const otherLevelAlertQueue = [];
+    let lastSeenAlertId = localStorage.getItem("westHavenLastAlertId") || "";
+    const seenAlertIds = new Set(lastSeenAlertId ? [lastSeenAlertId] : []);
+    let lastSeenLevelAlertId = localStorage.getItem("westHavenLastLevelAlertId") || "";
+    const seenLevelAlertIds = new Set(lastSeenLevelAlertId ? [lastSeenLevelAlertId] : []);
+    let alertVolume = Number(localStorage.getItem("westHavenAlertVolume") || 70);
+    const characterStates = {};
+    const playerProfileKey = "westHavenPlayerProfile";
+    const readPlayerProfile = () => {
+      try {
+        return JSON.parse(localStorage.getItem(playerProfileKey) || "null");
+      } catch (error) {
+        localStorage.removeItem(playerProfileKey);
+        return null;
+      }
+    };
+    let playerProfile = readPlayerProfile();
+    let currentPlayerCharacterId = null;
+    let pendingPlayerCharacterId = null;
+
+    const hour = 60 * 60 * 1000;
+    const levelThresholds = [
+      0,
+      12 * hour,
+      30 * hour,
+      60 * hour,
+      105 * hour,
+      165 * hour,
+      240 * hour,
+      330 * hour,
+      440 * hour,
+      575 * hour,
+      735 * hour,
+      925 * hour,
+      1145 * hour,
+      1395 * hour,
+      1680 * hour
+    ];
 
     const pickRandom = (items) => items[Math.floor(Math.random() * items.length)];
 
     const getWakeTimerKey = (characterId) => `westHavenWakeStartedAt:${characterId}`;
 
     const startWakeTimer = (characterId) => {
-      localStorage.setItem(getWakeTimerKey(characterId), String(Date.now()));
+      const startedAt = Date.now();
+      localStorage.setItem(getWakeTimerKey(characterId), String(startedAt));
+      return startedAt;
     };
 
     const stopWakeTimer = (characterId) => {
       const key = getWakeTimerKey(characterId);
-      const startedAt = Number(localStorage.getItem(key));
+      const duration = getWakeDuration(characterId);
       localStorage.removeItem(key);
-      return Number.isFinite(startedAt) && startedAt > 0 ? Date.now() - startedAt : null;
+      return duration;
     };
 
     const getWakeDuration = (characterId) => {
-      const startedAt = Number(localStorage.getItem(getWakeTimerKey(characterId)));
+      const remoteStartedAt = characterStates[characterId]?.wakeStartedAt;
+      const localStartedAt = Number(localStorage.getItem(getWakeTimerKey(characterId)));
+      const startedAt = Number(remoteStartedAt || localStartedAt);
       return Number.isFinite(startedAt) && startedAt > 0 ? Date.now() - startedAt : null;
     };
+
+    const getCharacterState = (characterId) => (
+      characterStates[characterId] || {
+        status: "asleep",
+        wakeStartedAt: null,
+        totalPlayedMs: 0,
+        level: 1,
+        updatedAt: null
+      }
+    );
 
     const formatDuration = (durationMs) => {
       if (!durationMs) return "čas nebyl zaznamenán";
@@ -2006,11 +2935,322 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       return parts.join(" ");
     };
 
+    const formatLedgerDuration = (durationMs) => {
+      if (!durationMs) return "0min";
+      return formatDuration(durationMs);
+    };
+
+    const getTotalPlayedMs = (characterId) => {
+      const state = getCharacterState(characterId);
+      const savedTotal = Number(state.totalPlayedMs || 0);
+      const activeDuration = state.status === "awake" ? (getWakeDuration(characterId) || 0) : 0;
+      return savedTotal + activeDuration;
+    };
+
+    const getLevelForTotal = (totalPlayedMs) => {
+      let level = 1;
+
+      levelThresholds.forEach((threshold, index) => {
+        if (totalPlayedMs >= threshold) {
+          level = index + 1;
+        }
+      });
+
+      return level;
+    };
+
+    const getLevelProgress = (totalPlayedMs) => {
+      const currentLevel = getLevelForTotal(totalPlayedMs);
+      const currentThreshold = levelThresholds[currentLevel - 1] || 0;
+      const nextThreshold = levelThresholds[currentLevel];
+
+      if (!nextThreshold) return 100;
+
+      const progress = ((totalPlayedMs - currentThreshold) / (nextThreshold - currentThreshold)) * 100;
+      return Math.max(2, Math.min(100, progress));
+    };
+
+    const getLevelMessage = (characterName, level) => (
+      `${characterName} získává novou úroveň. Tohle není náhoda ani krátká chvíle slávy, ale stopa dlouhých nocí, probuzení a rozhodnutí, která se ve West Havenu počítají.`
+    );
+
+    const playLevelUpSound = () => {
+      if (!refs.levelUpAudio || alertVolume === 0) return;
+
+      refs.levelUpAudio.currentTime = 0;
+      refs.levelUpAudio.play().catch(() => {
+        refs.characterActionStatus.textContent = "Zvuk levelu prohlížeč zablokoval, klikni jednou do stránky.";
+      });
+    };
+
+    const playOtherLevelSound = () => {
+      if (!refs.otherLevelAudio || alertVolume === 0) return;
+
+      refs.otherLevelAudio.currentTime = 0;
+      refs.otherLevelAudio.play().catch(() => {
+        refs.characterActionStatus.textContent = "Zvuk cizího levelu prohlížeč zablokoval, klikni jednou do stránky.";
+      });
+    };
+
+    const hideLevelAlert = () => {
+      clearTimeout(levelAlertTimeoutId);
+      refs.levelAlert.classList.remove("is-visible");
+      refs.levelAlert.setAttribute("aria-hidden", "true");
+      isLevelAlertShowing = false;
+
+      if (levelAlertQueue.length > 0) {
+        setTimeout(showNextLevelAlert, 220);
+      }
+    };
+
+    const showNextLevelAlert = () => {
+      if (isLevelAlertShowing || levelAlertQueue.length === 0) return;
+
+      const alert = levelAlertQueue.shift();
+      const character = characters.find((item) => item.id === alert.characterId);
+      if (!character) return;
+
+      clearTimeout(levelAlertTimeoutId);
+      isLevelAlertShowing = true;
+
+      refs.levelAlertImage.src = character.portrait;
+      refs.levelAlertImage.alt = character.portraitAlt;
+      refs.levelAlertTitle.textContent = character.listName;
+      refs.levelAlertLevel.textContent = `Úroveň ${alert.level}`;
+      refs.levelAlertText.textContent = alert.text || getLevelMessage(character.listName, alert.level);
+      refs.levelAlert.classList.add("is-visible");
+      refs.levelAlert.setAttribute("aria-hidden", "false");
+
+      playLevelUpSound();
+
+      levelAlertTimeoutId = setTimeout(hideLevelAlert, 5 * 60 * 1000);
+    };
+
+    const enqueueLevelAlert = (alert) => {
+      levelAlertQueue.push(alert);
+      showNextLevelAlert();
+    };
+
+    const hideOtherLevelAlert = () => {
+      clearTimeout(otherLevelAlertTimeoutId);
+      refs.otherLevelAlert.classList.remove("is-visible");
+      refs.otherLevelAlert.setAttribute("aria-hidden", "true");
+      isOtherLevelAlertShowing = false;
+
+      if (otherLevelAlertQueue.length > 0) {
+        setTimeout(showNextOtherLevelAlert, 220);
+      }
+    };
+
+    const showNextOtherLevelAlert = () => {
+      if (isOtherLevelAlertShowing || otherLevelAlertQueue.length === 0) return;
+
+      const alert = otherLevelAlertQueue.shift();
+      const character = characters.find((item) => item.id === alert.characterId);
+      if (!character) return;
+
+      clearTimeout(otherLevelAlertTimeoutId);
+      isOtherLevelAlertShowing = true;
+
+      refs.otherLevelAlertImage.src = character.portrait;
+      refs.otherLevelAlertImage.alt = character.portraitAlt;
+      refs.otherLevelAlertTitle.textContent = `${character.listName} | LVL ${alert.level}`;
+      refs.otherLevelAlertText.textContent = "Někdo ve West Havenu posunul svůj příběh o kus dál.";
+      refs.otherLevelAlert.classList.add("is-visible");
+      refs.otherLevelAlert.setAttribute("aria-hidden", "false");
+
+      playOtherLevelSound();
+
+      otherLevelAlertTimeoutId = setTimeout(hideOtherLevelAlert, 30000);
+    };
+
+    const enqueueOtherLevelAlert = (alert) => {
+      otherLevelAlertQueue.push(alert);
+      showNextOtherLevelAlert();
+    };
+
+    const sendLevelAlert = async (characterId, level, totalPlayedMs) => {
+      const character = characters.find((item) => item.id === characterId);
+      if (!character) return;
+
+      const createdAt = Date.now();
+      const alert = {
+        characterId,
+        level,
+        totalPlayedMs,
+        text: getLevelMessage(character.listName, level),
+        createdAt
+      };
+
+      await setDoc(doc(characterLevelAlertsRef, `${createdAt}-${characterId}-level-${level}`), alert);
+    };
+
+    const updateTimeLedger = () => {
+      if (!refs.timeLedger) return;
+
+      refs.timeLedger.innerHTML = "";
+
+      characters.forEach((character, index) => {
+        const item = document.createElement("article");
+        item.className = "time-ledger-item";
+        item.style.setProperty("--ledger-index", String(index));
+
+        const name = document.createElement("p");
+        name.className = "time-ledger-name";
+        name.textContent = character.listName;
+
+        const value = document.createElement("p");
+        value.className = "time-ledger-value";
+        const totalPlayedMs = getTotalPlayedMs(character.id);
+        const level = getLevelForTotal(totalPlayedMs);
+        value.textContent = `${formatLedgerDuration(totalPlayedMs)} | LVL ${level}`;
+
+        const progress = document.createElement("div");
+        progress.className = "time-ledger-progress";
+        progress.setAttribute("aria-hidden", "true");
+
+        const progressFill = document.createElement("span");
+        progressFill.style.setProperty("--ledger-progress", `${getLevelProgress(totalPlayedMs)}%`);
+        progress.appendChild(progressFill);
+
+        item.classList.add(`is-level-${Math.min(level, 10)}`);
+
+        item.append(name, value, progress);
+        refs.timeLedger.appendChild(item);
+      });
+    };
+
+    const updateRosterStates = () => {
+      characters.forEach((character) => {
+        const card = rosterGrid.querySelector(`[data-character-card="${character.id}"]`);
+        if (!card) return;
+
+        const state = getCharacterState(character.id);
+        const isAwake = state.status === "awake";
+        const status = card.querySelector("[data-roster-status]");
+        const statusText = card.querySelector("[data-roster-status-text]");
+        const timer = card.querySelector("[data-roster-timer]");
+
+        card.classList.toggle("is-player-character", character.id === currentPlayerCharacterId);
+        status.classList.toggle("is-awake", isAwake);
+        status.classList.toggle("is-asleep", !isAwake);
+        statusText.textContent = `Stav: ${isAwake ? "Vzhůru" : "Spí"}`;
+
+        timer.classList.toggle("is-visible", isAwake);
+        timer.textContent = isAwake ? formatDuration(getWakeDuration(character.id)) : "";
+      });
+
+      updateTimeLedger();
+    };
+
+    const startRosterTimerDisplay = () => {
+      clearInterval(rosterTimerIntervalId);
+      updateRosterStates();
+      rosterTimerIntervalId = setInterval(updateRosterStates, 1000);
+    };
+
+    const setRemoteCharacterState = async (characterId, state) => {
+      characterStates[characterId] = {
+        ...getCharacterState(characterId),
+        ...state,
+        updatedAt: Date.now()
+      };
+      updateRosterStates();
+
+      if (characterId === activeCharacterId) {
+        updateCharacterTimer();
+      }
+
+      await setDoc(doc(characterStatesRef, characterId), characterStates[characterId], { merge: true });
+    };
+
+    const applyAlertVolume = () => {
+      const normalizedVolume = Math.max(0, Math.min(1, alertVolume / 100));
+      refs.alertOnlineAudio.volume = normalizedVolume;
+      refs.alertOfflineAudio.volume = normalizedVolume;
+      refs.levelUpAudio.volume = normalizedVolume;
+      refs.otherLevelAudio.volume = normalizedVolume;
+      refs.alertOnlineAudio.muted = alertVolume === 0;
+      refs.alertOfflineAudio.muted = alertVolume === 0;
+      refs.levelUpAudio.muted = alertVolume === 0;
+      refs.otherLevelAudio.muted = alertVolume === 0;
+      refs.soundVolume.value = String(alertVolume);
+      refs.soundToggle.textContent = alertVolume === 0 ? "🔇" : "🔊";
+      refs.soundToggle.setAttribute("aria-label", alertVolume === 0 ? "Zvuk alertů vypnutý" : "Nastavení zvuku alertů");
+    };
+
+    const playAlertSound = (type) => {
+      const audio = type === "wake" ? refs.alertOnlineAudio : refs.alertOfflineAudio;
+      if (!audio || alertVolume === 0) return;
+
+      audio.currentTime = 0;
+      audio.play().catch(() => {
+        refs.characterActionStatus.textContent = "Zvuk alertu prohlížeč zablokoval, klikni jednou do stránky.";
+      });
+    };
+
+    const hideCharacterAlert = () => {
+      refs.characterAlert.classList.remove("is-visible");
+      refs.characterAlert.setAttribute("aria-hidden", "true");
+      isCharacterAlertShowing = false;
+
+      if (characterAlertQueue.length > 0) {
+        setTimeout(showNextCharacterAlert, 220);
+      }
+    };
+
+    const showNextCharacterAlert = () => {
+      if (isCharacterAlertShowing || characterAlertQueue.length === 0) return;
+
+      const alert = characterAlertQueue.shift();
+      const character = characters.find((item) => item.id === alert.characterId);
+      if (!character) return;
+
+      clearTimeout(characterAlertTimeoutId);
+      isCharacterAlertShowing = true;
+
+      refs.characterAlert.classList.toggle("is-sleep", alert.type === "sleep");
+      refs.characterAlertImage.src = character.portrait;
+      refs.characterAlertImage.alt = character.portraitAlt;
+      refs.characterAlertKicker.textContent = alert.type === "wake" ? "West Haven Morning Alert" : "West Haven Night Alert";
+      refs.characterAlertTitle.textContent = alert.title;
+      refs.characterAlertText.textContent = alert.text;
+      refs.characterAlert.classList.add("is-visible");
+      refs.characterAlert.setAttribute("aria-hidden", "false");
+
+      playAlertSound(alert.type);
+
+      characterAlertTimeoutId = setTimeout(hideCharacterAlert, 10000);
+    };
+
+    const enqueueCharacterAlert = (alert) => {
+      characterAlertQueue.push(alert);
+      showNextCharacterAlert();
+    };
+
+    const sendCharacterAlert = async (characterId, type) => {
+      const character = characters.find((item) => item.id === characterId);
+      const profile = characterActionProfiles[characterId];
+      if (!character || !profile) return;
+
+      const alert = {
+        characterId,
+        type,
+        title: type === "wake" ? profile.wakeTitle : profile.sleepTitle,
+        text: type === "wake" ? profile.alertWake : profile.alertSleep,
+        createdAt: Date.now()
+      };
+      const alertId = `${alert.createdAt}-${characterId}-${type}`;
+
+      await setDoc(doc(characterAlertsRef, alertId), alert);
+    };
+
     const updateCharacterTimer = () => {
       const profile = characterActionProfiles[activeCharacterId];
+      const state = getCharacterState(activeCharacterId);
       const duration = getWakeDuration(activeCharacterId);
 
-      if (!profile || !duration) {
+      if (!profile || state.status !== "awake" || !duration) {
         refs.characterTimer.textContent = "Dýchá: nezaznamenáno";
         return;
       }
@@ -2098,8 +3338,24 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       if (!character || !profile) return;
 
       const message = pickRandom(type === "wake" ? profile.wakeMessages : profile.sleepMessages);
-      const durationText = type === "sleep" ? formatDuration(stopWakeTimer(activeCharacterId)) : "";
-      if (type === "sleep") updateCharacterTimer();
+      const sleepDurationMs = type === "sleep" ? stopWakeTimer(activeCharacterId) : null;
+      const durationText = type === "sleep" ? formatDuration(sleepDurationMs) : "";
+      if (type === "sleep") {
+        const previousTotal = Number(getCharacterState(activeCharacterId).totalPlayedMs || 0);
+        const previousLevel = getLevelForTotal(previousTotal);
+        const newTotal = previousTotal + (sleepDurationMs || 0);
+        const newLevel = getLevelForTotal(newTotal);
+        await setRemoteCharacterState(activeCharacterId, {
+          status: "asleep",
+          wakeStartedAt: null,
+          totalPlayedMs: newTotal,
+          level: newLevel
+        });
+        if (newLevel > previousLevel) {
+          await sendLevelAlert(activeCharacterId, newLevel, newTotal);
+        }
+        updateCharacterTimer();
+      }
       const embed = type === "wake"
         ? buildWakeEmbed(profile, message)
         : buildSleepEmbed(profile, message, reportText, durationText);
@@ -2159,10 +3415,27 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         role.className = "roster-role";
         role.textContent = character.role;
 
-        button.append(image, name, role);
+        const liveTimer = document.createElement("span");
+        liveTimer.className = "roster-live-timer";
+        liveTimer.dataset.rosterTimer = character.id;
+
+        const status = document.createElement("span");
+        status.className = "roster-status is-asleep";
+        status.dataset.rosterStatus = character.id;
+
+        const statusText = document.createElement("span");
+        statusText.className = "roster-status-text";
+        statusText.dataset.rosterStatusText = character.id;
+        statusText.textContent = "Stav: Spí";
+
+        status.appendChild(statusText);
+
+        button.append(image, name, role, liveTimer, status);
 
         rosterGrid.appendChild(button);
       });
+
+      updateRosterStates();
     };
 
     const renderDust = () => {
@@ -2235,6 +3508,230 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       startTimerDisplay();
     };
 
+    const setAuthError = (message = "") => {
+      refs.authError.textContent = message;
+    };
+
+    const clearAuthBody = () => {
+      refs.authBody.replaceChildren();
+      setAuthError();
+    };
+
+    const showAuthModal = () => {
+      refs.authModal.classList.add("is-visible");
+      refs.authModal.setAttribute("aria-hidden", "false");
+    };
+
+    const hideAuthModal = () => {
+      refs.authModal.classList.remove("is-visible");
+      refs.authModal.setAttribute("aria-hidden", "true");
+    };
+
+    const completeLogin = (characterId) => {
+      currentPlayerCharacterId = characterId;
+      hideAuthModal();
+      updateRosterStates();
+    };
+
+    const renderPasswordLogin = () => {
+      clearAuthBody();
+      const character = characters.find((item) => item.id === playerProfile?.characterId);
+
+      refs.authTitle.textContent = "Přihlášení";
+      refs.authText.textContent = character
+        ? `Zadej svoje 4místné heslo pro postavu ${character.listName}.`
+        : "Zadej svoje 4místné heslo.";
+
+      const form = document.createElement("form");
+      form.className = "auth-form";
+
+      const input = document.createElement("input");
+      input.className = "auth-input";
+      input.type = "password";
+      input.inputMode = "numeric";
+      input.maxLength = 4;
+      input.pattern = "[0-9]{4}";
+      input.placeholder = "••••";
+      input.autocomplete = "off";
+
+      const submit = document.createElement("button");
+      submit.className = "auth-button primary";
+      submit.type = "submit";
+      submit.textContent = "Vstoupit";
+
+      form.append(input, submit);
+      refs.authBody.appendChild(form);
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        if (input.value === playerProfile?.passcode) {
+          completeLogin(playerProfile.characterId);
+          return;
+        }
+
+        setAuthError("Špatné heslo.");
+      });
+
+      setTimeout(() => input.focus(), 0);
+    };
+
+    const renderCreatePassword = () => {
+      clearAuthBody();
+      const character = characters.find((item) => item.id === pendingPlayerCharacterId);
+      if (!character) return;
+
+      refs.authTitle.textContent = "Vytvoř heslo";
+      refs.authText.textContent = `${character.listName} bude tvoje postava. Vytvoř si 4místné heslo pro další přihlášení.`;
+
+      const form = document.createElement("form");
+      form.className = "auth-form";
+
+      const input = document.createElement("input");
+      input.className = "auth-input";
+      input.type = "password";
+      input.inputMode = "numeric";
+      input.maxLength = 4;
+      input.pattern = "[0-9]{4}";
+      input.placeholder = "1234";
+      input.autocomplete = "off";
+
+      const submit = document.createElement("button");
+      submit.className = "auth-button primary";
+      submit.type = "submit";
+      submit.textContent = "Uložit";
+
+      form.append(input, submit);
+      refs.authBody.appendChild(form);
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        if (!/^\d{4}$/.test(input.value)) {
+          setAuthError("Heslo musí mít přesně 4 čísla.");
+          return;
+        }
+
+        playerProfile = {
+          characterId: pendingPlayerCharacterId,
+          passcode: input.value
+        };
+        localStorage.setItem(playerProfileKey, JSON.stringify(playerProfile));
+        completeLogin(playerProfile.characterId);
+      });
+
+      setTimeout(() => input.focus(), 0);
+    };
+
+    const renderConfirmCharacter = () => {
+      clearAuthBody();
+      const character = characters.find((item) => item.id === pendingPlayerCharacterId);
+      if (!character) return;
+
+      refs.authTitle.textContent = character.listName;
+      refs.authText.textContent = "Je to opravdu tvoje postava?";
+
+      const actions = document.createElement("div");
+      actions.className = "auth-actions";
+
+      const noButton = document.createElement("button");
+      noButton.className = "auth-button";
+      noButton.type = "button";
+      noButton.textContent = "Ne";
+
+      const yesButton = document.createElement("button");
+      yesButton.className = "auth-button primary";
+      yesButton.type = "button";
+      yesButton.textContent = "Ano";
+
+      actions.append(noButton, yesButton);
+      refs.authBody.appendChild(actions);
+
+      noButton.addEventListener("click", renderCharacterChoice);
+      yesButton.addEventListener("click", renderCreatePassword);
+    };
+
+    const renderCharacterChoice = () => {
+      clearAuthBody();
+      refs.authTitle.textContent = "Zvol si postavu";
+      refs.authText.textContent = "Klikni na postavu, která patří tobě.";
+
+      const grid = document.createElement("div");
+      grid.className = "auth-character-grid";
+
+      characters.forEach((character) => {
+        const button = document.createElement("button");
+        button.className = "auth-character";
+        button.type = "button";
+
+        const image = document.createElement("img");
+        image.src = character.portrait;
+        image.alt = character.portraitAlt;
+
+        const name = document.createElement("span");
+        name.textContent = character.listName;
+
+        button.append(image, name);
+        button.addEventListener("click", () => {
+          pendingPlayerCharacterId = character.id;
+          renderConfirmCharacter();
+        });
+
+        grid.appendChild(button);
+      });
+
+      refs.authBody.appendChild(grid);
+    };
+
+    const renderUniversalCode = () => {
+      clearAuthBody();
+      refs.authTitle.textContent = "Vstupní kód";
+      refs.authText.textContent = "Pro první vstup použij univerzální kód.";
+
+      const form = document.createElement("form");
+      form.className = "auth-form";
+
+      const input = document.createElement("input");
+      input.className = "auth-input";
+      input.type = "password";
+      input.inputMode = "numeric";
+      input.maxLength = 4;
+      input.placeholder = "1212";
+      input.autocomplete = "off";
+
+      const submit = document.createElement("button");
+      submit.className = "auth-button primary";
+      submit.type = "submit";
+      submit.textContent = "Pokračovat";
+
+      form.append(input, submit);
+      refs.authBody.appendChild(form);
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        if (input.value !== "1212") {
+          setAuthError("Špatný vstupní kód.");
+          return;
+        }
+
+        renderCharacterChoice();
+      });
+
+      setTimeout(() => input.focus(), 0);
+    };
+
+    const initializeAuth = () => {
+      showAuthModal();
+
+      if (playerProfile?.characterId && playerProfile?.passcode) {
+        renderPasswordLogin();
+        return;
+      }
+
+      renderUniversalCode();
+    };
+
     refs.sleepReportForm.addEventListener("submit", (event) => {
       event.preventDefault();
       closeSleepReportModal(refs.sleepReportInput.value.trim());
@@ -2250,9 +3747,44 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
     });
 
+    refs.soundToggle.addEventListener("click", () => {
+      refs.soundPanel.classList.toggle("is-open");
+    });
+
+    refs.soundVolume.addEventListener("input", () => {
+      alertVolume = Number(refs.soundVolume.value);
+      localStorage.setItem("westHavenAlertVolume", String(alertVolume));
+      applyAlertVolume();
+    });
+
+    refs.testOnlineSound.addEventListener("click", () => {
+      playAlertSound("wake");
+    });
+
+    refs.testOfflineSound.addEventListener("click", () => {
+      playAlertSound("sleep");
+    });
+
+    refs.testLevelSound.addEventListener("click", () => {
+      playLevelUpSound();
+    });
+
+    refs.levelAlertClose.addEventListener("click", hideLevelAlert);
+
+    refs.levelAlertX.addEventListener("click", hideLevelAlert);
+
+    refs.levelAlert.addEventListener("click", (event) => {
+      if (event.target === refs.levelAlert) {
+        hideLevelAlert();
+      }
+    });
+
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && refs.sleepReportModal.classList.contains("is-visible")) {
         closeSleepReportModal(null);
+      }
+      if (event.key === "Escape" && refs.levelAlert.classList.contains("is-visible")) {
+        hideLevelAlert();
       }
     });
 
@@ -2277,8 +3809,13 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
 
       if (event.target.closest("#wakeCharacterButton")) {
-        startWakeTimer(activeCharacterId);
+        const startedAt = startWakeTimer(activeCharacterId);
+        await setRemoteCharacterState(activeCharacterId, {
+          status: "awake",
+          wakeStartedAt: startedAt
+        });
         updateCharacterTimer();
+        sendCharacterAlert(activeCharacterId, "wake");
         sendCharacterWebhook("wake");
         return;
       }
@@ -2293,6 +3830,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           return;
         }
 
+        sendCharacterAlert(activeCharacterId, "sleep");
         sendCharacterWebhook("sleep", reportText);
       }
     });
@@ -2306,8 +3844,72 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
     });
 
+    onSnapshot(characterStatesRef, (snapshot) => {
+      snapshot.forEach((stateDoc) => {
+        characterStates[stateDoc.id] = stateDoc.data();
+      });
+
+      updateRosterStates();
+      updateCharacterTimer();
+    }, (error) => {
+      console.error("Firestore state sync failed:", error);
+      refs.characterActionStatus.textContent = "Firebase stav se nepodařilo načíst.";
+    });
+
+    const alertsQuery = query(characterAlertsRef, orderBy("createdAt", "desc"), limit(10));
+    onSnapshot(alertsQuery, (snapshot) => {
+      const freshAlerts = snapshot.docs
+        .map((alertDoc) => ({
+          id: alertDoc.id,
+          data: alertDoc.data()
+        }))
+        .filter(({ id, data }) => {
+          const isFresh = Date.now() - Number(data.createdAt || 0) < 15000;
+          return isFresh && !seenAlertIds.has(id);
+        })
+        .sort((a, b) => Number(a.data.createdAt || 0) - Number(b.data.createdAt || 0));
+
+      freshAlerts.forEach(({ id, data }) => {
+        seenAlertIds.add(id);
+        lastSeenAlertId = id;
+        localStorage.setItem("westHavenLastAlertId", id);
+        enqueueCharacterAlert(data);
+      });
+    }, (error) => {
+      console.error("Firestore alert sync failed:", error);
+    });
+
+    const levelAlertsQuery = query(characterLevelAlertsRef, orderBy("createdAt", "desc"), limit(10));
+    onSnapshot(levelAlertsQuery, (snapshot) => {
+      const freshLevelAlerts = snapshot.docs
+        .map((alertDoc) => ({
+          id: alertDoc.id,
+          data: alertDoc.data()
+        }))
+        .filter(({ id, data }) => {
+          const isFresh = Date.now() - Number(data.createdAt || 0) < 5 * 60 * 1000;
+          return isFresh && !seenLevelAlertIds.has(id);
+        })
+        .sort((a, b) => Number(a.data.createdAt || 0) - Number(b.data.createdAt || 0));
+
+      freshLevelAlerts.forEach(({ id, data }) => {
+        seenLevelAlertIds.add(id);
+        lastSeenLevelAlertId = id;
+        localStorage.setItem("westHavenLastLevelAlertId", id);
+        if (data.characterId === currentPlayerCharacterId) {
+          enqueueLevelAlert(data);
+        } else {
+          enqueueOtherLevelAlert(data);
+        }
+      });
+    }, (error) => {
+      console.error("Firestore level alert sync failed:", error);
+    });
+
     renderRoster();
     renderDust();
+    applyAlertVolume();
+    startRosterTimerDisplay();
 
     const initialCharacterId = window.location.hash.replace("#", "");
     if (initialCharacterId) {
@@ -2315,6 +3917,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     } else {
       showHome();
     }
+
+    initializeAuth();
   </script>
 </body>
 </html>
