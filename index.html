@@ -2895,12 +2895,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     let pendingPlayerCharacterId = null;
     let discordPlayers = [];
     const characterDiscordPlayers = {};
-    const characterDiscordAliases = {
-      zeke: ["ezekiel", "zeke"],
-      silas: ["silas", "sil"],
-      "thomas-mercer": ["thomas", "tom", "mercer"],
-      violet: ["violet"],
-      william: ["william", "hart"]
+    const characterDiscordIds = {
+      zeke: "417061947759001600",
+      silas: "702917011235143800",
+      violet: "795365012494483486",
+      william: "550294660090691594",
+      "thomas-mercer": "381058621644996608"
     };
 
     const hour = 60 * 60 * 1000;
@@ -2924,24 +2924,14 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
     const pickRandom = (items) => items[Math.floor(Math.random() * items.length)];
 
-    const normalizeText = (value) => (
-      String(value || "")
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase()
-    );
-
     const syncDiscordPlayersToCharacters = () => {
       Object.keys(characterDiscordPlayers).forEach((key) => {
         delete characterDiscordPlayers[key];
       });
 
       characters.forEach((character) => {
-        const aliases = characterDiscordAliases[character.id] || [character.listName];
-        const player = discordPlayers.find((discordPlayer) => {
-          const displayName = normalizeText(discordPlayer.displayName);
-          return aliases.some((alias) => displayName.includes(normalizeText(alias)));
-        });
+        const discordId = characterDiscordIds[character.id];
+        const player = discordPlayers.find((discordPlayer) => discordPlayer.id === discordId);
 
         if (player) {
           characterDiscordPlayers[character.id] = player;

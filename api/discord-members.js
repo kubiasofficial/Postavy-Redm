@@ -1,12 +1,17 @@
 const DISCORD_API_BASE = "https://discord.com/api/v10";
+const DISCORD_CDN_BASE = "https://cdn.discordapp.com";
+
+const getAvatarExtension = (avatarHash) => (
+  avatarHash?.startsWith("a_") ? "gif" : "png"
+);
 
 const getAvatarUrl = (user, member) => {
   if (member.avatar) {
-    return `${DISCORD_API_BASE}/guilds/${process.env.DISCORD_GUILD_ID}/users/${user.id}/avatars/${member.avatar}.png?size=128`;
+    return `${DISCORD_CDN_BASE}/guilds/${process.env.DISCORD_GUILD_ID}/users/${user.id}/avatars/${member.avatar}.${getAvatarExtension(member.avatar)}?size=128`;
   }
 
   if (user.avatar) {
-    return `${DISCORD_API_BASE}/users/${user.id}/avatars/${user.avatar}.png?size=128`;
+    return `${DISCORD_CDN_BASE}/avatars/${user.id}/${user.avatar}.${getAvatarExtension(user.avatar)}?size=128`;
   }
 
   const fallbackIndex = Number(user.discriminator || 0) % 5;
