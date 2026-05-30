@@ -361,8 +361,8 @@
         transform var(--ease),
         border-color var(--ease),
         box-shadow var(--ease);
-      animation: ledger-rise 560ms var(--ease) both;
-      animation-delay: calc(var(--ledger-index, 0) * 70ms + 120ms);
+      animation: ledger-rise 420ms var(--ease) both;
+      animation-delay: calc(var(--ledger-index, 0) * 45ms + 80ms);
     }
 
     .time-ledger-item::after {
@@ -500,11 +500,25 @@
       box-shadow:
         0 24px 54px rgba(0, 0, 0, 0.32),
         0 0 0 1px rgba(255, 222, 154, 0.24),
-        0 0 34px rgba(169, 120, 57, 0.2);
-      animation:
-        card-enter 620ms var(--ease) both,
-        player-pulse 2.8s ease-in-out infinite;
-      animation-delay: calc(var(--card-index, 0) * 80ms + 160ms), 0s;
+        0 0 22px rgba(169, 120, 57, 0.16);
+    }
+
+    .roster-card.is-locked,
+    .roster-card:disabled {
+      cursor: not-allowed;
+      opacity: 0.58;
+      filter: saturate(0.72) brightness(0.82);
+    }
+
+    .roster-card.is-locked:hover,
+    .roster-card.is-locked:focus-visible,
+    .roster-card:disabled:hover,
+    .roster-card:disabled:focus-visible {
+      transform: none;
+      border-color: rgba(169, 120, 57, 0.18);
+      box-shadow:
+        0 18px 42px rgba(0, 0, 0, 0.28),
+        inset 0 0 0 1px rgba(255, 244, 215, 0.03);
     }
 
     .roster-card::before {
@@ -1716,22 +1730,6 @@
       to {
         opacity: 1;
         transform: translateY(0) scale(1);
-      }
-    }
-
-    @keyframes player-pulse {
-      0%,
-      100% {
-        box-shadow:
-          0 24px 54px rgba(0, 0, 0, 0.32),
-          0 0 0 1px rgba(255, 222, 154, 0.22),
-          0 0 20px rgba(169, 120, 57, 0.16);
-      }
-      50% {
-        box-shadow:
-          0 30px 64px rgba(0, 0, 0, 0.42),
-          0 0 0 1px rgba(255, 222, 154, 0.46),
-          0 0 42px rgba(169, 120, 57, 0.32);
       }
     }
 
@@ -3088,35 +3086,55 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     const updateTimeLedger = () => {
       if (!refs.timeLedger) return;
 
-      refs.timeLedger.innerHTML = "";
-
       characters.forEach((character, index) => {
-        const item = document.createElement("article");
-        item.className = "time-ledger-item";
-        item.style.setProperty("--ledger-index", String(index));
+        let item = refs.timeLedger.querySelector(`[data-ledger-character="${character.id}"]`);
+        let value = item?.querySelector("[data-ledger-value]");
+        let progressFill = item?.querySelector("[data-ledger-progress-fill]");
 
-        const name = document.createElement("p");
-        name.className = "time-ledger-name";
-        name.textContent = character.listName;
+        if (!item) {
+          item = document.createElement("article");
+          item.className = "time-ledger-item";
+          item.dataset.ledgerCharacter = character.id;
+          item.style.setProperty("--ledger-index", String(index));
 
-        const value = document.createElement("p");
-        value.className = "time-ledger-value";
+          const name = document.createElement("p");
+          name.className = "time-ledger-name";
+          name.textContent = character.listName;
+
+          value = document.createElement("p");
+          value.className = "time-ledger-value";
+          value.dataset.ledgerValue = character.id;
+
+          const progress = document.createElement("div");
+          progress.className = "time-ledger-progress";
+          progress.setAttribute("aria-hidden", "true");
+
+          progressFill = document.createElement("span");
+          progressFill.dataset.ledgerProgressFill = character.id;
+          progress.appendChild(progressFill);
+
+          item.append(name, value, progress);
+          refs.timeLedger.appendChild(item);
+        }
+
         const totalPlayedMs = getTotalPlayedMs(character.id);
         const level = getLevelForTotal(totalPlayedMs);
         value.textContent = `${formatLedgerDuration(totalPlayedMs)} | LVL ${level}`;
-
-        const progress = document.createElement("div");
-        progress.className = "time-ledger-progress";
-        progress.setAttribute("aria-hidden", "true");
-
-        const progressFill = document.createElement("span");
         progressFill.style.setProperty("--ledger-progress", `${getLevelProgress(totalPlayedMs)}%`);
-        progress.appendChild(progressFill);
 
+        item.classList.remove(
+          "is-level-1",
+          "is-level-2",
+          "is-level-3",
+          "is-level-4",
+          "is-level-5",
+          "is-level-6",
+          "is-level-7",
+          "is-level-8",
+          "is-level-9",
+          "is-level-10"
+        );
         item.classList.add(`is-level-${Math.min(level, 10)}`);
-
-        item.append(name, value, progress);
-        refs.timeLedger.appendChild(item);
       });
     };
 
@@ -3130,8 +3148,13 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         const status = card.querySelector("[data-roster-status]");
         const statusText = card.querySelector("[data-roster-status-text]");
         const timer = card.querySelector("[data-roster-timer]");
+        const isPlayerCharacter = character.id === currentPlayerCharacterId;
+        const isLocked = Boolean(currentPlayerCharacterId && !isPlayerCharacter);
 
-        card.classList.toggle("is-player-character", character.id === currentPlayerCharacterId);
+        card.classList.toggle("is-player-character", isPlayerCharacter);
+        card.classList.toggle("is-locked", isLocked);
+        card.disabled = isLocked;
+        card.setAttribute("aria-disabled", String(isLocked));
         status.classList.toggle("is-awake", isAwake);
         status.classList.toggle("is-asleep", !isAwake);
         statusText.textContent = `Stav: ${isAwake ? "Vzhůru" : "Spí"}`;
@@ -3400,6 +3423,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         button.type = "button";
         button.className = "roster-card";
         button.dataset.characterCard = character.id;
+        button.disabled = Boolean(currentPlayerCharacterId && character.id !== currentPlayerCharacterId);
+        button.setAttribute("aria-disabled", String(button.disabled));
         button.style.setProperty("--card-index", String(index));
         button.setAttribute("aria-label", `Otevřít postavu ${character.listName}`);
 
@@ -3791,6 +3816,10 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     document.addEventListener("click", async (event) => {
       const characterCard = event.target.closest("[data-character-card]");
       if (characterCard) {
+        if (currentPlayerCharacterId && characterCard.dataset.characterCard !== currentPlayerCharacterId) {
+          return;
+        }
+
         showDetail(characterCard.dataset.characterCard);
         window.location.hash = characterCard.dataset.characterCard;
         return;
@@ -3809,6 +3838,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
 
       if (event.target.closest("#wakeCharacterButton")) {
+        if (currentPlayerCharacterId && activeCharacterId !== currentPlayerCharacterId) return;
+
         const startedAt = startWakeTimer(activeCharacterId);
         await setRemoteCharacterState(activeCharacterId, {
           status: "awake",
@@ -3821,6 +3852,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
 
       if (event.target.closest("#sleepCharacterButton")) {
+        if (currentPlayerCharacterId && activeCharacterId !== currentPlayerCharacterId) return;
+
         const profile = characterActionProfiles[activeCharacterId];
         if (!profile) return;
 
