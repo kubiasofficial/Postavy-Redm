@@ -680,8 +680,8 @@
       top: 12px;
       right: 12px;
       z-index: 5;
-      min-width: 54px;
-      padding: 7px 9px;
+      min-width: 74px;
+      padding: 7px 9px 8px;
       border: 1px solid rgba(255, 222, 154, 0.28);
       border-radius: var(--radius-md);
       background:
@@ -694,6 +694,33 @@
       text-transform: uppercase;
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.32);
       backdrop-filter: blur(6px);
+    }
+
+    .roster-level-badge::before {
+      content: attr(data-badge-mark);
+      display: block;
+      margin: 0 auto 4px;
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--badge-line, rgba(255, 222, 154, 0.46));
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(255, 245, 206, 0.74), transparent 18%),
+        linear-gradient(145deg, var(--badge-start, #8d5f2d), var(--badge-end, #2b2118));
+      color: var(--badge-ink, #21170f);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 0.82rem;
+      line-height: 28px;
+      text-align: center;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.28);
+      box-shadow:
+        inset 0 0 0 2px rgba(0, 0, 0, 0.18),
+        0 0 18px var(--badge-glow, rgba(169, 120, 57, 0.18));
+    }
+
+    .roster-level-badge span {
+      display: block;
+      line-height: 1;
     }
 
     .content,
@@ -1145,6 +1172,52 @@
       letter-spacing: 0.02em;
       text-transform: none;
       white-space: nowrap;
+    }
+
+    .character-badge-row {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      padding: 8px;
+      border: 1px solid rgba(255, 222, 154, 0.12);
+      border-radius: var(--radius-md);
+      background: rgba(8, 8, 7, 0.26);
+    }
+
+    .character-badge-emblem {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--badge-line, rgba(255, 222, 154, 0.46));
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(255, 245, 206, 0.74), transparent 18%),
+        linear-gradient(145deg, var(--badge-start, #8d5f2d), var(--badge-end, #2b2118));
+      color: var(--badge-ink, #21170f);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.15rem;
+      line-height: 44px;
+      text-align: center;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.28);
+      box-shadow:
+        inset 0 0 0 2px rgba(0, 0, 0, 0.18),
+        0 0 20px var(--badge-glow, rgba(169, 120, 57, 0.2));
+    }
+
+    .character-badge-name {
+      margin: 0;
+      color: #fff0cf;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .character-badge-meta {
+      display: block;
+      margin-top: 4px;
+      color: #b9a37e;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
     }
 
     .character-progress-track {
@@ -2450,6 +2523,13 @@
               <span class="character-level-time" id="characterLevelTime">0min</span>
               <span id="characterLevelEnd">Level 2</span>
             </div>
+            <div class="character-badge-row">
+              <span class="character-badge-emblem" id="characterBadgeEmblem">I</span>
+              <p class="character-badge-name">
+                <span id="characterBadgeName">Poutník</span>
+                <span class="character-badge-meta" id="characterBadgeMeta">Odznak za úroveň 1</span>
+              </p>
+            </div>
             <div class="character-progress-track" aria-hidden="true">
               <span class="character-progress-fill" id="characterProgressFill"></span>
             </div>
@@ -2913,6 +2993,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       characterLevelStart: document.getElementById("characterLevelStart"),
       characterLevelEnd: document.getElementById("characterLevelEnd"),
       characterLevelTime: document.getElementById("characterLevelTime"),
+      characterBadgeEmblem: document.getElementById("characterBadgeEmblem"),
+      characterBadgeName: document.getElementById("characterBadgeName"),
+      characterBadgeMeta: document.getElementById("characterBadgeMeta"),
       characterProgressFill: document.getElementById("characterProgressFill"),
       characterLevelNote: document.getElementById("characterLevelNote"),
       characterActionStatus: document.getElementById("characterActionStatus"),
@@ -3293,22 +3376,98 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     };
 
     const hour = 60 * 60 * 1000;
-    const levelThresholds = [
-      0,
-      12 * hour,
-      30 * hour,
-      60 * hour,
-      105 * hour,
-      165 * hour,
-      240 * hour,
-      330 * hour,
-      440 * hour,
-      575 * hour,
-      735 * hour,
-      925 * hour,
-      1145 * hour,
-      1395 * hour,
-      1680 * hour
+    const maxLevel = 100;
+    const getLevelThresholdHours = (level) => {
+      if (level <= 1) return 0;
+
+      const completedLevels = level - 1;
+      return Math.round((completedLevels * 4) + (Math.pow(completedLevels, 1.72) * 0.72));
+    };
+    const levelThresholds = Array.from(
+      { length: maxLevel },
+      (_, index) => getLevelThresholdHours(index + 1) * hour
+    );
+    const badgeTiers = [
+      {
+        level: 1,
+        name: "Poutník",
+        mark: "I",
+        start: "#755032",
+        end: "#241913",
+        line: "rgba(188, 137, 84, 0.58)",
+        glow: "rgba(169, 120, 57, 0.18)",
+        ink: "#f7e8c7"
+      },
+      {
+        level: 10,
+        name: "Občan West Havenu",
+        mark: "X",
+        start: "#9a642d",
+        end: "#3b2516",
+        line: "rgba(218, 153, 75, 0.72)",
+        glow: "rgba(218, 153, 75, 0.24)",
+        ink: "#fff0cf"
+      },
+      {
+        level: 20,
+        name: "Známá tvář",
+        mark: "II",
+        start: "#b9b0a1",
+        end: "#47423b",
+        line: "rgba(230, 220, 198, 0.72)",
+        glow: "rgba(230, 220, 198, 0.2)",
+        ink: "#1d1712"
+      },
+      {
+        level: 30,
+        name: "Starousedlík",
+        mark: "III",
+        start: "#d1a24b",
+        end: "#5a371b",
+        line: "rgba(255, 218, 132, 0.78)",
+        glow: "rgba(255, 202, 103, 0.26)",
+        ink: "#24170c"
+      },
+      {
+        level: 40,
+        name: "Respektovaná postava",
+        mark: "IV",
+        start: "#b44b4f",
+        end: "#31121a",
+        line: "rgba(237, 112, 118, 0.7)",
+        glow: "rgba(180, 75, 79, 0.3)",
+        ink: "#ffe6d5"
+      },
+      {
+        level: 50,
+        name: "Legenda města",
+        mark: "V",
+        start: "#f0c86e",
+        end: "#5c421d",
+        line: "rgba(255, 232, 166, 0.84)",
+        glow: "rgba(255, 210, 96, 0.36)",
+        ink: "#24170c"
+      },
+      {
+        level: 75,
+        name: "Živá kronika",
+        mark: "★",
+        start: "#d8d2c6",
+        end: "#2d3034",
+        line: "rgba(246, 240, 222, 0.84)",
+        glow: "rgba(226, 225, 215, 0.3)",
+        ink: "#151515"
+      },
+      {
+        level: 100,
+        name: "Mýtus West Havenu",
+        mark: "W",
+        start: "#ffe5a1",
+        end: "#7f1f2b",
+        line: "rgba(255, 238, 184, 0.9)",
+        glow: "rgba(255, 218, 121, 0.44)",
+        ink: "#240b0f"
+      }
     ];
 
     const pickRandom = (items) => items[Math.floor(Math.random() * items.length)];
@@ -3433,6 +3592,26 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       return level;
     };
 
+    const getBadgeForLevel = (level) => {
+      let badge = badgeTiers[0];
+
+      badgeTiers.forEach((tier) => {
+        if (level >= tier.level) {
+          badge = tier;
+        }
+      });
+
+      return badge;
+    };
+
+    const applyBadgeTheme = (element, badge) => {
+      element.style.setProperty("--badge-start", badge.start);
+      element.style.setProperty("--badge-end", badge.end);
+      element.style.setProperty("--badge-line", badge.line);
+      element.style.setProperty("--badge-glow", badge.glow);
+      element.style.setProperty("--badge-ink", badge.ink);
+    };
+
     const getLevelProgress = (totalPlayedMs) => {
       const level = getLevelForTotal(totalPlayedMs);
       const currentThreshold = levelThresholds[level - 1] || 0;
@@ -3451,9 +3630,10 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       };
     };
 
-    const getLevelMessage = (characterName, level) => (
-      `${characterName} získává novou úroveň. Tohle není náhoda ani krátká chvíle slávy, ale stopa dlouhých nocí, probuzení a rozhodnutí, která se ve West Havenu počítají.`
-    );
+    const getLevelMessage = (characterName, level) => {
+      const badge = getBadgeForLevel(level);
+      return `${characterName} získává úroveň ${level} a nese odznak ${badge.name}. Tohle není náhoda ani krátká chvíle slávy, ale stopa dlouhých nocí, probuzení a rozhodnutí, která se ve West Havenu počítají.`;
+    };
 
     const playLevelUpSound = () => {
       if (!refs.levelUpAudio || alertVolume === 0) return;
@@ -3497,7 +3677,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.levelAlertImage.src = character.portrait;
       refs.levelAlertImage.alt = character.portraitAlt;
       refs.levelAlertTitle.textContent = character.listName;
-      refs.levelAlertLevel.textContent = `Úroveň ${alert.level}`;
+      refs.levelAlertLevel.textContent = `Úroveň ${alert.level} | ${getBadgeForLevel(alert.level).name}`;
       refs.levelAlertText.textContent = alert.text || getLevelMessage(character.listName, alert.level);
       refs.levelAlert.classList.add("is-visible");
       refs.levelAlert.setAttribute("aria-hidden", "false");
@@ -3536,7 +3716,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.otherLevelAlertImage.src = character.portrait;
       refs.otherLevelAlertImage.alt = character.portraitAlt;
       refs.otherLevelAlertTitle.textContent = `${character.listName} | LVL ${alert.level}`;
-      refs.otherLevelAlertText.textContent = "Někdo ve West Havenu posunul svůj příběh o kus dál.";
+      refs.otherLevelAlertText.textContent = `${getBadgeForLevel(alert.level).name} | Někdo ve West Havenu posunul svůj příběh o kus dál.`;
       refs.otherLevelAlert.classList.add("is-visible");
       refs.otherLevelAlert.setAttribute("aria-hidden", "false");
 
@@ -3559,6 +3739,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         characterId,
         level,
         totalPlayedMs,
+        badgeName: getBadgeForLevel(level).name,
         text: getLevelMessage(character.listName, level),
         createdAt
       };
@@ -3645,9 +3826,14 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         status.classList.toggle("is-asleep", !isAwake);
         statusText.textContent = `Stav: ${isAwake ? "Vzhůru" : "Spí"}`;
 
+        const level = getLevelForTotal(getTotalPlayedMs(character.id));
+        const badge = getBadgeForLevel(level);
         timer.classList.toggle("is-visible", isAwake);
         timer.textContent = isAwake ? formatDuration(getWakeDuration(character.id)) : "";
-        levelBadge.textContent = `LVL ${getLevelForTotal(getTotalPlayedMs(character.id))}`;
+        levelBadge.dataset.badgeMark = badge.mark;
+        levelBadge.title = `${badge.name} | Level ${level}`;
+        levelBadge.innerHTML = `<span>LVL ${level}</span>`;
+        applyBadgeTheme(levelBadge, badge);
       });
 
       updateTimeLedger();
@@ -3761,10 +3947,15 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       const duration = getWakeDuration(activeCharacterId);
       const totalPlayedMs = activeCharacterId ? getTotalPlayedMs(activeCharacterId) : 0;
       const progress = getLevelProgress(totalPlayedMs);
+      const badge = getBadgeForLevel(progress.level);
 
       refs.characterLevelStart.textContent = `Level ${progress.level}`;
       refs.characterLevelEnd.textContent = progress.isMaxLevel ? "Max" : `Level ${progress.nextLevel}`;
       refs.characterLevelTime.textContent = formatLedgerDuration(totalPlayedMs);
+      refs.characterBadgeEmblem.textContent = badge.mark;
+      refs.characterBadgeName.textContent = badge.name;
+      refs.characterBadgeMeta.textContent = `Odznak za úroveň ${badge.level}+`;
+      applyBadgeTheme(refs.characterBadgeEmblem, badge);
       refs.characterProgressFill.style.width = `${progress.progress}%`;
       refs.characterLevelNote.textContent = progress.isMaxLevel
         ? "Nejvyšší úroveň dosažena"

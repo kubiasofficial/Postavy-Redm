@@ -7,22 +7,26 @@ const DAILY_REPORT_CHANNEL_ID = "1505429461267386449";
 const hour = 60 * 60 * 1000;
 const minute = 60 * 1000;
 
-const levelThresholds = [
-  0,
-  12 * hour,
-  30 * hour,
-  60 * hour,
-  105 * hour,
-  165 * hour,
-  240 * hour,
-  330 * hour,
-  440 * hour,
-  575 * hour,
-  735 * hour,
-  925 * hour,
-  1145 * hour,
-  1395 * hour,
-  1680 * hour
+const maxLevel = 100;
+const getLevelThresholdHours = (level) => {
+  if (level <= 1) return 0;
+
+  const completedLevels = level - 1;
+  return Math.round((completedLevels * 4) + (Math.pow(completedLevels, 1.72) * 0.72));
+};
+const levelThresholds = Array.from(
+  { length: maxLevel },
+  (_, index) => getLevelThresholdHours(index + 1) * hour
+);
+const badgeTiers = [
+  { level: 1, name: "Poutnik" },
+  { level: 10, name: "Obcan West Havenu" },
+  { level: 20, name: "Znama tvar" },
+  { level: 30, name: "Starousedlik" },
+  { level: 40, name: "Respektovana postava" },
+  { level: 50, name: "Legenda mesta" },
+  { level: 75, name: "Ziva kronika" },
+  { level: 100, name: "Mytus West Havenu" }
 ];
 
 const characters = [
@@ -67,6 +71,17 @@ const getLevelForTotal = (totalPlayedMs) => {
   });
 
   return level;
+};
+
+const getBadgeForLevel = (level) => {
+  let badge = badgeTiers[0];
+  badgeTiers.forEach((tier) => {
+    if (level >= tier.level) {
+      badge = tier;
+    }
+  });
+
+  return badge;
 };
 
 const formatDuration = (durationMs) => {
@@ -188,6 +203,7 @@ const buildReport = async (reportDateKey, newDateKey, now) => {
     const dailyPlayedMs = dailyBefore + activeSegmentMs;
     const totalPlayedMs = totalBefore + activeSegmentMs;
     const level = getLevelForTotal(totalPlayedMs);
+    const badge = getBadgeForLevel(level);
 
     return {
       ...character,
@@ -195,6 +211,7 @@ const buildReport = async (reportDateKey, newDateKey, now) => {
       dailyPlayedMs,
       totalPlayedMs,
       level,
+      badgeName: badge.name,
       update: state.status === "awake"
         ? {
             status: "awake",
@@ -227,6 +244,7 @@ const buildEmbed = (rows, reportDateKey) => ({
       `Dnes: \`${formatDuration(row.dailyPlayedMs)}\``,
       `Celkem: \`${formatDuration(row.totalPlayedMs)}\``,
       `Level: \`LVL ${row.level}\``,
+      `Odznak: \`${row.badgeName}\``,
       `Stav o pulnoci: \`${row.status}\``
     ].join("\n"),
     inline: true
