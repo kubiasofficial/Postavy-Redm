@@ -273,6 +273,64 @@
       box-shadow: 0 0 22px rgba(169, 120, 57, 0.22);
     }
 
+    .home-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+
+    .home-badges-button {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 14px;
+      border: 1px solid rgba(255, 222, 154, 0.32);
+      border-radius: var(--radius-md);
+      background:
+        linear-gradient(180deg, rgba(255, 232, 184, 0.1), transparent 60%),
+        rgba(16, 14, 12, 0.78);
+      color: #fff0cf;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+      transition:
+        transform var(--ease),
+        border-color var(--ease),
+        filter var(--ease);
+    }
+
+    .home-badges-button::before {
+      content: "I";
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 222, 154, 0.46);
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(255, 245, 206, 0.68), transparent 18%),
+        linear-gradient(145deg, #a97839, #2b2118);
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 0.78rem;
+      letter-spacing: 0;
+      box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.18);
+    }
+
+    .home-badges-button:hover,
+    .home-badges-button:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(255, 222, 154, 0.64);
+      filter: brightness(1.08);
+      outline: none;
+    }
+
     .roster-grid {
       position: relative;
       z-index: 1;
@@ -1668,6 +1726,176 @@
       outline: none;
     }
 
+    .badge-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 58;
+      display: none;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 50% 18%, rgba(169, 120, 57, 0.2), transparent 36%),
+        rgba(4, 4, 3, 0.82);
+      backdrop-filter: blur(8px);
+    }
+
+    .badge-modal.is-visible {
+      display: grid;
+    }
+
+    .badge-card {
+      position: relative;
+      width: min(840px, 100%);
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+      padding: 24px;
+      border: 1px solid rgba(169, 120, 57, 0.44);
+      border-radius: var(--radius-xl);
+      background:
+        linear-gradient(180deg, rgba(255, 232, 184, 0.1), transparent 24%),
+        linear-gradient(145deg, rgba(34, 29, 24, 0.98), rgba(10, 10, 9, 0.99));
+      box-shadow: 0 34px 110px rgba(0, 0, 0, 0.72), 0 0 80px rgba(169, 120, 57, 0.16);
+      animation: view-rise 320ms var(--ease) both;
+    }
+
+    .badge-modal-x {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      background: rgba(7, 7, 6, 0.62);
+      color: #fff8e8;
+      cursor: pointer;
+      font: inherit;
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .badge-title {
+      margin: 0;
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      line-height: 0.95;
+      text-transform: uppercase;
+    }
+
+    .badge-summary {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 0.6fr);
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .badge-summary-panel {
+      padding: 16px;
+      border: 1px solid rgba(169, 120, 57, 0.18);
+      border-radius: var(--radius-lg);
+      background: rgba(8, 8, 7, 0.28);
+    }
+
+    .badge-summary-name {
+      margin: 0;
+      color: #fff0cf;
+      font-size: 1.2rem;
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+
+    .badge-summary-meta {
+      margin: 8px 0 0;
+      color: #b9a37e;
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+
+    .badge-next {
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+    }
+
+    .badge-progress-track {
+      height: 8px;
+      overflow: hidden;
+      margin-top: 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+
+    .badge-progress-fill {
+      display: block;
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background:
+        linear-gradient(90deg, rgba(143, 31, 45, 0.88), rgba(184, 137, 69, 0.96), rgba(255, 232, 169, 0.78));
+      box-shadow: 0 0 18px rgba(184, 137, 69, 0.24);
+      transition: width 900ms ease;
+    }
+
+    .badge-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .badge-item {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid rgba(169, 120, 57, 0.14);
+      border-radius: var(--radius-md);
+      background: rgba(8, 8, 7, 0.24);
+    }
+
+    .badge-item.is-earned {
+      border-color: rgba(255, 222, 154, 0.28);
+      background: rgba(169, 120, 57, 0.1);
+    }
+
+    .badge-item-title {
+      margin: 0;
+      color: #fff0cf;
+      font-size: 0.86rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .badge-item-text {
+      margin: 4px 0 0;
+      color: #b9a37e;
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+
+    .badge-state {
+      min-width: 86px;
+      padding: 7px 9px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-md);
+      color: #ead9bb;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-align: center;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .badge-item.is-earned .badge-state {
+      border-color: rgba(67, 194, 121, 0.24);
+      color: #c9f2d9;
+    }
+
     .auth-modal {
       position: fixed;
       inset: 0;
@@ -2319,9 +2547,20 @@
         margin-bottom: 22px;
       }
 
+      .home-actions {
+        display: grid;
+        gap: 14px;
+        margin-top: 18px;
+      }
+
+      .home-badges-button {
+        width: 100%;
+        justify-content: center;
+      }
+
       .home-mark {
         width: 100%;
-        margin: 18px 0 0;
+        margin: 0;
       }
 
       .roster-grid {
@@ -2385,6 +2624,24 @@
         width: 100%;
       }
 
+      .badge-card {
+        max-height: calc(100vh - 32px);
+        padding: 22px 18px;
+      }
+
+      .badge-summary {
+        grid-template-columns: 1fr;
+      }
+
+      .badge-item {
+        grid-template-columns: 44px minmax(0, 1fr);
+      }
+
+      .badge-state {
+        grid-column: 1 / -1;
+        width: 100%;
+      }
+
       .tab-panel {
         padding: 22px 20px 24px;
       }
@@ -2435,7 +2692,10 @@
         <p class="eyebrow">Character Roster</p>
         <h1 class="home-title">Postavy</h1>
       </div>
-      <div class="home-mark" aria-hidden="true"></div>
+      <div class="home-actions">
+        <button class="home-badges-button" id="openBadgesButton" type="button">Odznaky</button>
+        <div class="home-mark" aria-hidden="true"></div>
+      </div>
     </header>
 
     <div class="roster-grid" id="rosterGrid"></div>
@@ -2642,6 +2902,16 @@
         <button class="level-alert-close" id="levelAlertClose" type="button">Zavřít</button>
       </div>
     </div>
+  </div>
+
+  <div class="badge-modal" id="badgeModal" aria-hidden="true">
+    <section class="badge-card" aria-labelledby="badgeModalTitle">
+      <button class="badge-modal-x" id="closeBadgesButton" type="button" aria-label="Zavřít odznaky">&times;</button>
+      <p class="level-alert-kicker">West Haven Badges</p>
+      <h2 class="badge-title" id="badgeModalTitle">Odznaky</h2>
+      <div class="badge-summary" id="badgeSummary"></div>
+      <div class="badge-list" id="badgeList"></div>
+    </section>
   </div>
 
   <div class="sound-panel" id="soundPanel">
@@ -2999,6 +3269,11 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       characterProgressFill: document.getElementById("characterProgressFill"),
       characterLevelNote: document.getElementById("characterLevelNote"),
       characterActionStatus: document.getElementById("characterActionStatus"),
+      openBadgesButton: document.getElementById("openBadgesButton"),
+      badgeModal: document.getElementById("badgeModal"),
+      closeBadgesButton: document.getElementById("closeBadgesButton"),
+      badgeSummary: document.getElementById("badgeSummary"),
+      badgeList: document.getElementById("badgeList"),
       adminTools: document.getElementById("adminTools"),
       adminButton: document.getElementById("adminButton"),
       adminMenu: document.getElementById("adminMenu"),
@@ -3610,6 +3885,126 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       element.style.setProperty("--badge-line", badge.line);
       element.style.setProperty("--badge-glow", badge.glow);
       element.style.setProperty("--badge-ink", badge.ink);
+    };
+
+    const getNextBadgeForLevel = (level) => (
+      badgeTiers.find((tier) => tier.level > level) || null
+    );
+
+    const getBadgeThresholdMs = (badge) => (
+      levelThresholds[Math.max(0, badge.level - 1)] || 0
+    );
+
+    const createBadgeEmblem = (badge, className = "character-badge-emblem") => {
+      const emblem = document.createElement("span");
+      emblem.className = className;
+      emblem.textContent = badge.mark;
+      applyBadgeTheme(emblem, badge);
+      return emblem;
+    };
+
+    const renderBadgeModal = () => {
+      refs.badgeSummary.replaceChildren();
+      refs.badgeList.replaceChildren();
+
+      const characterId = currentPlayerCharacterId || playerProfile?.characterId;
+      const character = characters.find((item) => item.id === characterId);
+
+      if (!character) {
+        const panel = document.createElement("div");
+        panel.className = "badge-summary-panel";
+        const title = document.createElement("p");
+        title.className = "badge-summary-name";
+        title.textContent = "Nejdřív si zvol postavu";
+        const text = document.createElement("p");
+        text.className = "badge-summary-meta";
+        text.textContent = "Odznaky se počítají podle přihlášené RP postavy a jejích odehraných hodin.";
+        panel.append(title, text);
+        refs.badgeSummary.appendChild(panel);
+        return;
+      }
+
+      const totalPlayedMs = getTotalPlayedMs(character.id);
+      const level = getLevelForTotal(totalPlayedMs);
+      const currentBadge = getBadgeForLevel(level);
+      const nextBadge = getNextBadgeForLevel(level);
+      const currentBadgeThreshold = getBadgeThresholdMs(currentBadge);
+      const nextBadgeThreshold = nextBadge ? getBadgeThresholdMs(nextBadge) : currentBadgeThreshold;
+      const badgeRange = Math.max(1, nextBadgeThreshold - currentBadgeThreshold);
+      const badgeEarned = Math.max(0, totalPlayedMs - currentBadgeThreshold);
+      const badgeProgress = nextBadge ? Math.min(100, (badgeEarned / badgeRange) * 100) : 100;
+      const remainingToNextBadge = nextBadge ? Math.max(0, nextBadgeThreshold - totalPlayedMs) : 0;
+
+      const currentPanel = document.createElement("div");
+      currentPanel.className = "badge-summary-panel badge-next";
+      const currentEmblem = createBadgeEmblem(currentBadge);
+      const currentText = document.createElement("div");
+      const currentTitle = document.createElement("p");
+      currentTitle.className = "badge-summary-name";
+      currentTitle.textContent = currentBadge.name;
+      const currentMeta = document.createElement("p");
+      currentMeta.className = "badge-summary-meta";
+      currentMeta.textContent = `${character.listName} | LVL ${level} | Odehráno ${formatLedgerDuration(totalPlayedMs)}`;
+      currentText.append(currentTitle, currentMeta);
+      currentPanel.append(currentEmblem, currentText);
+
+      const nextPanel = document.createElement("div");
+      nextPanel.className = "badge-summary-panel";
+      const nextTitle = document.createElement("p");
+      nextTitle.className = "badge-summary-name";
+      nextTitle.textContent = nextBadge ? `Další: ${nextBadge.name}` : "Všechny odznaky získány";
+      const nextMeta = document.createElement("p");
+      nextMeta.className = "badge-summary-meta";
+      nextMeta.textContent = nextBadge
+        ? `Potřebuješ LVL ${nextBadge.level}. Zbývá ${formatLedgerDuration(remainingToNextBadge)}.`
+        : "Postava dosáhla nejvyšší prestiže West Havenu.";
+      const progressTrack = document.createElement("div");
+      progressTrack.className = "badge-progress-track";
+      const progressFill = document.createElement("span");
+      progressFill.className = "badge-progress-fill";
+      progressFill.style.width = `${badgeProgress}%`;
+      progressTrack.appendChild(progressFill);
+      nextPanel.append(nextTitle, nextMeta, progressTrack);
+
+      refs.badgeSummary.append(currentPanel, nextPanel);
+
+      badgeTiers.forEach((badge) => {
+        const earned = level >= badge.level;
+        const requiredMs = getBadgeThresholdMs(badge);
+        const remainingMs = Math.max(0, requiredMs - totalPlayedMs);
+        const item = document.createElement("div");
+        item.className = `badge-item${earned ? " is-earned" : ""}`;
+
+        const emblem = createBadgeEmblem(badge);
+        const body = document.createElement("div");
+        const title = document.createElement("p");
+        title.className = "badge-item-title";
+        title.textContent = `${badge.name} | LVL ${badge.level}`;
+        const text = document.createElement("p");
+        text.className = "badge-item-text";
+        text.textContent = earned
+          ? "Získáno za dlouhodobý život postavy ve West Havenu."
+          : `Musíš dosáhnout LVL ${badge.level}. Zbývá ${formatLedgerDuration(remainingMs)}.`;
+        body.append(title, text);
+
+        const state = document.createElement("span");
+        state.className = "badge-state";
+        state.textContent = earned ? "Získáno" : "Zamčeno";
+
+        item.append(emblem, body, state);
+        refs.badgeList.appendChild(item);
+      });
+    };
+
+    const openBadgeModal = () => {
+      renderBadgeModal();
+      refs.badgeModal.classList.add("is-visible");
+      refs.badgeModal.setAttribute("aria-hidden", "false");
+    };
+
+    const closeBadgeModal = () => {
+      refs.badgeModal.classList.remove("is-visible");
+      refs.badgeModal.setAttribute("aria-hidden", "true");
     };
 
     const getLevelProgress = (totalPlayedMs) => {
@@ -4456,6 +4851,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       hideAuthModal();
       updateRosterStates();
       updateAdminTools();
+      if (refs.badgeModal.classList.contains("is-visible")) {
+        renderBadgeModal();
+      }
     };
 
     const renderPasswordLogin = () => {
@@ -4732,6 +5130,16 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
     });
 
+    refs.openBadgesButton.addEventListener("click", openBadgeModal);
+
+    refs.closeBadgesButton.addEventListener("click", closeBadgeModal);
+
+    refs.badgeModal.addEventListener("click", (event) => {
+      if (event.target === refs.badgeModal) {
+        closeBadgeModal();
+      }
+    });
+
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && refs.sleepReportModal.classList.contains("is-visible")) {
         closeSleepReportModal(null);
@@ -4741,6 +5149,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
       if (event.key === "Escape" && refs.levelAlert.classList.contains("is-visible")) {
         hideLevelAlert();
+      }
+      if (event.key === "Escape" && refs.badgeModal.classList.contains("is-visible")) {
+        closeBadgeModal();
       }
     });
 
