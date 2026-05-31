@@ -329,10 +329,7 @@
     .roster-layout {
       position: relative;
       z-index: 1;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 190px;
-      gap: 18px;
-      align-items: start;
+      display: block;
     }
 
     .roster-grid {
@@ -343,8 +340,10 @@
     }
 
     .activity-rail {
-      position: sticky;
-      top: 18px;
+      position: absolute;
+      top: 0;
+      left: calc(100% + 20px);
+      width: 190px;
       padding: 14px;
       border: 1px solid rgba(169, 120, 57, 0.14);
       border-radius: var(--radius-lg);
@@ -2629,12 +2628,16 @@
       }
 
       .roster-layout {
+        display: grid;
         grid-template-columns: 1fr;
+        gap: 18px;
       }
 
       .activity-rail {
         position: relative;
         top: auto;
+        left: auto;
+        width: auto;
       }
 
       .roster-card,
@@ -2729,6 +2732,22 @@
 
       .night-report-output {
         min-height: 320px;
+      }
+    }
+
+    @media (min-width: 681px) and (max-width: 1480px) {
+      .roster-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 190px;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .activity-rail {
+        position: sticky;
+        top: 18px;
+        left: auto;
+        width: auto;
       }
     }
 
