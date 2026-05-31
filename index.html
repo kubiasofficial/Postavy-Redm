@@ -656,7 +656,7 @@
 
     .roster-live-timer {
       position: absolute;
-      top: 12px;
+      top: 48px;
       right: 12px;
       z-index: 4;
       display: none;
@@ -673,6 +673,27 @@
 
     .roster-live-timer.is-visible {
       display: block;
+    }
+
+    .roster-level-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 5;
+      min-width: 54px;
+      padding: 7px 9px;
+      border: 1px solid rgba(255, 222, 154, 0.28);
+      border-radius: var(--radius-md);
+      background:
+        linear-gradient(145deg, rgba(40, 31, 22, 0.78), rgba(8, 8, 7, 0.72));
+      color: #fff0cf;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-align: center;
+      text-transform: uppercase;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.32);
+      backdrop-filter: blur(6px);
     }
 
     .content,
@@ -1095,6 +1116,75 @@
       text-transform: uppercase;
     }
 
+    .character-level-progress {
+      grid-column: 1 / -1;
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid rgba(169, 120, 57, 0.18);
+      border-radius: var(--radius-md);
+      background:
+        linear-gradient(145deg, rgba(36, 29, 21, 0.42), rgba(8, 8, 7, 0.24));
+    }
+
+    .character-level-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: #d7c39c;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .character-level-time {
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.02em;
+      text-transform: none;
+      white-space: nowrap;
+    }
+
+    .character-progress-track {
+      position: relative;
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+
+    .character-progress-fill {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 0%;
+      border-radius: inherit;
+      background:
+        linear-gradient(90deg, rgba(143, 31, 45, 0.88), rgba(184, 137, 69, 0.96), rgba(255, 232, 169, 0.78));
+      box-shadow: 0 0 18px rgba(184, 137, 69, 0.24);
+      transition: width 900ms ease;
+    }
+
+    .character-progress-fill::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: 0.32;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.36), transparent);
+      animation: progress-sheen 8s ease-in-out infinite;
+    }
+
+    .character-level-note {
+      margin: 0;
+      color: #a9916c;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
     .character-alert {
       position: fixed;
       top: 24px;
@@ -1237,6 +1327,76 @@
       display: grid;
       justify-items: end;
       gap: 8px;
+    }
+
+    .admin-tools {
+      position: fixed;
+      top: 22px;
+      right: 22px;
+      z-index: 55;
+      display: none;
+    }
+
+    .admin-tools.is-visible {
+      display: block;
+    }
+
+    .admin-button {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 222, 154, 0.34);
+      border-radius: 999px;
+      background: linear-gradient(145deg, rgba(44, 34, 24, 0.88), rgba(8, 8, 7, 0.92));
+      color: #fff0cf;
+      cursor: pointer;
+      font-size: 1.15rem;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.42);
+      backdrop-filter: blur(8px);
+    }
+
+    .admin-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      width: 230px;
+      display: none;
+      padding: 8px;
+      border: 1px solid rgba(169, 120, 57, 0.24);
+      border-radius: var(--radius-lg);
+      background: linear-gradient(145deg, rgba(31, 27, 23, 0.96), rgba(9, 9, 8, 0.98));
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.54);
+    }
+
+    .admin-tools.is-open .admin-menu {
+      display: grid;
+      gap: 6px;
+    }
+
+    .admin-menu-button {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.04);
+      color: #ead9bb;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.82rem;
+      letter-spacing: 0.07em;
+      text-align: left;
+      text-transform: uppercase;
+    }
+
+    .admin-menu-button:hover,
+    .admin-menu-button:focus-visible {
+      border-color: rgba(255, 222, 154, 0.32);
+      color: #fff0cf;
+      outline: none;
     }
 
     .sound-toggle {
@@ -1686,6 +1846,163 @@
       outline: none;
     }
 
+    .night-report-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(8px);
+    }
+
+    .night-report-modal.is-visible {
+      display: flex;
+    }
+
+    .night-report-dialog {
+      width: min(1060px, 100%);
+      max-height: min(860px, calc(100vh - 48px));
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      overflow: hidden;
+      border: 1px solid rgba(169, 120, 57, 0.3);
+      border-radius: var(--radius-lg);
+      background: linear-gradient(145deg, rgba(41, 33, 25, 0.98), rgba(11, 11, 10, 0.99));
+      box-shadow: 0 34px 90px rgba(0, 0, 0, 0.62);
+    }
+
+    .night-report-header {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 24px;
+      border-bottom: 1px solid rgba(169, 120, 57, 0.16);
+    }
+
+    .night-report-kicker {
+      margin: 0 0 6px;
+      color: var(--gold);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .night-report-title {
+      margin: 0;
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      line-height: 1;
+    }
+
+    .night-report-close {
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.26);
+      color: #ead9bb;
+      cursor: pointer;
+      font: inherit;
+      font-size: 1.3rem;
+    }
+
+    .night-report-body {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+      gap: 18px;
+      padding: 22px 24px 24px;
+      overflow: auto;
+    }
+
+    .night-report-column {
+      display: grid;
+      align-content: start;
+      gap: 12px;
+    }
+
+    .night-report-label {
+      display: grid;
+      gap: 6px;
+      color: #d7c39c;
+      font-size: 0.74rem;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    .night-report-input,
+    .night-report-textarea {
+      width: 100%;
+      border: 1px solid rgba(169, 120, 57, 0.18);
+      border-radius: var(--radius-md);
+      background: rgba(8, 8, 7, 0.42);
+      color: #fff3d7;
+      font: inherit;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      outline: none;
+    }
+
+    .night-report-input {
+      min-height: 42px;
+      padding: 10px 12px;
+    }
+
+    .night-report-textarea {
+      min-height: 92px;
+      resize: vertical;
+      padding: 11px 12px;
+    }
+
+    .night-report-output {
+      min-height: 500px;
+      resize: vertical;
+      white-space: pre-wrap;
+    }
+
+    .night-report-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .night-report-button {
+      min-height: 40px;
+      padding: 10px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff0cf;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.78rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .night-report-button.primary {
+      border-color: rgba(22, 128, 74, 0.4);
+      background: linear-gradient(145deg, #1d7a43, #11572f);
+    }
+
+    .night-report-button.send {
+      border-color: rgba(169, 120, 57, 0.42);
+      background: linear-gradient(145deg, #a97839, #6b421c);
+    }
+
+    .night-report-status {
+      min-height: 20px;
+      margin: 0;
+      color: #c8b99d;
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+
     @keyframes page-fade {
       from {
         opacity: 0;
@@ -1791,6 +2108,16 @@
       to {
         opacity: 0;
         transform: translate3d(var(--dust-drift-x), -120px, 0) scale(1);
+      }
+    }
+
+    @keyframes progress-sheen {
+      0%,
+      72% {
+        transform: translateX(-110%);
+      }
+      100% {
+        transform: translateX(110%);
       }
     }
 
@@ -1988,6 +2315,22 @@
       .tab-panel {
         padding: 22px 20px 24px;
       }
+
+      .night-report-body {
+        grid-template-columns: 1fr;
+      }
+
+      .night-report-modal {
+        padding: 12px;
+      }
+
+      .night-report-dialog {
+        max-height: calc(100vh - 24px);
+      }
+
+      .night-report-output {
+        min-height: 320px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -2101,11 +2444,32 @@
           <button class="character-action wake" id="wakeCharacterButton" type="button">Probudit</button>
           <button class="character-action sleep" id="sleepCharacterButton" type="button">Jít spát</button>
           <p class="character-timer" id="characterTimer">Dýchá: nezaznamenáno</p>
+          <div class="character-level-progress" id="characterLevelProgress">
+            <div class="character-level-row">
+              <span id="characterLevelStart">Level 1</span>
+              <span class="character-level-time" id="characterLevelTime">0min</span>
+              <span id="characterLevelEnd">Level 2</span>
+            </div>
+            <div class="character-progress-track" aria-hidden="true">
+              <span class="character-progress-fill" id="characterProgressFill"></span>
+            </div>
+            <p class="character-level-note" id="characterLevelNote">Zbývá do další úrovně: 0min</p>
+          </div>
           <p class="character-action-status" id="characterActionStatus" aria-live="polite"></p>
         </div>
       </div>
     </aside>
   </main>
+
+  <div class="admin-tools" id="adminTools" aria-hidden="true">
+    <button class="admin-button" id="adminButton" type="button" aria-label="Admin menu">⚙</button>
+    <div class="admin-menu" id="adminMenu">
+      <button class="admin-menu-button" id="openNightReportButton" type="button">
+        <span aria-hidden="true">☾</span>
+        Night report
+      </button>
+    </div>
+  </div>
 
   <div class="sleep-report-modal" id="sleepReportModal" aria-hidden="true">
     <form class="sleep-report-dialog" id="sleepReportForm">
@@ -2124,6 +2488,41 @@
         <button class="sleep-report-button submit" type="submit">Odeslat report</button>
       </div>
     </form>
+  </div>
+
+  <div class="night-report-modal" id="nightReportModal" aria-hidden="true">
+    <section class="night-report-dialog" aria-labelledby="nightReportTitle">
+      <header class="night-report-header">
+        <div>
+          <p class="night-report-kicker">West Haven Office</p>
+          <h2 class="night-report-title" id="nightReportTitle">Night Report Generator</h2>
+        </div>
+        <button class="night-report-close" id="closeNightReportButton" type="button" aria-label="Zavřít night report">&times;</button>
+      </header>
+      <div class="night-report-body">
+        <div class="night-report-column">
+          <label class="night-report-label">
+            Místa
+            <input class="night-report-input" id="nightReportPlaces" type="text" value="Blackwater • Rhodes • Sheriff Office">
+          </label>
+          <div class="night-report-actions">
+            <button class="night-report-button" id="reloadNightReportsButton" type="button">Načíst podklady</button>
+            <button class="night-report-button primary" id="generateNightReportButton" type="button">Vygenerovat</button>
+          </div>
+          <div id="nightReportInputs" class="night-report-column"></div>
+        </div>
+        <div class="night-report-column">
+          <label class="night-report-label">
+            Výsledný report
+            <textarea class="night-report-textarea night-report-output" id="nightReportOutput"></textarea>
+          </label>
+          <div class="night-report-actions">
+            <button class="night-report-button send" id="sendNightReportButton" type="button">Odeslat na Discord</button>
+          </div>
+          <p class="night-report-status" id="nightReportStatus" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
   </div>
 
   <div class="character-alert" id="characterAlert" aria-live="polite" aria-hidden="true">
@@ -2196,6 +2595,7 @@
       collection,
       doc,
       getFirestore,
+      getDocs,
       limit,
       onSnapshot,
       orderBy,
@@ -2217,6 +2617,7 @@
     const characterStatesRef = collection(db, "characterStates");
     const characterAlertsRef = collection(db, "characterAlerts");
     const characterLevelAlertsRef = collection(db, "characterLevelAlerts");
+    const nightReportsRef = collection(db, "nightReports");
 
     const characters = [
       {
@@ -2509,7 +2910,16 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       timeLedger: document.getElementById("timeLedger"),
       characterActions: document.getElementById("characterActions"),
       characterTimer: document.getElementById("characterTimer"),
+      characterLevelStart: document.getElementById("characterLevelStart"),
+      characterLevelEnd: document.getElementById("characterLevelEnd"),
+      characterLevelTime: document.getElementById("characterLevelTime"),
+      characterProgressFill: document.getElementById("characterProgressFill"),
+      characterLevelNote: document.getElementById("characterLevelNote"),
       characterActionStatus: document.getElementById("characterActionStatus"),
+      adminTools: document.getElementById("adminTools"),
+      adminButton: document.getElementById("adminButton"),
+      adminMenu: document.getElementById("adminMenu"),
+      openNightReportButton: document.getElementById("openNightReportButton"),
       sleepReportModal: document.getElementById("sleepReportModal"),
       sleepReportForm: document.getElementById("sleepReportForm"),
       sleepReportTitle: document.getElementById("sleepReportTitle"),
@@ -2517,6 +2927,15 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       sleepReportTimer: document.getElementById("sleepReportTimer"),
       sleepReportInput: document.getElementById("sleepReportInput"),
       sleepReportCancel: document.getElementById("sleepReportCancel"),
+      nightReportModal: document.getElementById("nightReportModal"),
+      closeNightReportButton: document.getElementById("closeNightReportButton"),
+      reloadNightReportsButton: document.getElementById("reloadNightReportsButton"),
+      generateNightReportButton: document.getElementById("generateNightReportButton"),
+      sendNightReportButton: document.getElementById("sendNightReportButton"),
+      nightReportPlaces: document.getElementById("nightReportPlaces"),
+      nightReportInputs: document.getElementById("nightReportInputs"),
+      nightReportOutput: document.getElementById("nightReportOutput"),
+      nightReportStatus: document.getElementById("nightReportStatus"),
       characterAlert: document.getElementById("characterAlert"),
       characterAlertImage: document.getElementById("characterAlertImage"),
       characterAlertKicker: document.getElementById("characterAlertKicker"),
@@ -2554,6 +2973,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     const tabButtons = document.querySelectorAll("[data-tab]");
     const tabPanels = document.querySelectorAll("[data-panel]");
     const webhookUrl = "https://discord.com/api/webhooks/1509944426976378950/dmQXVCE7IpIPpjV2cf9Ju-JIZ088RV4PKc1J0Xd7_4jPrpdRysEJfh0zPxL83iCs5qPA";
+    const adminCharacterId = "zeke";
     const characterActionProfiles = {
       zeke: {
         displayName: "Ezekiel \"Zeke\" Crowe",
@@ -2994,6 +3414,13 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       return savedTotal + activeDuration;
     };
 
+    const getDailyPlayedMs = (characterId) => {
+      const state = getCharacterState(characterId);
+      const savedDaily = state.dailyDate === getPragueDateKey() ? Number(state.dailyPlayedMs || 0) : 0;
+      const activeDuration = state.status === "awake" ? (getWakeDuration(characterId) || 0) : 0;
+      return savedDaily + activeDuration;
+    };
+
     const getLevelForTotal = (totalPlayedMs) => {
       let level = 1;
 
@@ -3004,6 +3431,24 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       });
 
       return level;
+    };
+
+    const getLevelProgress = (totalPlayedMs) => {
+      const level = getLevelForTotal(totalPlayedMs);
+      const currentThreshold = levelThresholds[level - 1] || 0;
+      const nextThreshold = levelThresholds[level] || currentThreshold;
+      const levelRange = Math.max(1, nextThreshold - currentThreshold);
+      const earnedInLevel = Math.max(0, totalPlayedMs - currentThreshold);
+      const isMaxLevel = !levelThresholds[level];
+      const progress = isMaxLevel ? 100 : Math.min(100, (earnedInLevel / levelRange) * 100);
+
+      return {
+        level,
+        nextLevel: isMaxLevel ? level : level + 1,
+        progress,
+        remainingMs: isMaxLevel ? 0 : Math.max(0, nextThreshold - totalPlayedMs),
+        isMaxLevel
+      };
     };
 
     const getLevelMessage = (characterName, level) => (
@@ -3179,6 +3624,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         const status = card.querySelector("[data-roster-status]");
         const statusText = card.querySelector("[data-roster-status-text]");
         const timer = card.querySelector("[data-roster-timer]");
+        const levelBadge = card.querySelector("[data-roster-level]");
         const playerAvatar = card.querySelector("[data-roster-player-avatar]");
         const playerAvatarImage = card.querySelector("[data-roster-player-avatar-image]");
         const isPlayerCharacter = character.id === currentPlayerCharacterId;
@@ -3201,6 +3647,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
         timer.classList.toggle("is-visible", isAwake);
         timer.textContent = isAwake ? formatDuration(getWakeDuration(character.id)) : "";
+        levelBadge.textContent = `LVL ${getLevelForTotal(getTotalPlayedMs(character.id))}`;
       });
 
       updateTimeLedger();
@@ -3312,6 +3759,16 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       const profile = characterActionProfiles[activeCharacterId];
       const state = getCharacterState(activeCharacterId);
       const duration = getWakeDuration(activeCharacterId);
+      const totalPlayedMs = activeCharacterId ? getTotalPlayedMs(activeCharacterId) : 0;
+      const progress = getLevelProgress(totalPlayedMs);
+
+      refs.characterLevelStart.textContent = `Level ${progress.level}`;
+      refs.characterLevelEnd.textContent = progress.isMaxLevel ? "Max" : `Level ${progress.nextLevel}`;
+      refs.characterLevelTime.textContent = formatLedgerDuration(totalPlayedMs);
+      refs.characterProgressFill.style.width = `${progress.progress}%`;
+      refs.characterLevelNote.textContent = progress.isMaxLevel
+        ? "Nejvyšší úroveň dosažena"
+        : `Zbývá do další úrovně: ${formatLedgerDuration(progress.remainingMs)}`;
 
       if (!profile || state.status !== "awake" || !duration) {
         refs.characterTimer.textContent = "Dýchá: nezaznamenáno";
@@ -3351,6 +3808,187 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       return new Promise((resolve) => {
         sleepReportResolver = resolve;
       });
+    };
+
+    const nightReportProfiles = {
+      zeke: {
+        icon: "⚕️",
+        title: "Dr. Ezekiel \"Zeke\" Crowe",
+        shortName: "Zeke",
+        closing: "Ráno může působit unaveně, přísně a jako člověk, který si v hlavě skládá další nepříjemný rozhovor."
+      },
+      silas: {
+        icon: "🎩",
+        title: "Silas Crowe",
+        shortName: "Silas",
+        closing: "Ráno může působit klidněji, než by měl, ale pod tím klidem zůstává napětí z věcí, které zatím neřekl nahlas."
+      },
+      william: {
+        icon: "🤵",
+        title: "William Hart",
+        shortName: "William",
+        closing: "Ráno může působit zamlkle, rozlámaně a s pocitem, že některá rozhodnutí se přes noc neztratí."
+      },
+      "thomas-mercer": {
+        icon: "🐎",
+        title: "Thomas Mercer",
+        shortName: "Thomas",
+        closing: "Ráno může působit prakticky a tiše, jako někdo, kdo raději začne pracovat dřív, než se ho někdo začne ptát."
+      },
+      violet: {
+        icon: "🥀",
+        title: "Violet Crowe",
+        shortName: "Violet",
+        closing: "Ráno může působit soustředěně, trochu unaveně, ale pevněji rozhodnutá držet věci pohromadě."
+      }
+    };
+
+    const getNightReportDateTitle = () => (
+      new Intl.DateTimeFormat("cs-CZ", {
+        timeZone: "Europe/Prague",
+        day: "numeric",
+        month: "numeric",
+        year: "numeric"
+      }).format(new Date())
+    );
+
+    const updateAdminTools = () => {
+      const isAdmin = currentPlayerCharacterId === adminCharacterId;
+      refs.adminTools.classList.toggle("is-visible", isAdmin);
+      refs.adminTools.setAttribute("aria-hidden", String(!isAdmin));
+      if (!isAdmin) refs.adminTools.classList.remove("is-open");
+    };
+
+    const setNightReportStatus = (message = "") => {
+      refs.nightReportStatus.textContent = message;
+    };
+
+    const renderNightReportInputs = (entries = {}) => {
+      refs.nightReportInputs.replaceChildren();
+
+      characters.forEach((character) => {
+        const profile = nightReportProfiles[character.id];
+        const label = document.createElement("label");
+        label.className = "night-report-label";
+        label.textContent = `${profile.icon} ${profile.title}`;
+
+        const textarea = document.createElement("textarea");
+        textarea.className = "night-report-textarea";
+        textarea.dataset.nightReportCharacter = character.id;
+        textarea.placeholder = "Krátký podklad od hráče...";
+        textarea.value = entries[character.id]?.reportText || "";
+
+        label.appendChild(textarea);
+        refs.nightReportInputs.appendChild(label);
+      });
+    };
+
+    const loadNightReportInputs = async () => {
+      try {
+        setNightReportStatus("Načítám dnešní podklady...");
+        const dateKey = getPragueDateKey();
+        const snapshot = await getDocs(query(nightReportsRef, orderBy("createdAt", "desc"), limit(50)));
+        const entries = {};
+
+        snapshot.docs.forEach((entryDoc) => {
+          const data = entryDoc.data();
+          if (data.reportDate === dateKey && !entries[data.characterId]) {
+            entries[data.characterId] = data;
+          }
+        });
+
+        renderNightReportInputs(entries);
+        setNightReportStatus("Podklady načteny.");
+      } catch (error) {
+        renderNightReportInputs();
+        setNightReportStatus("Podklady se nepodařilo načíst, můžeš je doplnit ručně.");
+      }
+    };
+
+    const getNightReportInputValues = () => {
+      const values = {};
+      refs.nightReportInputs.querySelectorAll("[data-night-report-character]").forEach((textarea) => {
+        values[textarea.dataset.nightReportCharacter] = textarea.value.trim();
+      });
+
+      return values;
+    };
+
+    const cleanReportSentence = (text) => (
+      text.replace(/\s+/g, " ").trim().replace(/[.!?]+$/, "")
+    );
+
+    const generateNightReportText = () => {
+      const values = getNightReportInputValues();
+      const places = refs.nightReportPlaces.value.trim() || "Blackwater • Rhodes • Sheriff Office";
+      const divider = "━━━━━━━━━━━━━━━";
+      const sections = characters.map((character) => {
+        const profile = nightReportProfiles[character.id];
+        const rawText = cleanReportSentence(values[character.id] || "");
+        const dailyPlayed = formatLedgerDuration(getDailyPlayedMs(character.id));
+        const body = rawText
+          ? `${profile.shortName} má za sebou den, který se dá shrnout takto: ${rawText}. Noc proto nepůsobí úplně prázdně. Něco z toho si bere s sebou do spánku a něco zůstává viset ve vzduchu kolem West Havenu. ${profile.closing}`
+          : `${profile.shortName} dnes nezanechal žádný podklad pro noční zápis. Noc proběhla tiše a bez jasných stop. ${profile.closing}`;
+
+        return `${profile.icon} ${profile.title}\n\n${body}\n\nDnes dýchal/a: ${dailyPlayed}`;
+      });
+
+      return [
+        "🌙 Crowe Family — Night Report",
+        "",
+        `${places} • ${getNightReportDateTitle()}`,
+        "",
+        divider,
+        "",
+        sections.join(`\n\n${divider}\n\n`),
+        "",
+        divider,
+        "",
+        "🌫️ Nad rodinou Crowe zůstává tiché napětí. Někdo usíná s únavou, někdo s vinou a někdo s pocitem, že zítřek nebude tak klidný, jak by si přál.",
+        "",
+        "Po připojení na postavu prosím přizpůsobte její chování aktuálnímu nočnímu reportu."
+      ].join("\n");
+    };
+
+    const openNightReportModal = async () => {
+      refs.adminTools.classList.remove("is-open");
+      refs.nightReportModal.classList.add("is-visible");
+      refs.nightReportModal.setAttribute("aria-hidden", "false");
+      renderNightReportInputs();
+      refs.nightReportOutput.value = "";
+      await loadNightReportInputs();
+      refs.nightReportOutput.value = generateNightReportText();
+    };
+
+    const closeNightReportModal = () => {
+      refs.nightReportModal.classList.remove("is-visible");
+      refs.nightReportModal.setAttribute("aria-hidden", "true");
+      setNightReportStatus();
+    };
+
+    const sendNightReport = async () => {
+      const content = refs.nightReportOutput.value.trim();
+      if (!content) {
+        setNightReportStatus("Nejdřív vygeneruj nebo napiš report.");
+        return;
+      }
+
+      setNightReportStatus("Odesílám night report na Discord...");
+      try {
+        const response = await fetch("/api/night-report", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-West-Haven-Admin": currentPlayerCharacterId || ""
+          },
+          body: JSON.stringify({ content })
+        });
+
+        if (!response.ok) throw new Error(await response.text());
+        setNightReportStatus("Night report odeslán.");
+      } catch (error) {
+        setNightReportStatus("Odeslání se nepodařilo. Zkontroluj deploy a token bota.");
+      }
     };
 
     const buildWakeEmbed = (profile, message) => ({
@@ -3421,6 +4059,16 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         });
         if (newLevel > previousLevel) {
           await sendLevelAlert(activeCharacterId, newLevel, newTotal);
+        }
+        if (reportText.trim()) {
+          await setDoc(doc(nightReportsRef, `${Date.now()}-${activeCharacterId}`), {
+            characterId: activeCharacterId,
+            characterName: character.listName,
+            reportText: reportText.trim(),
+            durationMs: sleepDurationMs || 0,
+            reportDate: currentDateKey,
+            createdAt: Date.now()
+          });
         }
         updateCharacterTimer();
       }
@@ -3499,6 +4147,11 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         liveTimer.className = "roster-live-timer";
         liveTimer.dataset.rosterTimer = character.id;
 
+        const levelBadge = document.createElement("span");
+        levelBadge.className = "roster-level-badge";
+        levelBadge.dataset.rosterLevel = character.id;
+        levelBadge.textContent = "LVL 1";
+
         const status = document.createElement("span");
         status.className = "roster-status is-asleep";
         status.dataset.rosterStatus = character.id;
@@ -3510,7 +4163,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
         status.appendChild(statusText);
 
-        button.append(image, playerAvatar, name, role, liveTimer, status);
+        button.append(image, playerAvatar, levelBadge, name, role, liveTimer, status);
 
         rosterGrid.appendChild(button);
       });
@@ -3611,6 +4264,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       currentPlayerCharacterId = characterId;
       hideAuthModal();
       updateRosterStates();
+      updateAdminTools();
     };
 
     const renderPasswordLogin = () => {
@@ -3849,6 +4503,34 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       playLevelUpSound();
     });
 
+    refs.adminButton.addEventListener("click", () => {
+      refs.adminTools.classList.toggle("is-open");
+    });
+
+    refs.openNightReportButton.addEventListener("click", () => {
+      openNightReportModal();
+    });
+
+    refs.closeNightReportButton.addEventListener("click", closeNightReportModal);
+
+    refs.nightReportModal.addEventListener("click", (event) => {
+      if (event.target === refs.nightReportModal) {
+        closeNightReportModal();
+      }
+    });
+
+    refs.reloadNightReportsButton.addEventListener("click", async () => {
+      await loadNightReportInputs();
+      refs.nightReportOutput.value = generateNightReportText();
+    });
+
+    refs.generateNightReportButton.addEventListener("click", () => {
+      refs.nightReportOutput.value = generateNightReportText();
+      setNightReportStatus("Report připravený k úpravě.");
+    });
+
+    refs.sendNightReportButton.addEventListener("click", sendNightReport);
+
     refs.levelAlertClose.addEventListener("click", hideLevelAlert);
 
     refs.levelAlertX.addEventListener("click", hideLevelAlert);
@@ -3862,6 +4544,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && refs.sleepReportModal.classList.contains("is-visible")) {
         closeSleepReportModal(null);
+      }
+      if (event.key === "Escape" && refs.nightReportModal.classList.contains("is-visible")) {
+        closeNightReportModal();
       }
       if (event.key === "Escape" && refs.levelAlert.classList.contains("is-visible")) {
         hideLevelAlert();
@@ -3998,6 +4683,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     renderRoster();
     renderDust();
     applyAlertVolume();
+    updateAdminTools();
     startRosterTimerDisplay();
     loadDiscordPlayers();
 
