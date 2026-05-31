@@ -1884,6 +1884,55 @@
       color: #c9f2d9;
     }
 
+    .badge-admin-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .badge-admin-option {
+      display: grid;
+      grid-template-columns: 46px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid rgba(169, 120, 57, 0.16);
+      border-radius: var(--radius-md);
+      background: rgba(8, 8, 7, 0.24);
+      color: #ead9bb;
+      cursor: pointer;
+    }
+
+    .badge-admin-option img {
+      width: 46px;
+      height: 46px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 14px rgba(169, 120, 57, 0.2));
+    }
+
+    .badge-admin-option input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--gold);
+    }
+
+    .badge-admin-name {
+      display: block;
+      color: #fff0cf;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .badge-admin-requirement {
+      display: block;
+      margin-top: 4px;
+      color: #b9a37e;
+      font-size: 0.76rem;
+      line-height: 1.35;
+      text-transform: none;
+    }
+
     .auth-modal {
       position: fixed;
       inset: 0;
@@ -2630,6 +2679,15 @@
         width: 100%;
       }
 
+      .badge-admin-option {
+        grid-template-columns: 46px minmax(0, 1fr);
+      }
+
+      .badge-admin-option input {
+        grid-column: 1 / -1;
+        justify-self: start;
+      }
+
       .tab-panel {
         padding: 22px 20px 24px;
       }
@@ -2796,6 +2854,10 @@
         <span aria-hidden="true">☾</span>
         Night report
       </button>
+      <button class="admin-menu-button" id="openBadgeAdminButton" type="button">
+        <span aria-hidden="true">✦</span>
+        Odznaky
+      </button>
     </div>
   </div>
 
@@ -2848,6 +2910,37 @@
             <button class="night-report-button send" id="sendNightReportButton" type="button">Odeslat na Discord</button>
           </div>
           <p class="night-report-status" id="nightReportStatus" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="night-report-modal" id="badgeAdminModal" aria-hidden="true">
+    <section class="night-report-dialog" aria-labelledby="badgeAdminTitle">
+      <header class="night-report-header">
+        <div>
+          <p class="night-report-kicker">West Haven Office</p>
+          <h2 class="night-report-title" id="badgeAdminTitle">Správa odznaků</h2>
+        </div>
+        <button class="night-report-close" id="closeBadgeAdminButton" type="button" aria-label="Zavřít správu odznaků">&times;</button>
+      </header>
+      <div class="night-report-body">
+        <div class="night-report-column">
+          <label class="night-report-label">
+            Postava
+            <select class="night-report-input" id="badgeAdminCharacter"></select>
+          </label>
+          <p class="night-report-status" id="badgeAdminCharacterInfo"></p>
+        </div>
+        <div class="night-report-column">
+          <div class="night-report-label">
+            Speciální odznaky
+            <div class="badge-admin-list" id="badgeAdminList"></div>
+          </div>
+          <div class="night-report-actions">
+            <button class="night-report-button send" id="saveBadgeAdminButton" type="button">Uložit odznaky</button>
+          </div>
+          <p class="night-report-status" id="badgeAdminStatus" aria-live="polite"></p>
         </div>
       </div>
     </section>
@@ -3266,6 +3359,14 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       adminButton: document.getElementById("adminButton"),
       adminMenu: document.getElementById("adminMenu"),
       openNightReportButton: document.getElementById("openNightReportButton"),
+      openBadgeAdminButton: document.getElementById("openBadgeAdminButton"),
+      badgeAdminModal: document.getElementById("badgeAdminModal"),
+      closeBadgeAdminButton: document.getElementById("closeBadgeAdminButton"),
+      badgeAdminCharacter: document.getElementById("badgeAdminCharacter"),
+      badgeAdminCharacterInfo: document.getElementById("badgeAdminCharacterInfo"),
+      badgeAdminList: document.getElementById("badgeAdminList"),
+      saveBadgeAdminButton: document.getElementById("saveBadgeAdminButton"),
+      badgeAdminStatus: document.getElementById("badgeAdminStatus"),
       sleepReportModal: document.getElementById("sleepReportModal"),
       sleepReportForm: document.getElementById("sleepReportForm"),
       sleepReportTitle: document.getElementById("sleepReportTitle"),
@@ -4540,6 +4641,103 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.nightReportStatus.textContent = message;
     };
 
+    const setBadgeAdminStatus = (message = "") => {
+      refs.badgeAdminStatus.textContent = message;
+    };
+
+    const getSelectedBadgeAdminCharacter = () => (
+      characters.find((character) => character.id === refs.badgeAdminCharacter.value) || characters[0]
+    );
+
+    const renderBadgeAdminCharacters = () => {
+      refs.badgeAdminCharacter.replaceChildren();
+
+      characters.forEach((character) => {
+        const option = document.createElement("option");
+        option.value = character.id;
+        option.textContent = character.listName;
+        refs.badgeAdminCharacter.appendChild(option);
+      });
+
+      refs.badgeAdminCharacter.value = activeCharacterId || currentPlayerCharacterId || characters[0]?.id || "";
+    };
+
+    const renderBadgeAdminList = () => {
+      const character = getSelectedBadgeAdminCharacter();
+      if (!character) return;
+
+      const state = getCharacterState(character.id);
+      const earnedSpecialBadges = Array.isArray(state.specialBadges) ? state.specialBadges : [];
+      const level = getLevelForTotal(getTotalPlayedMs(character.id));
+
+      refs.badgeAdminCharacterInfo.textContent = `${character.listName} | LVL ${level} | speciální odznaky: ${earnedSpecialBadges.length}`;
+      refs.badgeAdminList.replaceChildren();
+
+      specialBadgeTiers.forEach((badge) => {
+        const label = document.createElement("label");
+        label.className = "badge-admin-option";
+
+        const image = document.createElement("img");
+        image.src = badge.image;
+        image.alt = `Odznak ${badge.name}`;
+
+        const body = document.createElement("span");
+        const name = document.createElement("span");
+        name.className = "badge-admin-name";
+        name.textContent = badge.name;
+        const requirement = document.createElement("span");
+        requirement.className = "badge-admin-requirement";
+        requirement.textContent = badge.requirement;
+        body.append(name, requirement);
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = badge.id;
+        checkbox.checked = earnedSpecialBadges.includes(badge.id);
+        checkbox.dataset.specialBadge = badge.id;
+
+        label.append(image, body, checkbox);
+        refs.badgeAdminList.appendChild(label);
+      });
+    };
+
+    const openBadgeAdminModal = () => {
+      refs.adminTools.classList.remove("is-open");
+      renderBadgeAdminCharacters();
+      renderBadgeAdminList();
+      setBadgeAdminStatus();
+      refs.badgeAdminModal.classList.add("is-visible");
+      refs.badgeAdminModal.setAttribute("aria-hidden", "false");
+    };
+
+    const closeBadgeAdminModal = () => {
+      refs.badgeAdminModal.classList.remove("is-visible");
+      refs.badgeAdminModal.setAttribute("aria-hidden", "true");
+      setBadgeAdminStatus();
+    };
+
+    const saveBadgeAdmin = async () => {
+      const character = getSelectedBadgeAdminCharacter();
+      if (!character) return;
+
+      const specialBadges = Array.from(refs.badgeAdminList.querySelectorAll("[data-special-badge]"))
+        .filter((checkbox) => checkbox.checked)
+        .map((checkbox) => checkbox.value);
+
+      setBadgeAdminStatus("Ukládám speciální odznaky...");
+      try {
+        await setRemoteCharacterState(character.id, { specialBadges });
+        renderBadgeAdminList();
+        if (refs.badgeModal.classList.contains("is-visible")) {
+          renderBadgeModal();
+        }
+        setBadgeAdminStatus(`Uloženo pro ${character.listName}.`);
+      } catch (error) {
+        console.error("Badge admin save failed:", error);
+        setBadgeAdminStatus("Odznaky se nepodařilo uložit.");
+      }
+    };
+
     const renderNightReportInputs = (entries = {}) => {
       refs.nightReportInputs.replaceChildren();
 
@@ -5191,6 +5389,23 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       openNightReportModal();
     });
 
+    refs.openBadgeAdminButton.addEventListener("click", openBadgeAdminModal);
+
+    refs.closeBadgeAdminButton.addEventListener("click", closeBadgeAdminModal);
+
+    refs.badgeAdminModal.addEventListener("click", (event) => {
+      if (event.target === refs.badgeAdminModal) {
+        closeBadgeAdminModal();
+      }
+    });
+
+    refs.badgeAdminCharacter.addEventListener("change", () => {
+      renderBadgeAdminList();
+      setBadgeAdminStatus();
+    });
+
+    refs.saveBadgeAdminButton.addEventListener("click", saveBadgeAdmin);
+
     refs.closeNightReportButton.addEventListener("click", closeNightReportModal);
 
     refs.nightReportModal.addEventListener("click", (event) => {
@@ -5237,6 +5452,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
       if (event.key === "Escape" && refs.nightReportModal.classList.contains("is-visible")) {
         closeNightReportModal();
+      }
+      if (event.key === "Escape" && refs.badgeAdminModal.classList.contains("is-visible")) {
+        closeBadgeAdminModal();
       }
       if (event.key === "Escape" && refs.levelAlert.classList.contains("is-visible")) {
         hideLevelAlert();
