@@ -733,6 +733,7 @@
       top: 12px;
       right: 12px;
       z-index: 5;
+      display: none;
       min-width: 74px;
       padding: 7px 9px 8px;
       border: 1px solid rgba(255, 222, 154, 0.28);
@@ -1820,6 +1821,18 @@
       display: grid;
       gap: 10px;
       margin-top: 18px;
+    }
+
+    .badge-section-title {
+      margin: 16px 0 2px;
+      color: var(--gold);
+      font-size: 0.76rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .badge-section-title:first-child {
+      margin-top: 0;
     }
 
     .badge-item {
@@ -3643,6 +3656,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         name: "Poutník",
         mark: "I",
         image: "badges/badge-level-1.png",
+        description: "První stopa v prachu West Havenu. Postava už má za sebou začátek příběhu a město ji začíná registrovat.",
+        requirement: "Začíná automaticky na první úrovni.",
         start: "#755032",
         end: "#241913",
         line: "rgba(188, 137, 84, 0.58)",
@@ -3654,6 +3669,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         name: "Občan West Havenu",
         mark: "X",
         image: "badges/badge-level-10.png",
+        description: "Postava už není jen jméno v davu. Má své místo, vztahy a první skutečnou váhu ve městě.",
+        requirement: "Dosáhni levelu 10.",
         start: "#9a642d",
         end: "#3b2516",
         line: "rgba(218, 153, 75, 0.72)",
@@ -3665,6 +3682,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         name: "Známá tvář",
         mark: "II",
         image: "badges/badge-level-20.png",
+        description: "Lidé si tě pamatují. Tvoje rozhodnutí se začínají vracet v rozhovorech, dluzích i reputaci.",
+        requirement: "Dosáhni levelu 20.",
         start: "#b9b0a1",
         end: "#47423b",
         line: "rgba(230, 220, 198, 0.72)",
@@ -3676,6 +3695,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         name: "Starousedlík",
         mark: "III",
         image: "badges/badge-level-30.png",
+        description: "Ulice, saloon i hranice města už znají tvoje kroky. Příběh postavy se pevně drží West Havenu.",
+        requirement: "Dosáhni levelu 30.",
         start: "#d1a24b",
         end: "#5a371b",
         line: "rgba(255, 218, 132, 0.78)",
@@ -3687,6 +3708,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         name: "Respektovaná postava",
         mark: "IV",
         image: "badges/badge-level-40.png",
+        description: "Tvoje slovo má váhu. Ať už z úcty, strachu nebo starých skutků, ostatní tě neberou na lehkou váhu.",
+        requirement: "Dosáhni levelu 40.",
         start: "#b44b4f",
         end: "#31121a",
         line: "rgba(237, 112, 118, 0.7)",
@@ -3698,6 +3721,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         name: "Legenda města",
         mark: "V",
         image: "badges/badge-level-50.png",
+        description: "Jméno, které se neříká potichu náhodou. Postava už patří mezi tváře, které formují město.",
+        requirement: "Dosáhni levelu 50.",
         start: "#f0c86e",
         end: "#5c421d",
         line: "rgba(255, 232, 166, 0.84)",
@@ -3709,6 +3734,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         name: "Živá kronika",
         mark: "★",
         image: "badges/badge-level-75.png",
+        description: "Pamatuješ víc příběhů, než kolik jich většina stihne začít. West Haven v tobě má kus své historie.",
+        requirement: "Dosáhni levelu 75.",
         start: "#d8d2c6",
         end: "#2d3034",
         line: "rgba(246, 240, 222, 0.84)",
@@ -3720,11 +3747,50 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         name: "Mýtus West Havenu",
         mark: "W",
         image: "badges/badge-level-100.png",
+        description: "Vrchol dlouhého RP života. Tohle už není jen aktivita, ale otisk postavy v celé kronice města.",
+        requirement: "Dosáhni levelu 100.",
         start: "#ffe5a1",
         end: "#7f1f2b",
         line: "rgba(255, 238, 184, 0.9)",
         glow: "rgba(255, 218, 121, 0.44)",
         ink: "#240b0f"
+      }
+    ];
+    const specialBadgeTiers = [
+      {
+        id: "night-soul",
+        name: "Noční duše",
+        image: "badges/badge-special-night-soul.png",
+        description: "Pro postavy, které drží město při životě i ve chvílích, kdy lucerny dohořívají a většina už spí.",
+        requirement: "Za výraznou aktivitu v nočních hodinách."
+      },
+      {
+        id: "chronicle",
+        name: "Kronikář",
+        image: "badges/badge-special-chronicle.png",
+        description: "Pro hráče, kteří dávají svým dnům zápis, směr a paměť. Díky nim má příběh stopu i po zavření hry.",
+        requirement: "Za pravidelné psaní nočních reportů."
+      },
+      {
+        id: "steady-citizen",
+        name: "Stálý občan",
+        image: "badges/badge-special-steady-citizen.png",
+        description: "Pro postavy, které se do města vrací opakovaně a dlouhodobě drží svůj příběh živý.",
+        requirement: "Za aktivitu více dní po sobě."
+      },
+      {
+        id: "event",
+        name: "Eventový odznak",
+        image: "badges/badge-special-event.png",
+        description: "Památka na výraznou účast v události, která rozhýbala město a zanechala v RP následky.",
+        requirement: "Ručně uděluje admin za event nebo speciální RP moment."
+      },
+      {
+        id: "founder",
+        name: "Zakladatel",
+        image: "badges/badge-special-founder.png",
+        description: "Čestný odznak pro ty, kteří stáli u začátku příběhu a pomohli West Havenu vyrůst.",
+        requirement: "Ručně uděluje admin jako speciální ocenění."
       }
     ];
 
@@ -3864,11 +3930,14 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
     const applyBadgeTheme = (element, badge) => {
       element.style.setProperty("--badge-image", `url("${badge.image}")`);
-      element.style.setProperty("--badge-start", badge.start);
-      element.style.setProperty("--badge-end", badge.end);
-      element.style.setProperty("--badge-line", badge.line);
-      element.style.setProperty("--badge-glow", badge.glow);
-      element.style.setProperty("--badge-ink", badge.ink);
+      ["start", "end", "line", "glow", "ink"].forEach((key) => {
+        const property = `--badge-${key}`;
+        if (badge[key]) {
+          element.style.setProperty(property, badge[key]);
+        } else {
+          element.style.removeProperty(property);
+        }
+      });
     };
 
     const getNextBadgeForLevel = (level) => (
@@ -3953,6 +4022,11 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
       refs.badgeSummary.append(currentPanel, nextPanel);
 
+      const levelSectionTitle = document.createElement("p");
+      levelSectionTitle.className = "badge-section-title";
+      levelSectionTitle.textContent = "Úrovňové odznaky";
+      refs.badgeList.appendChild(levelSectionTitle);
+
       badgeTiers.forEach((badge) => {
         const earned = level >= badge.level;
         const requiredMs = getBadgeThresholdMs(badge);
@@ -3968,8 +4042,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         const text = document.createElement("p");
         text.className = "badge-item-text";
         text.textContent = earned
-          ? "Získáno za dlouhodobý život postavy ve West Havenu."
-          : `Musíš dosáhnout LVL ${badge.level}. Zbývá ${formatLedgerDuration(remainingMs)}.`;
+          ? badge.description
+          : `${badge.requirement} Zbývá ${formatLedgerDuration(remainingMs)}.`;
         body.append(title, text);
 
         const state = document.createElement("span");
@@ -3977,6 +4051,38 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         state.textContent = earned ? "Získáno" : "Zamčeno";
 
         item.append(emblem, body, state);
+        refs.badgeList.appendChild(item);
+      });
+
+      const specialSectionTitle = document.createElement("p");
+      specialSectionTitle.className = "badge-section-title";
+      specialSectionTitle.textContent = "Speciální odznaky";
+      refs.badgeList.appendChild(specialSectionTitle);
+
+      const state = getCharacterState(character.id);
+      const earnedSpecialBadges = Array.isArray(state.specialBadges) ? state.specialBadges : [];
+      specialBadgeTiers.forEach((badge) => {
+        const earned = earnedSpecialBadges.includes(badge.id);
+        const item = document.createElement("div");
+        item.className = `badge-item${earned ? " is-earned" : ""}`;
+
+        const emblem = createBadgeEmblem(badge);
+        const body = document.createElement("div");
+        const title = document.createElement("p");
+        title.className = "badge-item-title";
+        title.textContent = badge.name;
+        const text = document.createElement("p");
+        text.className = "badge-item-text";
+        text.textContent = earned
+          ? badge.description
+          : `${badge.description} ${badge.requirement}`;
+        body.append(title, text);
+
+        const badgeState = document.createElement("span");
+        badgeState.className = "badge-state";
+        badgeState.textContent = earned ? "Získáno" : "Speciální";
+
+        item.append(emblem, body, badgeState);
         refs.badgeList.appendChild(item);
       });
     };
