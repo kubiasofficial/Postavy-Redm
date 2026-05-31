@@ -2934,7 +2934,7 @@
         </div>
         <div class="night-report-column">
           <div class="night-report-label">
-            Speciální odznaky
+            Ruční speciální odznaky
             <div class="badge-admin-list" id="badgeAdminList"></div>
           </div>
           <div class="night-report-actions">
@@ -3863,35 +3863,43 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         name: "Noční duše",
         image: "badges/badge-special-night-soul.png",
         description: "Pro postavy, které drží město při životě i ve chvílích, kdy lucerny dohořívají a většina už spí.",
-        requirement: "Za výraznou aktivitu v nočních hodinách."
+        requirement: "Odehraj 20 hodin mezi 22:00 a 04:00.",
+        type: "automatic",
+        targetMs: 20 * hour
       },
       {
         id: "chronicle",
         name: "Kronikář",
         image: "badges/badge-special-chronicle.png",
         description: "Pro hráče, kteří dávají svým dnům zápis, směr a paměť. Díky nim má příběh stopu i po zavření hry.",
-        requirement: "Za pravidelné psaní nočních reportů."
+        requirement: "Odešli 10 nočních reportů.",
+        type: "automatic",
+        targetCount: 10
       },
       {
         id: "steady-citizen",
         name: "Stálý občan",
         image: "badges/badge-special-steady-citizen.png",
         description: "Pro postavy, které se do města vrací opakovaně a dlouhodobě drží svůj příběh živý.",
-        requirement: "Za aktivitu více dní po sobě."
+        requirement: "Buď aktivní 7 dní po sobě.",
+        type: "automatic",
+        targetDays: 7
       },
       {
         id: "event",
         name: "Eventový odznak",
         image: "badges/badge-special-event.png",
         description: "Památka na výraznou účast v události, která rozhýbala město a zanechala v RP následky.",
-        requirement: "Ručně uděluje admin za event nebo speciální RP moment."
+        requirement: "Ručně uděluje admin za event nebo speciální RP moment.",
+        type: "manual"
       },
       {
         id: "founder",
         name: "Zakladatel",
         image: "badges/badge-special-founder.png",
         description: "Čestný odznak pro ty, kteří stáli u začátku příběhu a pomohli West Havenu vyrůst.",
-        requirement: "Ručně uděluje admin jako speciální ocenění."
+        requirement: "Ručně uděluje admin jako speciální ocenění.",
+        type: "manual"
       }
     ];
 
@@ -4003,6 +4011,93 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       const savedDaily = state.dailyDate === getPragueDateKey() ? Number(state.dailyPlayedMs || 0) : 0;
       const activeDuration = state.status === "awake" ? (getWakeDuration(characterId) || 0) : 0;
       return savedDaily + activeDuration;
+    };
+
+    const getAchievementStats = (characterId) => {
+      const stats = getCharacterState(characterId).achievementStats || {};
+      return {
+        nightPlayedMs: Number(stats.nightPlayedMs || 0),
+        reportCount: Number(stats.reportCount || 0),
+        activeDateStreak: Number(stats.activeDateStreak || 0),
+        lastActiveDate: stats.lastActiveDate || ""
+      };
+    };
+
+    const getPragueHour = (timestamp) => {
+      const parts = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Europe/Prague",
+        hour: "2-digit",
+        hour12: false
+      }).formatToParts(new Date(timestamp));
+      const hourPart = parts.find((part) => part.type === "hour")?.value || "0";
+      return Number(hourPart);
+    };
+
+    const getDateKeyOffset = (dateKey, offsetDays) => {
+      const [year, month, day] = dateKey.split("-").map(Number);
+      const date = new Date(Date.UTC(year, month - 1, day + offsetDays));
+      return date.toISOString().slice(0, 10);
+    };
+
+    const updateActiveDateStreak = (stats, dateKey) => {
+      if (stats.lastActiveDate === dateKey) {
+        return stats;
+      }
+
+      const yesterdayKey = getDateKeyOffset(dateKey, -1);
+      return {
+        ...stats,
+        activeDateStreak: stats.lastActiveDate === yesterdayKey ? stats.activeDateStreak + 1 : 1,
+        lastActiveDate: dateKey
+      };
+    };
+
+    const getNightPlayedMsForSegment = (startedAt, endedAt) => {
+      if (!startedAt || !endedAt || endedAt <= startedAt) return 0;
+
+      let nightPlayedMs = 0;
+      let cursor = startedAt;
+      const stepMs = 60 * 1000;
+
+      while (cursor < endedAt) {
+        const nextCursor = Math.min(endedAt, cursor + stepMs);
+        const sampleAt = cursor + ((nextCursor - cursor) / 2);
+        const hour = getPragueHour(sampleAt);
+        if (hour >= 22 || hour < 4) {
+          nightPlayedMs += nextCursor - cursor;
+        }
+        cursor = nextCursor;
+      }
+
+      return nightPlayedMs;
+    };
+
+    const getAutomaticSpecialBadgeProgress = (badge, stats) => {
+      if (badge.id === "night-soul") {
+        const value = stats.nightPlayedMs;
+        return {
+          earned: value >= badge.targetMs,
+          label: `Noční čas: ${formatLedgerDuration(value)} / ${formatLedgerDuration(badge.targetMs)}`
+        };
+      }
+
+      if (badge.id === "chronicle") {
+        const value = stats.reportCount;
+        return {
+          earned: value >= badge.targetCount,
+          label: `Noční reporty: ${value} / ${badge.targetCount}`
+        };
+      }
+
+      if (badge.id === "steady-citizen") {
+        const value = stats.activeDateStreak;
+        return {
+          earned: value >= badge.targetDays,
+          label: `Aktivní série: ${value} / ${badge.targetDays} dní`
+        };
+      }
+
+      return { earned: false, label: badge.requirement };
     };
 
     const getLevelForTotal = (totalPlayedMs) => {
@@ -4161,9 +4256,13 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.badgeList.appendChild(specialSectionTitle);
 
       const state = getCharacterState(character.id);
+      const achievementStats = getAchievementStats(character.id);
       const earnedSpecialBadges = Array.isArray(state.specialBadges) ? state.specialBadges : [];
       specialBadgeTiers.forEach((badge) => {
-        const earned = earnedSpecialBadges.includes(badge.id);
+        const progress = badge.type === "automatic"
+          ? getAutomaticSpecialBadgeProgress(badge, achievementStats)
+          : { earned: earnedSpecialBadges.includes(badge.id), label: badge.requirement };
+        const earned = progress.earned || earnedSpecialBadges.includes(badge.id);
         const item = document.createElement("div");
         item.className = `badge-item${earned ? " is-earned" : ""}`;
 
@@ -4174,14 +4273,16 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         title.textContent = badge.name;
         const text = document.createElement("p");
         text.className = "badge-item-text";
-        text.textContent = earned
-          ? badge.description
-          : `${badge.description} ${badge.requirement}`;
+        text.textContent = earned && badge.type === "automatic"
+          ? `${badge.description} ${progress.label}.`
+          : earned
+            ? badge.description
+            : `${badge.description} ${progress.label}.`;
         body.append(title, text);
 
         const badgeState = document.createElement("span");
         badgeState.className = "badge-state";
-        badgeState.textContent = earned ? "Získáno" : "Speciální";
+        badgeState.textContent = earned ? "Získáno" : (badge.type === "automatic" ? "Progress" : "Ruční");
 
         item.append(emblem, body, badgeState);
         refs.badgeList.appendChild(item);
@@ -4669,11 +4770,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       const state = getCharacterState(character.id);
       const earnedSpecialBadges = Array.isArray(state.specialBadges) ? state.specialBadges : [];
       const level = getLevelForTotal(getTotalPlayedMs(character.id));
+      const manualSpecialBadges = specialBadgeTiers.filter((badge) => badge.type === "manual");
 
-      refs.badgeAdminCharacterInfo.textContent = `${character.listName} | LVL ${level} | speciální odznaky: ${earnedSpecialBadges.length}`;
+      refs.badgeAdminCharacterInfo.textContent = `${character.listName} | LVL ${level} | ruční odznaky: ${earnedSpecialBadges.filter((badgeId) => manualSpecialBadges.some((badge) => badge.id === badgeId)).length}`;
       refs.badgeAdminList.replaceChildren();
 
-      specialBadgeTiers.forEach((badge) => {
+      manualSpecialBadges.forEach((badge) => {
         const label = document.createElement("label");
         label.className = "badge-admin-option";
 
@@ -4723,10 +4825,18 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       const specialBadges = Array.from(refs.badgeAdminList.querySelectorAll("[data-special-badge]"))
         .filter((checkbox) => checkbox.checked)
         .map((checkbox) => checkbox.value);
+      const manualBadgeIds = specialBadgeTiers
+        .filter((badge) => badge.type === "manual")
+        .map((badge) => badge.id);
+      const existingBadges = Array.isArray(getCharacterState(character.id).specialBadges)
+        ? getCharacterState(character.id).specialBadges
+        : [];
+      const preservedBadges = existingBadges.filter((badgeId) => !manualBadgeIds.includes(badgeId));
+      const nextSpecialBadges = [...new Set([...preservedBadges, ...specialBadges])];
 
       setBadgeAdminStatus("Ukládám speciální odznaky...");
       try {
-        await setRemoteCharacterState(character.id, { specialBadges });
+        await setRemoteCharacterState(character.id, { specialBadges: nextSpecialBadges });
         renderBadgeAdminList();
         if (refs.badgeModal.classList.contains("is-visible")) {
           renderBadgeModal();
@@ -4924,13 +5034,25 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         const previousLevel = getLevelForTotal(previousTotal);
         const newTotal = previousTotal + (sleepDurationMs || 0);
         const newLevel = getLevelForTotal(newTotal);
+        const endedAt = Date.now();
+        const startedAt = Number(state.wakeStartedAt || (sleepDurationMs ? endedAt - sleepDurationMs : 0));
+        const nightPlayedMs = getNightPlayedMsForSegment(startedAt, endedAt);
+        const hadPlayedSegment = Boolean(sleepDurationMs && sleepDurationMs > 0);
+        const hadReport = hadPlayedSegment && Boolean(reportText.trim());
+        const currentAchievementStats = getAchievementStats(activeCharacterId);
+        const achievementStats = updateActiveDateStreak({
+          ...currentAchievementStats,
+          nightPlayedMs: currentAchievementStats.nightPlayedMs + nightPlayedMs,
+          reportCount: currentAchievementStats.reportCount + (hadReport ? 1 : 0)
+        }, currentDateKey);
         await setRemoteCharacterState(activeCharacterId, {
           status: "asleep",
           wakeStartedAt: null,
           totalPlayedMs: newTotal,
           dailyPlayedMs: previousDaily + (sleepDurationMs || 0),
           dailyDate: currentDateKey,
-          level: newLevel
+          level: newLevel,
+          achievementStats
         });
         if (newLevel > previousLevel) {
           await sendLevelAlert(activeCharacterId, newLevel, newTotal);
@@ -5492,10 +5614,13 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         if (currentPlayerCharacterId && activeCharacterId !== currentPlayerCharacterId) return;
 
         const startedAt = startWakeTimer(activeCharacterId);
+        const wakeDateKey = getPragueDateKey(startedAt);
+        const achievementStats = updateActiveDateStreak(getAchievementStats(activeCharacterId), wakeDateKey);
         await setRemoteCharacterState(activeCharacterId, {
           status: "awake",
           wakeStartedAt: startedAt,
-          dailyDate: getPragueDateKey(startedAt)
+          dailyDate: wakeDateKey,
+          achievementStats
         });
         updateCharacterTimer();
         sendCharacterAlert(activeCharacterId, "wake");
