@@ -326,37 +326,43 @@
       outline: none;
     }
 
-    .roster-grid {
+    .roster-layout {
       position: relative;
       z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 190px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .roster-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
       gap: 18px;
       perspective: 1200px;
     }
 
-    .home-lore {
-      position: relative;
-      z-index: 1;
-      margin-top: 28px;
-      padding: 26px 28px;
+    .activity-rail {
+      position: sticky;
+      top: 18px;
+      padding: 14px;
       border: 1px solid rgba(169, 120, 57, 0.14);
       border-radius: var(--radius-lg);
       overflow: hidden;
       background:
-        linear-gradient(90deg, rgba(10, 9, 8, 0.5), rgba(35, 26, 18, 0.28), rgba(10, 9, 8, 0.34)),
-        rgba(0, 0, 0, 0.14);
+        linear-gradient(180deg, rgba(255, 232, 184, 0.055), transparent 26%),
+        rgba(8, 8, 7, 0.22);
       box-shadow:
         inset 0 1px 0 rgba(255, 241, 205, 0.04),
         0 18px 44px rgba(0, 0, 0, 0.22);
       animation: lore-enter 700ms var(--ease) 520ms both;
     }
 
-    .home-lore::before {
+    .activity-rail::before {
       content: "";
       position: absolute;
       inset: -60% -20%;
-      opacity: 0.55;
+      opacity: 0.35;
       pointer-events: none;
       background:
         radial-gradient(circle at 12% 55%, rgba(143, 31, 45, 0.18), transparent 20%),
@@ -365,50 +371,31 @@
       animation: ember-light 9s ease-in-out infinite;
     }
 
-    .home-lore-text {
+    .activity-title {
       position: relative;
-      margin: 0;
+      margin: 0 0 12px;
       color: #e8d8ba;
       font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.25rem, 2vw, 1.9rem);
+      font-size: 1.1rem;
       line-height: 1.15;
       text-shadow: 0 8px 26px rgba(0, 0, 0, 0.58);
-    }
-
-    .home-lore-meta {
-      position: relative;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px 18px;
-      margin-top: 18px;
-      color: var(--gold);
-      font-size: 0.72rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-    }
-
-    .home-lore-meta span {
-      padding-top: 8px;
-      border-top: 1px solid rgba(169, 120, 57, 0.32);
-      white-space: nowrap;
     }
 
     .time-ledger {
       position: relative;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-      gap: 10px;
-      margin-top: 18px;
+      gap: 9px;
     }
 
     .time-ledger-item {
       position: relative;
       overflow: hidden;
       display: grid;
-      grid-template-columns: 42px minmax(0, 1fr);
-      gap: 10px;
+      grid-template-columns: 38px minmax(0, 1fr);
+      gap: 9px;
       align-items: center;
-      padding: 11px 12px;
+      min-height: 54px;
+      padding: 8px;
       border: 1px solid rgba(169, 120, 57, 0.14);
       border-radius: var(--radius-md);
       background: rgba(8, 8, 7, 0.28);
@@ -445,7 +432,7 @@
     }
 
     .time-ledger-name {
-      margin: 0 0 6px;
+      margin: 0;
       color: #ead9bb;
       font-size: 0.72rem;
       letter-spacing: 0.12em;
@@ -453,19 +440,60 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      opacity: 1;
+      max-height: 28px;
+      transform: translateY(0);
+      transition:
+        opacity var(--ease),
+        transform var(--ease),
+        max-height var(--ease);
     }
 
     .time-ledger-value {
       margin: 0;
       color: #fff0cf;
       font-family: Georgia, "Times New Roman", serif;
-      font-size: 1.25rem;
+      font-size: 1rem;
       line-height: 1;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transform: translateY(5px);
+      transition:
+        opacity var(--ease),
+        transform var(--ease),
+        max-height var(--ease);
+    }
+
+    .time-ledger-item.is-showing-time .time-ledger-name {
+      opacity: 0;
+      max-height: 0;
+      transform: translateY(-5px);
+    }
+
+    .time-ledger-item:hover .time-ledger-name,
+    .time-ledger-item:focus-within .time-ledger-name {
+      opacity: 0;
+      max-height: 0;
+      transform: translateY(-5px);
+    }
+
+    .time-ledger-item.is-showing-time .time-ledger-value {
+      opacity: 1;
+      max-height: 28px;
+      transform: translateY(0);
+    }
+
+    .time-ledger-item:hover .time-ledger-value,
+    .time-ledger-item:focus-within .time-ledger-value {
+      opacity: 1;
+      max-height: 28px;
+      transform: translateY(0);
     }
 
     .time-ledger-avatar {
-      width: 42px;
-      height: 42px;
+      width: 38px;
+      height: 38px;
       overflow: hidden;
       border: 1px solid rgba(255, 238, 196, 0.52);
       border-radius: 999px;
@@ -2600,23 +2628,18 @@
         margin: 0;
       }
 
-      .roster-grid {
+      .roster-layout {
         grid-template-columns: 1fr;
+      }
+
+      .activity-rail {
+        position: relative;
+        top: auto;
       }
 
       .roster-card,
       .roster-card > img {
         min-height: 330px;
-      }
-
-      .home-lore {
-        grid-template-columns: 1fr;
-        min-height: 140px;
-        padding: 22px 20px;
-      }
-
-      .home-lore-meta {
-        justify-items: start;
       }
 
       .overview-grid {
@@ -2744,17 +2767,13 @@
       </div>
     </header>
 
-    <div class="roster-grid" id="rosterGrid"></div>
-
-    <section class="home-lore" aria-label="Odehraný čas postav">
-      <p class="home-lore-text">Odehraný čas</p>
-      <div class="time-ledger" id="timeLedger"></div>
-      <div class="home-lore-meta" aria-hidden="true">
-        <span>West Haven</span>
-        <span>1899</span>
-        <span>součet mezi probuzením a spánkem</span>
-      </div>
-    </section>
+    <div class="roster-layout">
+      <div class="roster-grid" id="rosterGrid"></div>
+      <aside class="activity-rail" aria-label="Aktivita postav">
+        <p class="activity-title">Aktivita</p>
+        <div class="time-ledger" id="timeLedger"></div>
+      </aside>
+    </div>
   </section>
 
   <main class="app is-hidden" id="detailView" aria-label="Character menu">
@@ -3702,6 +3721,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     let sleepReportResolver = null;
     let timerIntervalId = null;
     let rosterTimerIntervalId = null;
+    let activityFlipTimeoutId = null;
+    let isActivityShowingTime = false;
     let characterAlertTimeoutId = null;
     let levelAlertTimeoutId = null;
     let otherLevelAlertTimeoutId = null;
@@ -4481,6 +4502,29 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           ? `Discord profil ${discordPlayer.displayName}`
           : character.portraitAlt;
       });
+    };
+
+    const setActivityDisplayMode = (showTime) => {
+      if (!refs.timeLedger) return;
+
+      isActivityShowingTime = showTime;
+      refs.timeLedger.querySelectorAll("[data-ledger-character]").forEach((item, index) => {
+        setTimeout(() => {
+          item.classList.toggle("is-showing-time", showTime);
+        }, index * 90);
+      });
+    };
+
+    const startActivityFlip = () => {
+      clearTimeout(activityFlipTimeoutId);
+      setActivityDisplayMode(false);
+      const scheduleFlip = () => {
+        activityFlipTimeoutId = setTimeout(() => {
+          setActivityDisplayMode(!isActivityShowingTime);
+          scheduleFlip();
+        }, isActivityShowingTime ? 2200 : 5200);
+      };
+      scheduleFlip();
     };
 
     const updateRosterStates = () => {
@@ -5721,6 +5765,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     applyAlertVolume();
     updateAdminTools();
     startRosterTimerDisplay();
+    startActivityFlip();
     loadDiscordPlayers();
 
     const initialCharacterId = window.location.hash.replace("#", "");
