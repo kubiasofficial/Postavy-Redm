@@ -131,7 +131,7 @@
       padding: 42px;
       border: 1px solid rgba(255, 255, 255, 0.09);
       border-radius: 10px;
-      overflow: hidden;
+      overflow: visible;
       background:
         linear-gradient(120deg, rgba(255, 255, 255, 0.075), transparent 20% 78%, rgba(169, 120, 57, 0.08)),
         radial-gradient(circle at 18% 0%, rgba(143, 31, 45, 0.2), transparent 32%),
@@ -343,6 +343,7 @@
       position: absolute;
       top: 0;
       left: calc(100% + 20px);
+      z-index: 5;
       width: 190px;
       padding: 14px;
       border: 1px solid rgba(169, 120, 57, 0.14);
