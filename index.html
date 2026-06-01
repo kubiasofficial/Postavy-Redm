@@ -318,6 +318,18 @@
       filter: drop-shadow(0 0 10px rgba(169, 120, 57, 0.22));
     }
 
+    .home-players-button::before {
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 32% 36%, rgba(255, 240, 207, 0.95) 0 18%, transparent 19%),
+        radial-gradient(circle at 68% 36%, rgba(255, 240, 207, 0.78) 0 16%, transparent 17%),
+        radial-gradient(circle at 50% 74%, rgba(169, 120, 57, 0.9) 0 29%, transparent 30%),
+        rgba(8, 8, 7, 0.84);
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 238, 196, 0.32),
+        0 0 12px rgba(169, 120, 57, 0.22);
+    }
+
     .home-badges-button:hover,
     .home-badges-button:focus-visible {
       transform: translateY(-2px);
@@ -1961,6 +1973,159 @@
       text-transform: none;
     }
 
+    .player-profile-shell {
+      display: grid;
+      grid-template-columns: minmax(190px, 0.42fr) minmax(0, 1fr);
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .player-profile-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(74px, 1fr));
+      gap: 12px;
+      align-content: start;
+      padding: 14px;
+      border: 1px solid rgba(169, 120, 57, 0.16);
+      border-radius: var(--radius-lg);
+      background: rgba(8, 8, 7, 0.26);
+    }
+
+    .player-profile-button {
+      display: grid;
+      justify-items: center;
+      gap: 8px;
+      min-width: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #ead9bb;
+      cursor: pointer;
+      font: inherit;
+    }
+
+    .player-profile-avatar {
+      width: 62px;
+      height: 62px;
+      overflow: hidden;
+      border: 2px solid rgba(255, 238, 196, 0.42);
+      border-radius: 999px;
+      background: rgba(8, 8, 7, 0.62);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.34);
+      transition:
+        transform var(--ease),
+        border-color var(--ease),
+        box-shadow var(--ease);
+    }
+
+    .player-profile-avatar img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .player-profile-button:hover .player-profile-avatar,
+    .player-profile-button:focus-visible .player-profile-avatar,
+    .player-profile-button.is-active .player-profile-avatar {
+      transform: translateY(-3px);
+      border-color: rgba(255, 222, 154, 0.82);
+      box-shadow:
+        0 16px 30px rgba(0, 0, 0, 0.42),
+        0 0 22px rgba(169, 120, 57, 0.22);
+    }
+
+    .player-profile-button:focus-visible {
+      outline: none;
+    }
+
+    .player-profile-name {
+      width: 100%;
+      overflow: hidden;
+      color: #d3bd93;
+      font-size: 0.66rem;
+      letter-spacing: 0.08em;
+      text-align: center;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .player-profile-detail {
+      min-width: 0;
+      padding: 16px;
+      border: 1px solid rgba(169, 120, 57, 0.18);
+      border-radius: var(--radius-lg);
+      background:
+        linear-gradient(180deg, rgba(255, 232, 184, 0.06), transparent 36%),
+        rgba(8, 8, 7, 0.24);
+    }
+
+    .player-profile-head {
+      display: grid;
+      grid-template-columns: 94px minmax(0, 1fr);
+      gap: 15px;
+      align-items: center;
+    }
+
+    .player-profile-portrait {
+      width: 94px;
+      height: 94px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 238, 196, 0.46);
+      border-radius: 999px;
+      background: rgba(8, 8, 7, 0.62);
+    }
+
+    .player-profile-portrait img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .player-profile-title {
+      margin: 0;
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      line-height: 0.95;
+      text-transform: uppercase;
+    }
+
+    .player-profile-meta {
+      margin: 9px 0 0;
+      color: #b9a37e;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .player-profile-current {
+      display: grid;
+      grid-template-columns: 56px minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+      margin-top: 16px;
+      padding: 12px;
+      border: 1px solid rgba(255, 222, 154, 0.22);
+      border-radius: var(--radius-md);
+      background: rgba(169, 120, 57, 0.1);
+    }
+
+    .player-profile-badges {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .player-profile-empty {
+      margin: 0;
+      color: #b9a37e;
+      line-height: 1.55;
+    }
+
     .auth-modal {
       position: fixed;
       inset: 0;
@@ -2697,6 +2862,20 @@
         grid-template-columns: 1fr;
       }
 
+      .player-profile-shell,
+      .player-profile-head {
+        grid-template-columns: 1fr;
+      }
+
+      .player-profile-portrait {
+        justify-self: center;
+      }
+
+      .player-profile-title,
+      .player-profile-meta {
+        text-align: center;
+      }
+
       .badge-item {
         grid-template-columns: 44px minmax(0, 1fr);
       }
@@ -2783,6 +2962,7 @@
       </div>
       <div class="home-actions">
         <button class="home-badges-button" id="openBadgesButton" type="button">Odznaky</button>
+        <button class="home-badges-button home-players-button" id="openPlayerProfilesButton" type="button">Hráči</button>
         <div class="home-mark" aria-hidden="true"></div>
       </div>
     </header>
@@ -3031,6 +3211,18 @@
       <h2 class="badge-title" id="badgeModalTitle">Odznaky</h2>
       <div class="badge-summary" id="badgeSummary"></div>
       <div class="badge-list" id="badgeList"></div>
+    </section>
+  </div>
+
+  <div class="badge-modal" id="playerProfilesModal" aria-hidden="true">
+    <section class="badge-card" aria-labelledby="playerProfilesTitle">
+      <button class="badge-modal-x" id="closePlayerProfilesButton" type="button" aria-label="Zavřít hráče">&times;</button>
+      <p class="level-alert-kicker">West Haven Players</p>
+      <h2 class="badge-title" id="playerProfilesTitle">Hráči</h2>
+      <div class="player-profile-shell">
+        <div class="player-profile-list" id="playerProfilesList"></div>
+        <div class="player-profile-detail" id="playerProfileDetail"></div>
+      </div>
     </section>
   </div>
 
@@ -3390,10 +3582,15 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       characterLevelNote: document.getElementById("characterLevelNote"),
       characterActionStatus: document.getElementById("characterActionStatus"),
       openBadgesButton: document.getElementById("openBadgesButton"),
+      openPlayerProfilesButton: document.getElementById("openPlayerProfilesButton"),
       badgeModal: document.getElementById("badgeModal"),
       closeBadgesButton: document.getElementById("closeBadgesButton"),
       badgeSummary: document.getElementById("badgeSummary"),
       badgeList: document.getElementById("badgeList"),
+      playerProfilesModal: document.getElementById("playerProfilesModal"),
+      closePlayerProfilesButton: document.getElementById("closePlayerProfilesButton"),
+      playerProfilesList: document.getElementById("playerProfilesList"),
+      playerProfileDetail: document.getElementById("playerProfileDetail"),
       adminTools: document.getElementById("adminTools"),
       adminButton: document.getElementById("adminButton"),
       adminMenu: document.getElementById("adminMenu"),
@@ -3770,6 +3967,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     let playerProfile = readPlayerProfile();
     let currentPlayerCharacterId = null;
     let pendingPlayerCharacterId = null;
+    let selectedPlayerProfileCharacterId = null;
     let discordPlayers = [];
     const characterDiscordPlayers = {};
     const characterDiscordIds = {
@@ -3970,6 +4168,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         discordPlayers = Array.isArray(data.players) ? data.players : [];
         syncDiscordPlayersToCharacters();
         updateRosterStates();
+        if (refs.playerProfilesModal.classList.contains("is-visible")) {
+          renderPlayerProfiles();
+        }
       } catch (error) {
         console.warn("Discord players could not be loaded:", error);
       }
@@ -4341,6 +4542,171 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.badgeModal.setAttribute("aria-hidden", "true");
     };
 
+    const getEarnedSpecialBadges = (characterId) => {
+      const state = getCharacterState(characterId);
+      const achievementStats = getAchievementStats(characterId);
+      const earnedSpecialBadges = Array.isArray(state.specialBadges) ? state.specialBadges : [];
+
+      return specialBadgeTiers.filter((badge) => {
+        const progress = badge.type === "automatic"
+          ? getAutomaticSpecialBadgeProgress(badge, achievementStats)
+          : { earned: false };
+        return progress.earned || earnedSpecialBadges.includes(badge.id);
+      });
+    };
+
+    const createProfileBadgeItem = (badge, text, stateText = "Získáno") => {
+      const item = document.createElement("div");
+      item.className = "badge-item is-earned";
+
+      const emblem = createBadgeEmblem(badge);
+      const body = document.createElement("div");
+      const title = document.createElement("p");
+      title.className = "badge-item-title";
+      title.textContent = badge.level ? `${badge.name} | LVL ${badge.level}` : badge.name;
+      const description = document.createElement("p");
+      description.className = "badge-item-text";
+      description.textContent = text || badge.description;
+      body.append(title, description);
+
+      const state = document.createElement("span");
+      state.className = "badge-state";
+      state.textContent = stateText;
+
+      item.append(emblem, body, state);
+      return item;
+    };
+
+    const renderPlayerProfileDetail = (characterId) => {
+      const character = characters.find((item) => item.id === characterId) || characters[0];
+      if (!character) return;
+
+      selectedPlayerProfileCharacterId = character.id;
+      const discordPlayer = characterDiscordPlayers[character.id];
+      const totalPlayedMs = getTotalPlayedMs(character.id);
+      const level = getLevelForTotal(totalPlayedMs);
+      const currentBadge = getBadgeForLevel(level);
+      const earnedLevelBadges = badgeTiers.filter((badge) => level >= badge.level);
+      const earnedSpecialBadges = getEarnedSpecialBadges(character.id);
+
+      refs.playerProfilesList.querySelectorAll("[data-player-profile]").forEach((button) => {
+        button.classList.toggle("is-active", button.dataset.playerProfile === character.id);
+      });
+
+      refs.playerProfileDetail.replaceChildren();
+
+      const head = document.createElement("div");
+      head.className = "player-profile-head";
+
+      const portrait = document.createElement("span");
+      portrait.className = "player-profile-portrait";
+      const portraitImage = document.createElement("img");
+      portraitImage.src = discordPlayer?.avatarUrl || character.portrait;
+      portraitImage.alt = discordPlayer
+        ? `Discord profil ${discordPlayer.displayName}`
+        : character.portraitAlt;
+      portrait.appendChild(portraitImage);
+
+      const intro = document.createElement("div");
+      const title = document.createElement("h3");
+      title.className = "player-profile-title";
+      title.textContent = character.listName;
+      const meta = document.createElement("p");
+      meta.className = "player-profile-meta";
+      meta.textContent = `${discordPlayer?.displayName || "RP profil"} | LVL ${level} | Odehráno ${formatLedgerDuration(totalPlayedMs)}`;
+      intro.append(title, meta);
+      head.append(portrait, intro);
+
+      const current = document.createElement("div");
+      current.className = "player-profile-current";
+      const currentEmblem = createBadgeEmblem(currentBadge);
+      const currentText = document.createElement("div");
+      const currentTitle = document.createElement("p");
+      currentTitle.className = "badge-summary-name";
+      currentTitle.textContent = currentBadge.name;
+      const currentMeta = document.createElement("p");
+      currentMeta.className = "badge-summary-meta";
+      currentMeta.textContent = `Aktuální odznak za úroveň ${currentBadge.level}+`;
+      currentText.append(currentTitle, currentMeta);
+      current.append(currentEmblem, currentText);
+
+      const badges = document.createElement("div");
+      badges.className = "player-profile-badges";
+
+      const levelTitle = document.createElement("p");
+      levelTitle.className = "badge-section-title";
+      levelTitle.textContent = "Získané úrovňové odznaky";
+      badges.appendChild(levelTitle);
+
+      earnedLevelBadges.forEach((badge) => {
+        badges.appendChild(createProfileBadgeItem(badge, badge.description));
+      });
+
+      const specialTitle = document.createElement("p");
+      specialTitle.className = "badge-section-title";
+      specialTitle.textContent = "Získané speciální odznaky";
+      badges.appendChild(specialTitle);
+
+      if (earnedSpecialBadges.length > 0) {
+        earnedSpecialBadges.forEach((badge) => {
+          badges.appendChild(createProfileBadgeItem(badge, badge.description, badge.type === "automatic" ? "Progress" : "Ruční"));
+        });
+      } else {
+        const empty = document.createElement("p");
+        empty.className = "player-profile-empty";
+        empty.textContent = "Tahle postava zatím nemá žádný speciální odznak.";
+        badges.appendChild(empty);
+      }
+
+      refs.playerProfileDetail.append(head, current, badges);
+    };
+
+    const renderPlayerProfiles = () => {
+      refs.playerProfilesList.replaceChildren();
+      const initialCharacterId = selectedPlayerProfileCharacterId
+        || currentPlayerCharacterId
+        || playerProfile?.characterId
+        || characters[0]?.id;
+
+      characters.forEach((character) => {
+        const discordPlayer = characterDiscordPlayers[character.id];
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "player-profile-button";
+        button.dataset.playerProfile = character.id;
+        button.setAttribute("aria-label", `Zobrazit profil hráče ${character.listName}`);
+
+        const avatar = document.createElement("span");
+        avatar.className = "player-profile-avatar";
+        const image = document.createElement("img");
+        image.src = discordPlayer?.avatarUrl || character.portrait;
+        image.alt = discordPlayer
+          ? `Discord profil ${discordPlayer.displayName}`
+          : character.portraitAlt;
+        avatar.appendChild(image);
+
+        const name = document.createElement("span");
+        name.className = "player-profile-name";
+        name.textContent = discordPlayer?.displayName || character.listName;
+
+        button.append(avatar, name);
+        refs.playerProfilesList.appendChild(button);
+      });
+
+      renderPlayerProfileDetail(initialCharacterId);
+    };
+
+    const openPlayerProfilesModal = () => {
+      renderPlayerProfiles();
+      refs.playerProfilesModal.classList.add("is-visible");
+      refs.playerProfilesModal.setAttribute("aria-hidden", "false");
+    };
+
+    const closePlayerProfilesModal = () => {
+      refs.playerProfilesModal.classList.remove("is-visible");
+      refs.playerProfilesModal.setAttribute("aria-hidden", "true");
+    };
+
     const getLevelProgress = (totalPlayedMs) => {
       const level = getLevelForTotal(totalPlayedMs);
       const currentThreshold = levelThresholds[level - 1] || 0;
@@ -4588,6 +4954,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       });
 
       updateTimeLedger();
+      if (refs.playerProfilesModal.classList.contains("is-visible")) {
+        renderPlayerProfileDetail(selectedPlayerProfileCharacterId || currentPlayerCharacterId || characters[0]?.id);
+      }
     };
 
     const startRosterTimerDisplay = () => {
@@ -5632,6 +6001,22 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
     });
 
+    refs.openPlayerProfilesButton.addEventListener("click", openPlayerProfilesModal);
+
+    refs.closePlayerProfilesButton.addEventListener("click", closePlayerProfilesModal);
+
+    refs.playerProfilesModal.addEventListener("click", (event) => {
+      if (event.target === refs.playerProfilesModal) {
+        closePlayerProfilesModal();
+      }
+    });
+
+    refs.playerProfilesList.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-player-profile]");
+      if (!button) return;
+      renderPlayerProfileDetail(button.dataset.playerProfile);
+    });
+
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && refs.sleepReportModal.classList.contains("is-visible")) {
         closeSleepReportModal(null);
@@ -5647,6 +6032,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
       if (event.key === "Escape" && refs.badgeModal.classList.contains("is-visible")) {
         closeBadgeModal();
+      }
+      if (event.key === "Escape" && refs.playerProfilesModal.classList.contains("is-visible")) {
+        closePlayerProfilesModal();
       }
     });
 
