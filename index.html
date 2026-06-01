@@ -3373,6 +3373,10 @@
         <span aria-hidden="true">✦</span>
         Odznaky
       </button>
+      <button class="admin-menu-button" id="testCharacterAlertButton" type="button">
+        <span aria-hidden="true">!</span>
+        Alert-test
+      </button>
     </div>
   </div>
 
@@ -3945,6 +3949,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       adminMenu: document.getElementById("adminMenu"),
       openNightReportButton: document.getElementById("openNightReportButton"),
       openBadgeAdminButton: document.getElementById("openBadgeAdminButton"),
+      testCharacterAlertButton: document.getElementById("testCharacterAlertButton"),
       badgeAdminModal: document.getElementById("badgeAdminModal"),
       closeBadgeAdminButton: document.getElementById("closeBadgeAdminButton"),
       badgeAdminCharacter: document.getElementById("badgeAdminCharacter"),
@@ -5646,6 +5651,22 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       await setDoc(doc(characterAlertsRef, alertId), alert);
     };
 
+    const testCharacterAlert = () => {
+      const characterId = activeCharacterId || currentPlayerCharacterId || adminCharacterId;
+      const profile = characterActionProfiles[characterId];
+      if (!profile) return;
+
+      const type = refs.characterAlert.classList.contains("is-sleep") ? "wake" : "sleep";
+      refs.adminTools.classList.remove("is-open");
+      enqueueCharacterAlert({
+        characterId,
+        type,
+        title: type === "wake" ? profile.wakeTitle : profile.sleepTitle,
+        text: type === "wake" ? profile.alertWake : profile.alertSleep,
+        createdAt: Date.now()
+      });
+    };
+
     const updateCharacterTimer = () => {
       const profile = characterActionProfiles[activeCharacterId];
       const state = getCharacterState(activeCharacterId);
@@ -6576,6 +6597,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     });
 
     refs.openBadgeAdminButton.addEventListener("click", openBadgeAdminModal);
+
+    refs.testCharacterAlertButton.addEventListener("click", testCharacterAlert);
 
     refs.closeBadgeAdminButton.addEventListener("click", closeBadgeAdminModal);
 
