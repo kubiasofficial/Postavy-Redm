@@ -1347,28 +1347,28 @@
       top: 24px;
       right: 24px;
       z-index: 40;
-      width: min(430px, calc(100vw - 32px));
+      width: min(520px, calc(100vw - 32px));
       display: grid;
-      grid-template-columns: 86px minmax(0, 1fr);
-      gap: 16px;
+      grid-template-columns: 104px minmax(0, 1fr);
+      gap: 18px;
       align-items: center;
       overflow: hidden;
-      padding: 14px 18px 14px 14px;
-      border: 1px solid rgba(255, 222, 154, 0.22);
-      border-left: 0;
-      border-radius: 8px;
+      min-height: 108px;
+      padding: 12px 24px 12px 12px;
+      border: 0;
+      border-radius: 0;
       background:
-        linear-gradient(90deg, rgba(67, 194, 121, 0.2), transparent 18%),
-        linear-gradient(180deg, rgba(255, 235, 188, 0.09), transparent 46%),
-        linear-gradient(145deg, rgba(31, 24, 18, 0.97), rgba(7, 7, 6, 0.98));
+        linear-gradient(90deg, rgba(67, 194, 121, 0.22), transparent 24%),
+        linear-gradient(90deg, rgba(5, 5, 4, 0.98), rgba(13, 11, 9, 0.9) 58%, rgba(7, 7, 6, 0.16)),
+        linear-gradient(180deg, rgba(255, 238, 196, 0.08), transparent 54%);
       box-shadow:
-        0 28px 80px rgba(0, 0, 0, 0.58),
-        0 0 0 1px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 241, 205, 0.08);
-      backdrop-filter: blur(10px);
+        0 26px 70px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 238, 196, 0.16),
+        inset 0 -1px 0 rgba(169, 120, 57, 0.34);
+      backdrop-filter: blur(9px);
       opacity: 0;
       pointer-events: none;
-      transform: translate3d(22px, -8px, 0) scale(0.985);
+      transform: translate3d(34px, -6px, 0);
       transition:
         opacity 260ms var(--ease),
         transform 260ms var(--ease);
@@ -1377,73 +1377,71 @@
     .character-alert::before {
       content: "";
       position: absolute;
-      inset: 0 auto 0 0;
-      width: 6px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 2px;
       background:
-        linear-gradient(180deg, rgba(255, 238, 196, 0.5), transparent 18% 82%, rgba(255, 238, 196, 0.26)),
-        #2f9f63;
-      box-shadow: 0 0 24px rgba(67, 194, 121, 0.42);
+        linear-gradient(90deg, transparent, rgba(255, 222, 154, 0.96) 18%, rgba(67, 194, 121, 0.78) 44%, transparent 86%);
+      box-shadow: 0 0 22px rgba(67, 194, 121, 0.38);
     }
 
     .character-alert::after {
       content: "";
       position: absolute;
-      inset: 1px;
+      inset: 0;
       pointer-events: none;
-      border-radius: 7px;
       background:
-        linear-gradient(115deg, transparent 0 44%, rgba(255, 238, 196, 0.1) 48%, transparent 56%),
-        linear-gradient(rgba(255, 242, 207, 0.025) 1px, transparent 1px);
-      background-size: auto, 100% 18px;
-      opacity: 0.72;
+        linear-gradient(115deg, transparent 0 34%, rgba(255, 238, 196, 0.1) 42%, transparent 52%),
+        radial-gradient(ellipse at 8% 50%, rgba(255, 238, 196, 0.16), transparent 34%);
+      opacity: 0.62;
     }
 
     .character-alert.is-visible {
       opacity: 1;
-      transform: translate3d(0, 0, 0) scale(1);
+      transform: translate3d(0, 0, 0);
     }
 
     .character-alert.is-sleep {
       background:
-        linear-gradient(90deg, rgba(169, 66, 77, 0.22), transparent 18%),
-        linear-gradient(180deg, rgba(255, 235, 188, 0.08), transparent 46%),
-        linear-gradient(145deg, rgba(31, 24, 18, 0.97), rgba(7, 7, 6, 0.98));
+        linear-gradient(90deg, rgba(169, 66, 77, 0.24), transparent 24%),
+        linear-gradient(90deg, rgba(5, 5, 4, 0.98), rgba(13, 11, 9, 0.9) 58%, rgba(7, 7, 6, 0.16)),
+        linear-gradient(180deg, rgba(255, 238, 196, 0.07), transparent 54%);
     }
 
     .character-alert.is-sleep::before {
       background:
-        linear-gradient(180deg, rgba(255, 238, 196, 0.45), transparent 18% 82%, rgba(255, 238, 196, 0.22)),
-        #9a2630;
-      box-shadow: 0 0 24px rgba(169, 66, 77, 0.42);
+        linear-gradient(90deg, transparent, rgba(255, 222, 154, 0.9) 18%, rgba(169, 66, 77, 0.86) 44%, transparent 86%);
+      box-shadow: 0 0 22px rgba(169, 66, 77, 0.4);
     }
 
     .character-alert.is-broadcast {
       background:
-        linear-gradient(90deg, rgba(220, 188, 112, 0.22), transparent 18%),
-        linear-gradient(180deg, rgba(255, 235, 188, 0.1), transparent 46%),
-        linear-gradient(145deg, rgba(31, 24, 18, 0.97), rgba(7, 7, 6, 0.98));
+        linear-gradient(90deg, rgba(220, 188, 112, 0.24), transparent 24%),
+        linear-gradient(90deg, rgba(5, 5, 4, 0.98), rgba(13, 11, 9, 0.9) 58%, rgba(7, 7, 6, 0.16)),
+        linear-gradient(180deg, rgba(255, 238, 196, 0.09), transparent 54%);
     }
 
     .character-alert.is-broadcast::before {
       background:
-        linear-gradient(180deg, rgba(255, 238, 196, 0.56), transparent 18% 82%, rgba(255, 238, 196, 0.28)),
-        #d2a85b;
+        linear-gradient(90deg, transparent, rgba(255, 222, 154, 0.96) 18%, rgba(220, 188, 112, 0.92) 44%, transparent 86%);
       box-shadow: 0 0 26px rgba(220, 188, 112, 0.44);
     }
 
     .character-alert img {
       position: relative;
       z-index: 1;
-      width: 86px;
-      height: 86px;
+      width: 104px;
+      height: 104px;
       display: block;
       object-fit: cover;
       object-position: center top;
-      border: 1px solid rgba(255, 238, 196, 0.38);
-      border-radius: 6px;
+      border: 1px solid rgba(255, 238, 196, 0.28);
+      border-radius: 0;
       box-shadow:
-        0 12px 28px rgba(0, 0, 0, 0.42),
-        inset 0 0 0 1px rgba(0, 0, 0, 0.42);
+        16px 0 34px rgba(0, 0, 0, 0.52),
+        0 0 0 1px rgba(0, 0, 0, 0.42);
+      filter: contrast(1.08) brightness(0.9);
     }
 
     .character-alert-kicker {
@@ -1451,9 +1449,9 @@
       z-index: 1;
       margin: 0 0 6px;
       color: var(--gold);
-      font-size: 0.64rem;
+      font-size: 0.62rem;
       font-weight: 700;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
     }
 
@@ -1463,9 +1461,9 @@
       margin: 0;
       color: #fff0cf;
       font-family: Georgia, "Times New Roman", serif;
-      font-size: 1.42rem;
-      line-height: 0.98;
-      letter-spacing: 0.03em;
+      font-size: 1.68rem;
+      line-height: 0.92;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
       text-shadow: 0 8px 22px rgba(0, 0, 0, 0.66);
     }
@@ -1473,9 +1471,9 @@
     .character-alert-text {
       position: relative;
       z-index: 1;
-      margin: 8px 0 0;
+      margin: 9px 0 0;
       color: #d8c8a9;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       line-height: 1.48;
     }
 
