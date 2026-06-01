@@ -416,8 +416,9 @@
         0 0 28px color-mix(in srgb, var(--rumor-color, #d6a047) 38%, transparent);
       transform: translateX(-42px);
       transition:
-        transform 620ms var(--ease),
-        opacity 360ms var(--ease);
+        transform 900ms var(--ease),
+        opacity 520ms var(--ease),
+        filter 700ms var(--ease);
     }
 
     .rumor-avatar::before {
@@ -454,8 +455,9 @@
         0 0 32px color-mix(in srgb, var(--rumor-color, #d6a047) 18%, transparent);
       transform: translateX(28px) rotateY(0deg);
       transition:
-        transform 700ms var(--ease),
-        filter 500ms var(--ease);
+        transform 950ms var(--ease),
+        opacity 620ms var(--ease),
+        filter 760ms var(--ease);
     }
 
     .rumor-character img {
@@ -468,8 +470,9 @@
       z-index: 1;
       min-width: 0;
       transition:
-        opacity 300ms var(--ease),
-        transform 420ms var(--ease);
+        opacity 620ms var(--ease),
+        transform 760ms var(--ease),
+        filter 760ms var(--ease);
     }
 
     .rumor-kicker {
@@ -509,17 +512,20 @@
 
     .rumor-strip.is-changing .rumor-avatar {
       opacity: 0;
-      transform: translateX(-76px) rotate(-18deg) scale(0.82);
+      filter: blur(2px) brightness(0.7);
+      transform: translateX(-92px) rotate(-24deg) scale(0.78);
     }
 
     .rumor-strip.is-changing .rumor-character {
-      filter: brightness(0.56);
-      transform: translateX(48px) rotateY(22deg) scale(0.94);
+      opacity: 0.42;
+      filter: blur(2px) brightness(0.56);
+      transform: translateX(70px) rotateY(28deg) scale(0.9);
     }
 
     .rumor-strip.is-changing .rumor-copy {
       opacity: 0;
-      transform: translateX(18px);
+      filter: blur(2px);
+      transform: translateX(26px);
     }
 
     @keyframes rumor-aura {
@@ -4663,6 +4669,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     let rosterTimerIntervalId = null;
     let activityFlipTimeoutId = null;
     let rumorIntervalId = null;
+    let rumorTimeoutId = null;
     let isActivityShowingTime = false;
     let characterAlertTimeoutId = null;
     let levelAlertTimeoutId = null;
@@ -4713,6 +4720,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       william: "#d870a8",
       "thomas-mercer": "#8fa3a8",
       violet: "#d7a8cf"
+    };
+    const characterRumorPronouns = {
+      violet: "ní"
     };
 
     const hour = 60 * 60 * 1000;
@@ -5079,30 +5089,40 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       return templates[variantIndex % templates.length];
     };
 
-    const getFallbackRumorFragments = (character) => (
-      [
-        character.overview,
-        character.overviewBlocks?.[0]?.text,
-        character.overviewBlocks?.[1]?.text,
-        character.status ? `${character.listName} je pořád veden jako ${character.status}` : ""
-      ].filter(Boolean)
-    );
-
     const getRumorFragmentsForCharacter = (character) => {
-      const reportFragments = rumorEntriesByCharacter[character.id] || [];
-      return reportFragments.length > 0 ? reportFragments : getFallbackRumorFragments(character);
+      const report = rumorEntriesByCharacter[character.id];
+      if (!report?.hasAnyReport) return [];
+
+      if (report.previousDayFragments.length > 0) {
+        return report.previousDayFragments;
+      }
+
+      const pronoun = characterRumorPronouns[character.id] || "něm";
+      return [`Dnes se o ${pronoun} po West Havenu nic moc neříká.`];
     };
 
     const renderRumorSlide = () => {
       if (!refs.rumorStrip || characters.length === 0) return;
 
-      const character = characters[rumorIndex % characters.length];
+      const rumorCharacters = characters.filter((character) => rumorEntriesByCharacter[character.id]?.hasAnyReport);
+      if (rumorCharacters.length === 0) {
+        refs.rumorTitle.textContent = "Městské drby";
+        refs.rumorText.textContent = "Noční kancelář zatím nemá žádný report, ze kterého by šlo tahat drby.";
+        refs.rumorMeta.textContent = "Čeká se na první zápis";
+        refs.rumorAvatarImage.src = "zeke.png";
+        refs.rumorAvatarImage.alt = "";
+        refs.rumorCharacterImage.src = "zeke.png";
+        refs.rumorCharacterImage.alt = "";
+        return;
+      }
+
+      const character = rumorCharacters[rumorIndex % rumorCharacters.length];
       const fragments = getRumorFragmentsForCharacter(character);
-      const fragmentCycle = Math.floor(rumorIndex / characters.length);
+      const fragmentCycle = Math.floor(rumorIndex / rumorCharacters.length);
       const fragment = fragments[fragmentCycle % Math.max(1, fragments.length)] || character.overview;
       const avatar = getCharacterAvatar(character);
       const color = characterMapColors[character.id] || "#d6a047";
-      const hasReport = Boolean(rumorEntriesByCharacter[character.id]?.length);
+      const hasPreviousDayReport = Boolean(rumorEntriesByCharacter[character.id]?.previousDayFragments?.length);
 
       refs.rumorStrip.style.setProperty("--rumor-color", color);
       refs.rumorAvatar.style.setProperty("--rumor-color", color);
@@ -5112,10 +5132,22 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.rumorCharacterImage.src = character.portrait;
       refs.rumorCharacterImage.alt = character.portraitAlt;
       refs.rumorTitle.textContent = character.listName;
-      refs.rumorText.textContent = makeRumorLine(character, fragment, fragmentCycle);
-      refs.rumorMeta.textContent = hasReport
-        ? `Úryvek z posledních night reportů | ${avatar.label}`
-        : `Záložní drb z profilu | ${avatar.label}`;
+      refs.rumorText.textContent = hasPreviousDayReport
+        ? makeRumorLine(character, fragment, fragmentCycle)
+        : fragment;
+      refs.rumorMeta.textContent = hasPreviousDayReport
+        ? `Úryvek z předchozího dne | ${avatar.label}`
+        : `Bez včerejšího reportu | ${avatar.label}`;
+    };
+
+    const getRumorReadDelay = () => {
+      const textLength = refs.rumorText?.textContent?.length || 0;
+      return Math.max(9000, Math.min(17000, 6200 + (textLength * 62)));
+    };
+
+    const scheduleNextRumorSlide = () => {
+      clearTimeout(rumorTimeoutId);
+      rumorTimeoutId = setTimeout(advanceRumorSlide, getRumorReadDelay());
     };
 
     const advanceRumorSlide = () => {
@@ -5126,25 +5158,38 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         rumorIndex += 1;
         renderRumorSlide();
         refs.rumorStrip.classList.remove("is-changing");
-      }, 360);
+        scheduleNextRumorSlide();
+      }, 760);
     };
 
     const startRumorSlider = () => {
       clearInterval(rumorIntervalId);
+      clearTimeout(rumorTimeoutId);
       renderRumorSlide();
-      rumorIntervalId = setInterval(advanceRumorSlide, 7600);
+      scheduleNextRumorSlide();
     };
 
     const loadRumorReports = async () => {
       try {
         const snapshot = await getDocs(query(nightReportsRef, orderBy("createdAt", "desc"), limit(80)));
         const entries = {};
+        const previousDateKey = getDateKeyOffset(getPragueDateKey(), -1);
 
         snapshot.docs.forEach((entryDoc) => {
           const data = entryDoc.data();
           if (!data.characterId || !data.reportText) return;
-          if (!entries[data.characterId]) entries[data.characterId] = [];
-          entries[data.characterId].push(...splitReportFragments(data.reportText));
+          const reportDate = data.reportDate || getPragueDateKey(data.createdAt);
+          if (!entries[data.characterId]) {
+            entries[data.characterId] = {
+              hasAnyReport: false,
+              previousDayFragments: []
+            };
+          }
+
+          entries[data.characterId].hasAnyReport = true;
+          if (reportDate === previousDateKey) {
+            entries[data.characterId].previousDayFragments.push(...splitReportFragments(data.reportText));
+          }
         });
 
         rumorEntriesByCharacter = entries;
