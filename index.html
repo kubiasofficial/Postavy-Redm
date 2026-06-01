@@ -361,6 +361,179 @@
       perspective: 1200px;
     }
 
+    .rumor-strip {
+      position: relative;
+      min-height: 170px;
+      display: grid;
+      grid-template-columns: 176px minmax(0, 1fr);
+      gap: 22px;
+      align-items: center;
+      margin-top: 28px;
+      padding: 18px 22px;
+      border: 1px solid rgba(169, 120, 57, 0.16);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(143, 31, 45, 0.1), transparent 28%),
+        linear-gradient(180deg, rgba(255, 232, 184, 0.045), transparent 62%),
+        rgba(8, 8, 7, 0.2);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 241, 205, 0.04),
+        0 18px 44px rgba(0, 0, 0, 0.18);
+    }
+
+    .rumor-strip::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.42;
+      background:
+        linear-gradient(115deg, transparent 0 38%, rgba(255, 238, 196, 0.08) 47%, transparent 58%),
+        radial-gradient(ellipse at 12% 50%, rgba(169, 120, 57, 0.16), transparent 30%);
+      animation: lantern-sweep 9s ease-in-out infinite;
+    }
+
+    .rumor-visual {
+      position: relative;
+      z-index: 1;
+      min-height: 132px;
+      display: grid;
+      place-items: center;
+    }
+
+    .rumor-avatar {
+      position: absolute;
+      z-index: 3;
+      width: 78px;
+      height: 78px;
+      overflow: visible;
+      border: 2px solid rgba(255, 238, 196, 0.78);
+      border-radius: 999px;
+      background: rgba(8, 8, 7, 0.72);
+      box-shadow:
+        0 16px 34px rgba(0, 0, 0, 0.46),
+        0 0 28px color-mix(in srgb, var(--rumor-color, #d6a047) 38%, transparent);
+      transform: translateX(-42px);
+      transition:
+        transform 620ms var(--ease),
+        opacity 360ms var(--ease);
+    }
+
+    .rumor-avatar::before {
+      content: "";
+      position: absolute;
+      inset: -8px;
+      z-index: -1;
+      border: 2px solid var(--rumor-color, #d6a047);
+      border-radius: inherit;
+      opacity: 0.82;
+      animation: rumor-aura 3.8s linear infinite;
+    }
+
+    .rumor-avatar img,
+    .rumor-character img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: inherit;
+      object-fit: cover;
+    }
+
+    .rumor-character {
+      position: relative;
+      z-index: 2;
+      width: 112px;
+      height: 132px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 238, 196, 0.28);
+      border-radius: var(--radius-md);
+      background: #15110e;
+      box-shadow:
+        0 18px 42px rgba(0, 0, 0, 0.44),
+        0 0 32px color-mix(in srgb, var(--rumor-color, #d6a047) 18%, transparent);
+      transform: translateX(28px) rotateY(0deg);
+      transition:
+        transform 700ms var(--ease),
+        filter 500ms var(--ease);
+    }
+
+    .rumor-character img {
+      object-position: center top;
+      filter: contrast(1.08) brightness(0.86);
+    }
+
+    .rumor-copy {
+      position: relative;
+      z-index: 1;
+      min-width: 0;
+      transition:
+        opacity 300ms var(--ease),
+        transform 420ms var(--ease);
+    }
+
+    .rumor-kicker {
+      margin: 0 0 10px;
+      color: var(--gold);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .rumor-title {
+      margin: 0;
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.45rem, 3vw, 2.5rem);
+      line-height: 0.98;
+      text-transform: uppercase;
+      text-shadow: 0 12px 28px rgba(0, 0, 0, 0.58);
+    }
+
+    .rumor-text {
+      max-width: 780px;
+      margin: 12px 0 0;
+      color: #d7c6a8;
+      font-size: 1rem;
+      line-height: 1.58;
+    }
+
+    .rumor-meta {
+      margin: 12px 0 0;
+      color: #9f8d73;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .rumor-strip.is-changing .rumor-avatar {
+      opacity: 0;
+      transform: translateX(-76px) rotate(-18deg) scale(0.82);
+    }
+
+    .rumor-strip.is-changing .rumor-character {
+      filter: brightness(0.56);
+      transform: translateX(48px) rotateY(22deg) scale(0.94);
+    }
+
+    .rumor-strip.is-changing .rumor-copy {
+      opacity: 0;
+      transform: translateX(18px);
+    }
+
+    @keyframes rumor-aura {
+      from {
+        transform: rotate(0deg) scale(1);
+        box-shadow: 0 -8px 18px color-mix(in srgb, var(--rumor-color, #d6a047) 42%, transparent);
+      }
+
+      to {
+        transform: rotate(360deg) scale(1.06);
+        box-shadow: 0 -8px 18px color-mix(in srgb, var(--rumor-color, #d6a047) 42%, transparent);
+      }
+    }
+
     .activity-rail {
       position: absolute;
       top: 0;
@@ -3156,6 +3329,20 @@
         min-height: 330px;
       }
 
+      .rumor-strip {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 18px;
+      }
+
+      .rumor-visual {
+        min-height: 150px;
+      }
+
+      .rumor-copy {
+        text-align: center;
+      }
+
       .overview-grid {
         grid-template-columns: 1fr;
       }
@@ -3336,7 +3523,25 @@
     </header>
 
     <div class="roster-layout">
-      <div class="roster-grid" id="rosterGrid"></div>
+      <div>
+        <div class="roster-grid" id="rosterGrid"></div>
+        <section class="rumor-strip" id="rumorStrip" aria-live="polite">
+          <div class="rumor-visual" aria-hidden="true">
+            <span class="rumor-avatar" id="rumorAvatar">
+              <img id="rumorAvatarImage" src="zeke.png" alt="">
+            </span>
+            <span class="rumor-character" id="rumorCharacter">
+              <img id="rumorCharacterImage" src="zeke.png" alt="">
+            </span>
+          </div>
+          <div class="rumor-copy">
+            <p class="rumor-kicker">West Haven Rumors</p>
+            <h2 class="rumor-title" id="rumorTitle">Městské drby</h2>
+            <p class="rumor-text" id="rumorText">Noční kancelář zatím sbírá zápisy. Jakmile někdo zanechá report, město si z něj udělá vlastní verzi.</p>
+            <p class="rumor-meta" id="rumorMeta">Čeká se na první stopu</p>
+          </div>
+        </section>
+      </div>
       <aside class="activity-rail" aria-label="Aktivita postav">
         <p class="activity-title">Aktivita</p>
         <div class="time-ledger" id="timeLedger"></div>
@@ -4030,6 +4235,14 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     const dustField = document.getElementById("dustField");
     const backButton = document.getElementById("backButton");
     const refs = {
+      rumorStrip: document.getElementById("rumorStrip"),
+      rumorAvatar: document.getElementById("rumorAvatar"),
+      rumorAvatarImage: document.getElementById("rumorAvatarImage"),
+      rumorCharacter: document.getElementById("rumorCharacter"),
+      rumorCharacterImage: document.getElementById("rumorCharacterImage"),
+      rumorTitle: document.getElementById("rumorTitle"),
+      rumorText: document.getElementById("rumorText"),
+      rumorMeta: document.getElementById("rumorMeta"),
       name: document.getElementById("characterName"),
       role: document.getElementById("characterRole"),
       meta: document.getElementById("characterMeta"),
@@ -4449,6 +4662,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     let timerIntervalId = null;
     let rosterTimerIntervalId = null;
     let activityFlipTimeoutId = null;
+    let rumorIntervalId = null;
     let isActivityShowingTime = false;
     let characterAlertTimeoutId = null;
     let levelAlertTimeoutId = null;
@@ -4483,6 +4697,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     let worldMapZoom = 1;
     let activeMapDrag = null;
     let discordPlayers = [];
+    let rumorEntriesByCharacter = {};
+    let rumorIndex = 0;
     const characterDiscordPlayers = {};
     const characterDiscordIds = {
       zeke: "417061947759001600",
@@ -4689,6 +4905,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         discordPlayers = Array.isArray(data.players) ? data.players : [];
         syncDiscordPlayersToCharacters();
         updateRosterStates();
+        renderRumorSlide();
         if (refs.playerProfilesModal.classList.contains("is-visible")) {
           renderPlayerProfiles();
         }
@@ -4821,6 +5038,121 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       const [year, month, day] = dateKey.split("-").map(Number);
       const date = new Date(Date.UTC(year, month - 1, day + offsetDays));
       return date.toISOString().slice(0, 10);
+    };
+
+    const stripReportNoise = (text = "") => (
+      text
+        .replace(/```[\s\S]*?```/g, " ")
+        .replace(/[#*_>`~]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+    );
+
+    const splitReportFragments = (text = "") => {
+      const clean = stripReportNoise(text);
+      if (!clean) return [];
+
+      const sentenceParts = clean
+        .split(/(?<=[.!?])\s+|,\s+nadále\s+|,\s+a nadále\s+|\s+a poté\s+|\s+poté\s+/i)
+        .map((part) => part.replace(/^[,.\s]+|[,.\s]+$/g, "").trim())
+        .filter((part) => part.length > 18);
+
+      return sentenceParts.length > 0 ? sentenceParts : [clean];
+    };
+
+    const makeRumorLine = (character, fragment, variantIndex = 0) => {
+      const shortName = character.listName.split(" ")[0];
+      const clean = fragment
+        .replace(new RegExp(`^${shortName}\\s+`, "i"), "")
+        .replace(/\b(dnes|dnešek|vcera|včera)\b/gi, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .replace(/^[,.\s]+|[,.\s]+$/g, "");
+      const lower = clean ? clean.charAt(0).toLowerCase() + clean.slice(1) : "zase nechal městu co řešit";
+      const templates = [
+        `Věděl jsi, že ${shortName} včera ${lower}?`,
+        `Po West Havenu se říká, že ${shortName} ${lower}.`,
+        `${shortName} má za sebou další zápis: ${lower}.`,
+        `Noční kancelář šeptá, že ${shortName} ${lower}.`
+      ];
+
+      return templates[variantIndex % templates.length];
+    };
+
+    const getFallbackRumorFragments = (character) => (
+      [
+        character.overview,
+        character.overviewBlocks?.[0]?.text,
+        character.overviewBlocks?.[1]?.text,
+        character.status ? `${character.listName} je pořád veden jako ${character.status}` : ""
+      ].filter(Boolean)
+    );
+
+    const getRumorFragmentsForCharacter = (character) => {
+      const reportFragments = rumorEntriesByCharacter[character.id] || [];
+      return reportFragments.length > 0 ? reportFragments : getFallbackRumorFragments(character);
+    };
+
+    const renderRumorSlide = () => {
+      if (!refs.rumorStrip || characters.length === 0) return;
+
+      const character = characters[rumorIndex % characters.length];
+      const fragments = getRumorFragmentsForCharacter(character);
+      const fragmentCycle = Math.floor(rumorIndex / characters.length);
+      const fragment = fragments[fragmentCycle % Math.max(1, fragments.length)] || character.overview;
+      const avatar = getCharacterAvatar(character);
+      const color = characterMapColors[character.id] || "#d6a047";
+      const hasReport = Boolean(rumorEntriesByCharacter[character.id]?.length);
+
+      refs.rumorStrip.style.setProperty("--rumor-color", color);
+      refs.rumorAvatar.style.setProperty("--rumor-color", color);
+      refs.rumorCharacter.style.setProperty("--rumor-color", color);
+      refs.rumorAvatarImage.src = avatar.src;
+      refs.rumorAvatarImage.alt = avatar.alt;
+      refs.rumorCharacterImage.src = character.portrait;
+      refs.rumorCharacterImage.alt = character.portraitAlt;
+      refs.rumorTitle.textContent = character.listName;
+      refs.rumorText.textContent = makeRumorLine(character, fragment, fragmentCycle);
+      refs.rumorMeta.textContent = hasReport
+        ? `Úryvek z posledních night reportů | ${avatar.label}`
+        : `Záložní drb z profilu | ${avatar.label}`;
+    };
+
+    const advanceRumorSlide = () => {
+      if (!refs.rumorStrip) return;
+
+      refs.rumorStrip.classList.add("is-changing");
+      setTimeout(() => {
+        rumorIndex += 1;
+        renderRumorSlide();
+        refs.rumorStrip.classList.remove("is-changing");
+      }, 360);
+    };
+
+    const startRumorSlider = () => {
+      clearInterval(rumorIntervalId);
+      renderRumorSlide();
+      rumorIntervalId = setInterval(advanceRumorSlide, 7600);
+    };
+
+    const loadRumorReports = async () => {
+      try {
+        const snapshot = await getDocs(query(nightReportsRef, orderBy("createdAt", "desc"), limit(80)));
+        const entries = {};
+
+        snapshot.docs.forEach((entryDoc) => {
+          const data = entryDoc.data();
+          if (!data.characterId || !data.reportText) return;
+          if (!entries[data.characterId]) entries[data.characterId] = [];
+          entries[data.characterId].push(...splitReportFragments(data.reportText));
+        });
+
+        rumorEntriesByCharacter = entries;
+        renderRumorSlide();
+      } catch (error) {
+        console.warn("Rumor reports could not be loaded:", error);
+        renderRumorSlide();
+      }
     };
 
     const updateActiveDateStreak = (stats, dateKey) => {
@@ -6352,6 +6684,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
             reportDate: currentDateKey,
             createdAt: Date.now()
           });
+          loadRumorReports();
         }
         updateCharacterTimer();
       }
@@ -7131,6 +7464,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     updateAdminTools();
     startRosterTimerDisplay();
     startActivityFlip();
+    startRumorSlider();
+    loadRumorReports();
     loadDiscordPlayers();
 
     const initialCharacterId = window.location.hash.replace("#", "");
