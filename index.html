@@ -2198,7 +2198,12 @@
       border: 1px solid rgba(169, 120, 57, 0.2);
       border-radius: var(--radius-lg);
       background: rgba(6, 6, 5, 0.72);
-      cursor: crosshair;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .map-viewport.is-dragging {
+      cursor: grabbing;
     }
 
     .map-canvas {
@@ -3442,6 +3447,7 @@
   <audio id="alertOfflineAudio" src="alertoffline.MP3" preload="auto"></audio>
   <audio id="levelUpAudio" src="levelup.MP3" preload="auto"></audio>
   <audio id="otherLevelAudio" src="nekdoup.MP3" preload="auto"></audio>
+  <audio id="badgeAudio" src="odznak.MP3" preload="auto"></audio>
 
   <div class="level-alert" id="levelAlert" aria-hidden="true">
     <div class="level-alert-card">
@@ -3514,6 +3520,7 @@
         <button class="sound-test" id="testOnlineSound" type="button">Test online</button>
         <button class="sound-test" id="testOfflineSound" type="button">Test offline</button>
         <button class="sound-test" id="testLevelSound" type="button">Test level</button>
+        <button class="sound-test" id="testBadgeSound" type="button">Test odznak</button>
       </div>
     </div>
     <button class="sound-toggle" id="soundToggle" type="button" aria-label="Nastavení zvuku">🔊</button>
@@ -3928,6 +3935,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       alertOfflineAudio: document.getElementById("alertOfflineAudio"),
       levelUpAudio: document.getElementById("levelUpAudio"),
       otherLevelAudio: document.getElementById("otherLevelAudio"),
+      badgeAudio: document.getElementById("badgeAudio"),
       levelAlert: document.getElementById("levelAlert"),
       levelAlertImage: document.getElementById("levelAlertImage"),
       levelAlertTitle: document.getElementById("levelAlertTitle"),
@@ -3941,6 +3949,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       testOnlineSound: document.getElementById("testOnlineSound"),
       testOfflineSound: document.getElementById("testOfflineSound"),
       testLevelSound: document.getElementById("testLevelSound"),
+      testBadgeSound: document.getElementById("testBadgeSound"),
       authModal: document.getElementById("authModal"),
       authKicker: document.getElementById("authKicker"),
       authTitle: document.getElementById("authTitle"),
@@ -4267,6 +4276,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     let sleepLocationDraft = null;
     let sleepMapZoom = 1;
     let worldMapZoom = 1;
+    let activeMapDrag = null;
     let discordPlayers = [];
     const characterDiscordPlayers = {};
     const characterDiscordIds = {
@@ -4693,6 +4703,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       return badge;
     };
 
+    const isBadgeUnlockLevel = (level) => getBadgeForLevel(level).level === level;
+
     const applyBadgeTheme = (element, badge) => {
       element.style.setProperty("--badge-image", `url("${badge.image}")`);
       ["start", "end", "line", "glow", "ink"].forEach((key) => {
@@ -5074,6 +5086,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     };
 
     const pickSleepMapLocation = (event) => {
+      if (activeMapDrag?.didMove) return;
+
       const rect = refs.sleepMapCanvas.getBoundingClientRect();
       const x = ((event.clientX - rect.left) / rect.width) * 100;
       const y = ((event.clientY - rect.top) / rect.height) * 100;
@@ -5084,6 +5098,47 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         selectedAt: Date.now()
       };
       positionDraftSleepMarker();
+    };
+
+    const startMapDrag = (type, event) => {
+      if (event.button !== 0) return;
+      const viewport = type === "sleep" ? refs.sleepMapViewport : refs.worldMapViewport;
+
+      activeMapDrag = {
+        type,
+        viewport,
+        startX: event.clientX,
+        startY: event.clientY,
+        scrollLeft: viewport.scrollLeft,
+        scrollTop: viewport.scrollTop,
+        didMove: false
+      };
+      viewport.classList.add("is-dragging");
+      viewport.setPointerCapture?.(event.pointerId);
+    };
+
+    const moveMapDrag = (event) => {
+      if (!activeMapDrag) return;
+
+      const dx = event.clientX - activeMapDrag.startX;
+      const dy = event.clientY - activeMapDrag.startY;
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+        activeMapDrag.didMove = true;
+      }
+
+      activeMapDrag.viewport.scrollLeft = activeMapDrag.scrollLeft - dx;
+      activeMapDrag.viewport.scrollTop = activeMapDrag.scrollTop - dy;
+    };
+
+    const endMapDrag = (event) => {
+      if (!activeMapDrag) return;
+
+      const { viewport } = activeMapDrag;
+      viewport.classList.remove("is-dragging");
+      viewport.releasePointerCapture?.(event.pointerId);
+      setTimeout(() => {
+        activeMapDrag = null;
+      }, 0);
     };
 
     const adjustMapZoomFromWheel = (type, event) => {
@@ -5203,6 +5258,15 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       });
     };
 
+    const playBadgeSound = () => {
+      if (!refs.badgeAudio || alertVolume === 0) return;
+
+      refs.badgeAudio.currentTime = 0;
+      refs.badgeAudio.play().catch(() => {
+        refs.characterActionStatus.textContent = "Zvuk odznaku prohlížeč zablokoval, klikni jednou do stránky.";
+      });
+    };
+
     const hideLevelAlert = () => {
       clearTimeout(levelAlertTimeoutId);
       refs.levelAlert.classList.remove("is-visible");
@@ -5232,7 +5296,11 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.levelAlert.classList.add("is-visible");
       refs.levelAlert.setAttribute("aria-hidden", "false");
 
-      playLevelUpSound();
+      if (isBadgeUnlockLevel(alert.level)) {
+        playBadgeSound();
+      } else {
+        playLevelUpSound();
+      }
 
       levelAlertTimeoutId = setTimeout(hideLevelAlert, 5 * 60 * 1000);
     };
@@ -5270,7 +5338,11 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.otherLevelAlert.classList.add("is-visible");
       refs.otherLevelAlert.setAttribute("aria-hidden", "false");
 
-      playOtherLevelSound();
+      if (isBadgeUnlockLevel(alert.level)) {
+        playBadgeSound();
+      } else {
+        playOtherLevelSound();
+      }
 
       otherLevelAlertTimeoutId = setTimeout(hideOtherLevelAlert, 30000);
     };
@@ -5444,10 +5516,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.alertOfflineAudio.volume = normalizedVolume;
       refs.levelUpAudio.volume = normalizedVolume;
       refs.otherLevelAudio.volume = normalizedVolume;
+      refs.badgeAudio.volume = normalizedVolume;
       refs.alertOnlineAudio.muted = alertVolume === 0;
       refs.alertOfflineAudio.muted = alertVolume === 0;
       refs.levelUpAudio.muted = alertVolume === 0;
       refs.otherLevelAudio.muted = alertVolume === 0;
+      refs.badgeAudio.muted = alertVolume === 0;
       refs.soundVolume.value = String(alertVolume);
       refs.soundToggle.textContent = alertVolume === 0 ? "🔇" : "🔊";
       refs.soundToggle.setAttribute("aria-label", alertVolume === 0 ? "Zvuk alertů vypnutý" : "Nastavení zvuku alertů");
@@ -6392,6 +6466,16 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
     refs.sleepMapViewport.addEventListener("click", pickSleepMapLocation);
 
+    refs.sleepMapViewport.addEventListener("pointerdown", (event) => {
+      startMapDrag("sleep", event);
+    });
+
+    refs.sleepMapViewport.addEventListener("pointermove", moveMapDrag);
+
+    refs.sleepMapViewport.addEventListener("pointerup", endMapDrag);
+
+    refs.sleepMapViewport.addEventListener("pointercancel", endMapDrag);
+
     refs.sleepMapViewport.addEventListener("wheel", (event) => {
       adjustMapZoomFromWheel("sleep", event);
     }, { passive: false });
@@ -6424,6 +6508,10 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
     refs.testLevelSound.addEventListener("click", () => {
       playLevelUpSound();
+    });
+
+    refs.testBadgeSound.addEventListener("click", () => {
+      playBadgeSound();
     });
 
     refs.adminButton.addEventListener("click", () => {
@@ -6520,6 +6608,16 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     refs.worldMapViewport.addEventListener("wheel", (event) => {
       adjustMapZoomFromWheel("world", event);
     }, { passive: false });
+
+    refs.worldMapViewport.addEventListener("pointerdown", (event) => {
+      startMapDrag("world", event);
+    });
+
+    refs.worldMapViewport.addEventListener("pointermove", moveMapDrag);
+
+    refs.worldMapViewport.addEventListener("pointerup", endMapDrag);
+
+    refs.worldMapViewport.addEventListener("pointercancel", endMapDrag);
 
     refs.worldMapZoomOut.addEventListener("click", () => {
       setMapZoom("world", worldMapZoom - 0.1);
