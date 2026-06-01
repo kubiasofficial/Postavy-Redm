@@ -330,6 +330,16 @@
         0 0 12px rgba(169, 120, 57, 0.22);
     }
 
+    .home-map-button::before {
+      border-radius: 5px;
+      background:
+        linear-gradient(135deg, rgba(255, 238, 196, 0.86) 0 20%, transparent 20% 32%, rgba(169, 120, 57, 0.84) 32% 54%, transparent 54% 66%, rgba(143, 31, 45, 0.76) 66%),
+        rgba(8, 8, 7, 0.84);
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 238, 196, 0.32),
+        0 0 12px rgba(169, 120, 57, 0.22);
+    }
+
     .home-badges-button:hover,
     .home-badges-button:focus-visible {
       transform: translateY(-2px);
@@ -2126,6 +2136,198 @@
       line-height: 1.55;
     }
 
+    .map-card {
+      width: min(1120px, 100%);
+    }
+
+    .map-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .map-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .map-tool-button {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(169, 120, 57, 0.28);
+      border-radius: var(--radius-md);
+      background: rgba(8, 8, 7, 0.44);
+      color: #fff0cf;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+    }
+
+    .map-tool-button:hover,
+    .map-tool-button:focus-visible {
+      border-color: rgba(255, 222, 154, 0.58);
+      outline: none;
+    }
+
+    .map-zoom-label {
+      min-width: 56px;
+      color: #d3bd93;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .map-status {
+      margin: 0;
+      color: #b9a37e;
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    .map-viewport {
+      position: relative;
+      height: min(620px, 62vh);
+      overflow: auto;
+      margin-top: 12px;
+      border: 1px solid rgba(169, 120, 57, 0.2);
+      border-radius: var(--radius-lg);
+      background: rgba(6, 6, 5, 0.72);
+      cursor: crosshair;
+    }
+
+    .map-canvas {
+      position: relative;
+      width: 100%;
+      min-width: 100%;
+      line-height: 0;
+      transform-origin: top left;
+    }
+
+    .map-canvas img {
+      width: 100%;
+      display: block;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .map-marker {
+      position: absolute;
+      left: var(--marker-x);
+      top: var(--marker-y);
+      z-index: 2;
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 2px solid var(--marker-color, #d6a047);
+      border-radius: 999px;
+      background: rgba(8, 8, 7, 0.68);
+      box-shadow:
+        0 12px 24px rgba(0, 0, 0, 0.46),
+        0 0 0 4px color-mix(in srgb, var(--marker-color, #d6a047) 26%, transparent),
+        0 0 22px color-mix(in srgb, var(--marker-color, #d6a047) 34%, transparent);
+      transform: translate(-50%, -50%);
+    }
+
+    .map-marker img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: inherit;
+      object-fit: cover;
+    }
+
+    .map-marker::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -12px;
+      width: 2px;
+      height: 12px;
+      background: var(--marker-color, #d6a047);
+      box-shadow: 0 0 12px var(--marker-color, #d6a047);
+      transform: translateX(-50%);
+    }
+
+    .map-marker.is-awake {
+      opacity: 0.56;
+      filter: grayscale(0.35);
+    }
+
+    .map-marker.is-draft {
+      width: 34px;
+      height: 34px;
+      border-color: #fff0cf;
+      background:
+        radial-gradient(circle, #9a2630 0 32%, #fff0cf 34% 44%, rgba(8, 8, 7, 0.7) 46%);
+      box-shadow:
+        0 12px 24px rgba(0, 0, 0, 0.46),
+        0 0 24px rgba(255, 222, 154, 0.42);
+    }
+
+    .map-marker.is-draft img {
+      display: none;
+    }
+
+    .map-legend {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .map-legend-item {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr);
+      gap: 9px;
+      align-items: center;
+      padding: 8px;
+      border: 1px solid rgba(169, 120, 57, 0.14);
+      border-radius: var(--radius-md);
+      background: rgba(8, 8, 7, 0.24);
+    }
+
+    .map-legend-avatar {
+      width: 38px;
+      height: 38px;
+      overflow: hidden;
+      border: 2px solid var(--marker-color, #d6a047);
+      border-radius: 999px;
+      background: rgba(8, 8, 7, 0.62);
+    }
+
+    .map-legend-avatar img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .map-legend-name {
+      margin: 0;
+      overflow: hidden;
+      color: #fff0cf;
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .map-legend-meta {
+      margin: 3px 0 0;
+      color: #b9a37e;
+      font-size: 0.72rem;
+      line-height: 1.35;
+    }
+
     .auth-modal {
       position: fixed;
       inset: 0;
@@ -2288,7 +2490,9 @@
     }
 
     .sleep-report-dialog {
-      width: min(520px, 100%);
+      width: min(900px, 100%);
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
       border: 1px solid rgba(169, 120, 57, 0.32);
       border-radius: var(--radius-xl);
       background:
@@ -2342,6 +2546,26 @@
       border-color: rgba(169, 120, 57, 0.72);
       box-shadow: 0 0 0 3px rgba(169, 120, 57, 0.12);
       outline: none;
+    }
+
+    .sleep-report-map {
+      margin-top: 14px;
+    }
+
+    .sleep-report-map .map-viewport {
+      height: min(420px, 46vh);
+    }
+
+    .sleep-report-location {
+      min-height: 20px;
+      margin: 10px 0 0;
+      color: #d3bd93;
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .sleep-report-location.is-missing {
+      color: #e88f98;
     }
 
     .sleep-report-actions {
@@ -2862,6 +3086,19 @@
         grid-template-columns: 1fr;
       }
 
+      .map-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .map-tools {
+        justify-content: center;
+      }
+
+      .map-viewport {
+        height: min(520px, 58vh);
+      }
+
       .player-profile-shell,
       .player-profile-head {
         grid-template-columns: 1fr;
@@ -2963,6 +3200,7 @@
       <div class="home-actions">
         <button class="home-badges-button" id="openBadgesButton" type="button">Odznaky</button>
         <button class="home-badges-button home-players-button" id="openPlayerProfilesButton" type="button">Hráči</button>
+        <button class="home-badges-button home-map-button" id="openWorldMapButton" type="button">Mapa</button>
         <div class="home-mark" aria-hidden="true"></div>
       </div>
     </header>
@@ -3092,6 +3330,23 @@
         id="sleepReportInput"
         placeholder="Napiš krátký report..."
       ></textarea>
+      <div class="sleep-report-map">
+        <div class="map-toolbar">
+          <p class="map-status">Klikni na mapu, kde postava usíná. Kolečkem nebo tlačítky mapu přiblížíš.</p>
+          <div class="map-tools" aria-label="Přiblížení mapy">
+            <button class="map-tool-button" id="sleepMapZoomOut" type="button" aria-label="Oddálit mapu">−</button>
+            <span class="map-zoom-label" id="sleepMapZoomLabel">100%</span>
+            <button class="map-tool-button" id="sleepMapZoomIn" type="button" aria-label="Přiblížit mapu">+</button>
+          </div>
+        </div>
+        <div class="map-viewport" id="sleepMapViewport">
+          <div class="map-canvas" id="sleepMapCanvas">
+            <img src="mapa.webp" alt="Mapa Red Dead Redemption">
+            <span class="map-marker is-draft" id="sleepMapMarker" aria-hidden="true"></span>
+          </div>
+        </div>
+        <p class="sleep-report-location" id="sleepReportLocationStatus">Waypoint není vybraný.</p>
+      </div>
       <div class="sleep-report-actions">
         <button class="sleep-report-button cancel" id="sleepReportCancel" type="button">Zrušit</button>
         <button class="sleep-report-button submit" type="submit">Odeslat report</button>
@@ -3223,6 +3478,29 @@
         <div class="player-profile-list" id="playerProfilesList"></div>
         <div class="player-profile-detail" id="playerProfileDetail"></div>
       </div>
+    </section>
+  </div>
+
+  <div class="badge-modal" id="worldMapModal" aria-hidden="true">
+    <section class="badge-card map-card" aria-labelledby="worldMapTitle">
+      <button class="badge-modal-x" id="closeWorldMapButton" type="button" aria-label="Zavřít mapu">&times;</button>
+      <p class="level-alert-kicker">West Haven Map</p>
+      <h2 class="badge-title" id="worldMapTitle">Mapa</h2>
+      <div class="map-toolbar">
+        <p class="map-status" id="worldMapStatus">Poslední místa spánku hráčů.</p>
+        <div class="map-tools" aria-label="Přiblížení mapy">
+          <button class="map-tool-button" id="worldMapZoomOut" type="button" aria-label="Oddálit mapu">−</button>
+          <span class="map-zoom-label" id="worldMapZoomLabel">100%</span>
+          <button class="map-tool-button" id="worldMapZoomIn" type="button" aria-label="Přiblížit mapu">+</button>
+        </div>
+      </div>
+      <div class="map-viewport" id="worldMapViewport">
+        <div class="map-canvas" id="worldMapCanvas">
+          <img src="mapa.webp" alt="Mapa Red Dead Redemption">
+          <div id="worldMapMarkers"></div>
+        </div>
+      </div>
+      <div class="map-legend" id="worldMapLegend"></div>
     </section>
   </div>
 
@@ -3583,6 +3861,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       characterActionStatus: document.getElementById("characterActionStatus"),
       openBadgesButton: document.getElementById("openBadgesButton"),
       openPlayerProfilesButton: document.getElementById("openPlayerProfilesButton"),
+      openWorldMapButton: document.getElementById("openWorldMapButton"),
       badgeModal: document.getElementById("badgeModal"),
       closeBadgesButton: document.getElementById("closeBadgesButton"),
       badgeSummary: document.getElementById("badgeSummary"),
@@ -3591,6 +3870,16 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       closePlayerProfilesButton: document.getElementById("closePlayerProfilesButton"),
       playerProfilesList: document.getElementById("playerProfilesList"),
       playerProfileDetail: document.getElementById("playerProfileDetail"),
+      worldMapModal: document.getElementById("worldMapModal"),
+      closeWorldMapButton: document.getElementById("closeWorldMapButton"),
+      worldMapViewport: document.getElementById("worldMapViewport"),
+      worldMapCanvas: document.getElementById("worldMapCanvas"),
+      worldMapMarkers: document.getElementById("worldMapMarkers"),
+      worldMapLegend: document.getElementById("worldMapLegend"),
+      worldMapStatus: document.getElementById("worldMapStatus"),
+      worldMapZoomOut: document.getElementById("worldMapZoomOut"),
+      worldMapZoomIn: document.getElementById("worldMapZoomIn"),
+      worldMapZoomLabel: document.getElementById("worldMapZoomLabel"),
       adminTools: document.getElementById("adminTools"),
       adminButton: document.getElementById("adminButton"),
       adminMenu: document.getElementById("adminMenu"),
@@ -3609,6 +3898,13 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       sleepReportQuestion: document.getElementById("sleepReportQuestion"),
       sleepReportTimer: document.getElementById("sleepReportTimer"),
       sleepReportInput: document.getElementById("sleepReportInput"),
+      sleepMapViewport: document.getElementById("sleepMapViewport"),
+      sleepMapCanvas: document.getElementById("sleepMapCanvas"),
+      sleepMapMarker: document.getElementById("sleepMapMarker"),
+      sleepMapZoomOut: document.getElementById("sleepMapZoomOut"),
+      sleepMapZoomIn: document.getElementById("sleepMapZoomIn"),
+      sleepMapZoomLabel: document.getElementById("sleepMapZoomLabel"),
+      sleepReportLocationStatus: document.getElementById("sleepReportLocationStatus"),
       sleepReportCancel: document.getElementById("sleepReportCancel"),
       nightReportModal: document.getElementById("nightReportModal"),
       closeNightReportButton: document.getElementById("closeNightReportButton"),
@@ -3968,6 +4264,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     let currentPlayerCharacterId = null;
     let pendingPlayerCharacterId = null;
     let selectedPlayerProfileCharacterId = null;
+    let sleepLocationDraft = null;
+    let sleepMapZoom = 1;
+    let worldMapZoom = 1;
     let discordPlayers = [];
     const characterDiscordPlayers = {};
     const characterDiscordIds = {
@@ -3976,6 +4275,13 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       violet: "795365012494483486",
       william: "550294660090691594",
       "thomas-mercer": "381058621644996608"
+    };
+    const characterMapColors = {
+      zeke: "#c74d58",
+      silas: "#4ca66f",
+      william: "#d870a8",
+      "thomas-mercer": "#8fa3a8",
+      violet: "#d7a8cf"
     };
 
     const hour = 60 * 60 * 1000;
@@ -4218,6 +4524,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         dailyPlayedMs: 0,
         dailyDate: getPragueDateKey(),
         level: 1,
+        sleepLocation: null,
+        lastAwakeAt: null,
         updatedAt: null
       }
     );
@@ -4240,6 +4548,25 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       if (!durationMs) return "0min";
       return formatDuration(durationMs);
     };
+
+    const formatDateTime = (timestamp) => {
+      const value = Number(timestamp || 0);
+      if (!value) return "nezaznamenáno";
+
+      return new Intl.DateTimeFormat("cs-CZ", {
+        timeZone: "Europe/Prague",
+        day: "numeric",
+        month: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      }).format(new Date(value));
+    };
+
+    const formatMapLocation = (location) => (
+      location
+        ? `Waypoint X ${Math.round(location.x * 10) / 10}%, Y ${Math.round(location.y * 10) / 10}%`
+        : "Waypoint není vybraný."
+    );
 
     const getTotalPlayedMs = (characterId) => {
       const state = getCharacterState(characterId);
@@ -4707,6 +5034,134 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.playerProfilesModal.setAttribute("aria-hidden", "true");
     };
 
+    const getCharacterAvatar = (character) => {
+      const discordPlayer = characterDiscordPlayers[character.id];
+      return {
+        src: discordPlayer?.avatarUrl || character.portrait,
+        alt: discordPlayer ? `Discord profil ${discordPlayer.displayName}` : character.portraitAlt,
+        label: discordPlayer?.displayName || character.listName
+      };
+    };
+
+    const setMapZoom = (type, value) => {
+      const zoom = Math.max(1, Math.min(3, Math.round(value * 10) / 10));
+      const canvas = type === "sleep" ? refs.sleepMapCanvas : refs.worldMapCanvas;
+      const label = type === "sleep" ? refs.sleepMapZoomLabel : refs.worldMapZoomLabel;
+
+      if (type === "sleep") {
+        sleepMapZoom = zoom;
+      } else {
+        worldMapZoom = zoom;
+      }
+
+      canvas.style.width = `${zoom * 100}%`;
+      label.textContent = `${Math.round(zoom * 100)}%`;
+    };
+
+    const positionDraftSleepMarker = () => {
+      if (!sleepLocationDraft) {
+        refs.sleepMapMarker.style.display = "none";
+        refs.sleepReportLocationStatus.textContent = "Waypoint není vybraný.";
+        refs.sleepReportLocationStatus.classList.remove("is-missing");
+        return;
+      }
+
+      refs.sleepMapMarker.style.display = "grid";
+      refs.sleepMapMarker.style.setProperty("--marker-x", `${sleepLocationDraft.x}%`);
+      refs.sleepMapMarker.style.setProperty("--marker-y", `${sleepLocationDraft.y}%`);
+      refs.sleepReportLocationStatus.textContent = formatMapLocation(sleepLocationDraft);
+      refs.sleepReportLocationStatus.classList.remove("is-missing");
+    };
+
+    const pickSleepMapLocation = (event) => {
+      const rect = refs.sleepMapCanvas.getBoundingClientRect();
+      const x = ((event.clientX - rect.left) / rect.width) * 100;
+      const y = ((event.clientY - rect.top) / rect.height) * 100;
+
+      sleepLocationDraft = {
+        x: Math.max(0, Math.min(100, x)),
+        y: Math.max(0, Math.min(100, y)),
+        selectedAt: Date.now()
+      };
+      positionDraftSleepMarker();
+    };
+
+    const adjustMapZoomFromWheel = (type, event) => {
+      event.preventDefault();
+      const currentZoom = type === "sleep" ? sleepMapZoom : worldMapZoom;
+      setMapZoom(type, currentZoom + (event.deltaY < 0 ? 0.1 : -0.1));
+    };
+
+    const renderWorldMap = () => {
+      refs.worldMapMarkers.replaceChildren();
+      refs.worldMapLegend.replaceChildren();
+      let placedCount = 0;
+
+      characters.forEach((character) => {
+        const state = getCharacterState(character.id);
+        const location = state.sleepLocation;
+        const avatar = getCharacterAvatar(character);
+        const color = characterMapColors[character.id] || "#d6a047";
+        const isAwake = state.status === "awake";
+
+        if (location) {
+          placedCount += 1;
+          const marker = document.createElement("span");
+          marker.className = `map-marker${isAwake ? " is-awake" : ""}`;
+          marker.style.setProperty("--marker-x", `${location.x}%`);
+          marker.style.setProperty("--marker-y", `${location.y}%`);
+          marker.style.setProperty("--marker-color", color);
+          marker.title = `${character.listName} | ${isAwake ? "vzhůru" : "spí"} | naposledy vzhůru ${formatDateTime(state.lastAwakeAt)}`;
+
+          const image = document.createElement("img");
+          image.src = avatar.src;
+          image.alt = avatar.alt;
+          marker.appendChild(image);
+          refs.worldMapMarkers.appendChild(marker);
+        }
+
+        const item = document.createElement("article");
+        item.className = "map-legend-item";
+        item.style.setProperty("--marker-color", color);
+
+        const avatarWrap = document.createElement("span");
+        avatarWrap.className = "map-legend-avatar";
+        const image = document.createElement("img");
+        image.src = avatar.src;
+        image.alt = avatar.alt;
+        avatarWrap.appendChild(image);
+
+        const body = document.createElement("div");
+        const name = document.createElement("p");
+        name.className = "map-legend-name";
+        name.textContent = character.listName;
+        const meta = document.createElement("p");
+        meta.className = "map-legend-meta";
+        meta.textContent = location
+          ? `${isAwake ? "Vzhůru" : "Spí"} | naposledy vzhůru ${formatDateTime(state.lastAwakeAt)}`
+          : "Místo spánku zatím není vybrané.";
+        body.append(name, meta);
+        item.append(avatarWrap, body);
+        refs.worldMapLegend.appendChild(item);
+      });
+
+      refs.worldMapStatus.textContent = placedCount > 0
+        ? `Zobrazené waypointy: ${placedCount}/${characters.length}.`
+        : "Zatím nikdo neuložil místo spánku.";
+    };
+
+    const openWorldMapModal = () => {
+      renderWorldMap();
+      setMapZoom("world", worldMapZoom);
+      refs.worldMapModal.classList.add("is-visible");
+      refs.worldMapModal.setAttribute("aria-hidden", "false");
+    };
+
+    const closeWorldMapModal = () => {
+      refs.worldMapModal.classList.remove("is-visible");
+      refs.worldMapModal.setAttribute("aria-hidden", "true");
+    };
+
     const getLevelProgress = (totalPlayedMs) => {
       const level = getLevelForTotal(totalPlayedMs);
       const currentThreshold = levelThresholds[level - 1] || 0;
@@ -4957,6 +5412,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       if (refs.playerProfilesModal.classList.contains("is-visible")) {
         renderPlayerProfileDetail(selectedPlayerProfileCharacterId || currentPlayerCharacterId || characters[0]?.id);
       }
+      if (refs.worldMapModal.classList.contains("is-visible")) {
+        renderWorldMap();
+      }
     };
 
     const startRosterTimerDisplay = () => {
@@ -5112,6 +5570,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.sleepReportTimer.textContent = `Dnes zatím ${profile.breathingVerb}: ${formatDuration(getWakeDuration(activeCharacterId))}`;
       refs.sleepReportInput.placeholder = profile.reportPlaceholder;
       refs.sleepReportInput.value = "";
+      sleepLocationDraft = null;
+      setMapZoom("sleep", 1);
+      positionDraftSleepMarker();
       refs.sleepReportModal.classList.add("is-visible");
       refs.sleepReportModal.setAttribute("aria-hidden", "false");
 
@@ -5426,7 +5887,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       (text || "Bez zápisu.").replaceAll("```", "'''").slice(0, 900)
     );
 
-    const buildSleepEmbed = (profile, message, reportText, durationText) => {
+    const buildSleepEmbed = (profile, message, reportText, durationText, sleepLocation = null) => {
       const cleanReportText = sanitizeReportText(reportText);
 
       return {
@@ -5438,7 +5899,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           "```",
           cleanReportText,
           "```",
-          `**Dnes ${profile.breathingVerb}:** \`${durationText}\``
+          `**Dnes ${profile.breathingVerb}:** \`${durationText}\``,
+          `**Místo spánku:** \`${formatMapLocation(sleepLocation)}\``
         ].join("\n"),
         color: profile.color,
         author: {
@@ -5451,11 +5913,13 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       };
     };
 
-    const sendCharacterWebhook = async (type, reportText = "") => {
+    const sendCharacterWebhook = async (type, reportData = "") => {
       const character = characters.find((item) => item.id === activeCharacterId);
       const profile = characterActionProfiles[activeCharacterId];
       if (!character || !profile) return;
 
+      const reportText = typeof reportData === "string" ? reportData : (reportData?.text || "");
+      const sleepLocation = typeof reportData === "string" ? null : (reportData?.sleepLocation || null);
       const message = pickRandom(type === "wake" ? profile.wakeMessages : profile.sleepMessages);
       const sleepDurationMs = type === "sleep" ? stopWakeTimer(activeCharacterId) : null;
       const durationText = type === "sleep" ? formatDuration(sleepDurationMs) : "";
@@ -5485,6 +5949,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           dailyPlayedMs: previousDaily + (sleepDurationMs || 0),
           dailyDate: currentDateKey,
           level: newLevel,
+          sleepLocation,
+          lastAwakeAt: endedAt,
           achievementStats
         });
         if (newLevel > previousLevel) {
@@ -5495,6 +5961,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
             characterId: activeCharacterId,
             characterName: character.listName,
             reportText: reportText.trim(),
+            sleepLocation,
             durationMs: sleepDurationMs || 0,
             reportDate: currentDateKey,
             createdAt: Date.now()
@@ -5504,7 +5971,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
       const embed = type === "wake"
         ? buildWakeEmbed(profile, message)
-        : buildSleepEmbed(profile, message, reportText, durationText);
+        : buildSleepEmbed(profile, message, reportText, durationText, sleepLocation);
       const payload = {
         username: "West Haven",
         embeds: [embed]
@@ -5901,7 +6368,16 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
     refs.sleepReportForm.addEventListener("submit", (event) => {
       event.preventDefault();
-      closeSleepReportModal(refs.sleepReportInput.value.trim());
+      if (!sleepLocationDraft) {
+        refs.sleepReportLocationStatus.textContent = "Nejdřív klikni na mapu a vyber místo spánku.";
+        refs.sleepReportLocationStatus.classList.add("is-missing");
+        return;
+      }
+
+      closeSleepReportModal({
+        text: refs.sleepReportInput.value.trim(),
+        sleepLocation: sleepLocationDraft
+      });
     });
 
     refs.sleepReportCancel.addEventListener("click", () => {
@@ -5912,6 +6388,20 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       if (event.target === refs.sleepReportModal) {
         closeSleepReportModal(null);
       }
+    });
+
+    refs.sleepMapViewport.addEventListener("click", pickSleepMapLocation);
+
+    refs.sleepMapViewport.addEventListener("wheel", (event) => {
+      adjustMapZoomFromWheel("sleep", event);
+    }, { passive: false });
+
+    refs.sleepMapZoomOut.addEventListener("click", () => {
+      setMapZoom("sleep", sleepMapZoom - 0.1);
+    });
+
+    refs.sleepMapZoomIn.addEventListener("click", () => {
+      setMapZoom("sleep", sleepMapZoom + 0.1);
     });
 
     refs.soundToggle.addEventListener("click", () => {
@@ -6017,6 +6507,28 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       renderPlayerProfileDetail(button.dataset.playerProfile);
     });
 
+    refs.openWorldMapButton.addEventListener("click", openWorldMapModal);
+
+    refs.closeWorldMapButton.addEventListener("click", closeWorldMapModal);
+
+    refs.worldMapModal.addEventListener("click", (event) => {
+      if (event.target === refs.worldMapModal) {
+        closeWorldMapModal();
+      }
+    });
+
+    refs.worldMapViewport.addEventListener("wheel", (event) => {
+      adjustMapZoomFromWheel("world", event);
+    }, { passive: false });
+
+    refs.worldMapZoomOut.addEventListener("click", () => {
+      setMapZoom("world", worldMapZoom - 0.1);
+    });
+
+    refs.worldMapZoomIn.addEventListener("click", () => {
+      setMapZoom("world", worldMapZoom + 0.1);
+    });
+
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && refs.sleepReportModal.classList.contains("is-visible")) {
         closeSleepReportModal(null);
@@ -6035,6 +6547,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
       if (event.key === "Escape" && refs.playerProfilesModal.classList.contains("is-visible")) {
         closePlayerProfilesModal();
+      }
+      if (event.key === "Escape" && refs.worldMapModal.classList.contains("is-visible")) {
+        closeWorldMapModal();
       }
     });
 
@@ -6071,6 +6586,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         await setRemoteCharacterState(activeCharacterId, {
           status: "awake",
           wakeStartedAt: startedAt,
+          lastAwakeAt: startedAt,
           dailyDate: wakeDateKey,
           achievementStats
         });
@@ -6086,14 +6602,14 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         const profile = characterActionProfiles[activeCharacterId];
         if (!profile) return;
 
-        const reportText = await requestSleepReport(profile);
-        if (reportText === null) {
+        const reportData = await requestSleepReport(profile);
+        if (reportData === null) {
           refs.characterActionStatus.textContent = "Noční report zrušen.";
           return;
         }
 
         sendCharacterAlert(activeCharacterId, "sleep");
-        sendCharacterWebhook("sleep", reportText);
+        sendCharacterWebhook("sleep", reportData);
       }
     });
 
