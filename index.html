@@ -1417,6 +1417,20 @@
       box-shadow: 0 0 24px rgba(169, 66, 77, 0.42);
     }
 
+    .character-alert.is-broadcast {
+      background:
+        linear-gradient(90deg, rgba(220, 188, 112, 0.22), transparent 18%),
+        linear-gradient(180deg, rgba(255, 235, 188, 0.1), transparent 46%),
+        linear-gradient(145deg, rgba(31, 24, 18, 0.97), rgba(7, 7, 6, 0.98));
+    }
+
+    .character-alert.is-broadcast::before {
+      background:
+        linear-gradient(180deg, rgba(255, 238, 196, 0.56), transparent 18% 82%, rgba(255, 238, 196, 0.28)),
+        #d2a85b;
+      box-shadow: 0 0 26px rgba(220, 188, 112, 0.44);
+    }
+
     .character-alert img {
       position: relative;
       z-index: 1;
@@ -2187,6 +2201,57 @@
       margin: 0;
       color: #b9a37e;
       line-height: 1.55;
+    }
+
+    .morning-brief-grid {
+      display: grid;
+      grid-template-columns: 180px minmax(0, 1fr);
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .morning-brief-portrait {
+      overflow: hidden;
+      border: 1px solid rgba(255, 238, 196, 0.28);
+      border-radius: var(--radius-lg);
+      background: rgba(8, 8, 7, 0.48);
+      aspect-ratio: 3 / 4;
+    }
+
+    .morning-brief-portrait img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: center top;
+      filter: contrast(1.06) brightness(0.9);
+    }
+
+    .morning-brief-body {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .morning-brief-panel {
+      padding: 14px;
+      border: 1px solid rgba(169, 120, 57, 0.18);
+      border-radius: var(--radius-md);
+      background: rgba(8, 8, 7, 0.28);
+    }
+
+    .morning-brief-label {
+      margin: 0 0 7px;
+      color: var(--gold);
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .morning-brief-text {
+      margin: 0;
+      color: #ddceb1;
+      line-height: 1.6;
     }
 
     .map-card {
@@ -3171,6 +3236,15 @@
         text-align: center;
       }
 
+      .morning-brief-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .morning-brief-portrait {
+        width: min(190px, 70vw);
+        justify-self: center;
+      }
+
       .badge-item {
         grid-template-columns: 44px minmax(0, 1fr);
       }
@@ -3377,6 +3451,10 @@
         <span aria-hidden="true">!</span>
         Alert-test
       </button>
+      <button class="admin-menu-button" id="openBroadcastAlertButton" type="button">
+        <span aria-hidden="true">⚑</span>
+        Broadcast alert
+      </button>
     </div>
   </div>
 
@@ -3477,6 +3555,62 @@
             <button class="night-report-button send" id="saveBadgeAdminButton" type="button">Uložit odznaky</button>
           </div>
           <p class="night-report-status" id="badgeAdminStatus" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="night-report-modal" id="broadcastAlertModal" aria-hidden="true">
+    <section class="night-report-dialog" aria-labelledby="broadcastAlertTitle">
+      <header class="night-report-header">
+        <div>
+          <p class="night-report-kicker">West Haven Office</p>
+          <h2 class="night-report-title" id="broadcastAlertTitle">Broadcast alert</h2>
+        </div>
+        <button class="night-report-close" id="closeBroadcastAlertButton" type="button" aria-label="Zavřít broadcast alert">&times;</button>
+      </header>
+      <div class="night-report-body">
+        <div class="night-report-column">
+          <label class="night-report-label">
+            Nadpis
+            <input class="night-report-input" id="broadcastAlertHeading" type="text" value="West Haven Notice">
+          </label>
+          <label class="night-report-label">
+            Zpráva
+            <textarea class="night-report-textarea" id="broadcastAlertText" placeholder="Napiš krátkou zprávu pro všechny..."></textarea>
+          </label>
+          <div class="night-report-actions">
+            <button class="night-report-button" id="previewBroadcastAlertButton" type="button">Náhled</button>
+            <button class="night-report-button send" id="sendBroadcastAlertButton" type="button">Poslat všem</button>
+          </div>
+          <p class="night-report-status" id="broadcastAlertStatus" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="badge-modal" id="morningBriefModal" aria-hidden="true">
+    <section class="badge-card" aria-labelledby="morningBriefTitle">
+      <button class="badge-modal-x" id="closeMorningBriefButton" type="button" aria-label="Zavřít morning brief">&times;</button>
+      <p class="level-alert-kicker">Morning brief</p>
+      <h2 class="badge-title" id="morningBriefTitle">Ranní zápis</h2>
+      <div class="morning-brief-grid">
+        <div class="morning-brief-portrait">
+          <img id="morningBriefImage" src="zeke.png" alt="">
+        </div>
+        <div class="morning-brief-body">
+          <article class="morning-brief-panel">
+            <p class="morning-brief-label">Poslední noční report</p>
+            <p class="morning-brief-text" id="morningBriefReport"></p>
+          </article>
+          <article class="morning-brief-panel">
+            <p class="morning-brief-label">Místo probuzení</p>
+            <p class="morning-brief-text" id="morningBriefLocation"></p>
+          </article>
+          <article class="morning-brief-panel">
+            <p class="morning-brief-label">Odehraný čas</p>
+            <p class="morning-brief-text" id="morningBriefDuration"></p>
+          </article>
         </div>
       </div>
     </section>
@@ -3950,6 +4084,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       openNightReportButton: document.getElementById("openNightReportButton"),
       openBadgeAdminButton: document.getElementById("openBadgeAdminButton"),
       testCharacterAlertButton: document.getElementById("testCharacterAlertButton"),
+      openBroadcastAlertButton: document.getElementById("openBroadcastAlertButton"),
       badgeAdminModal: document.getElementById("badgeAdminModal"),
       closeBadgeAdminButton: document.getElementById("closeBadgeAdminButton"),
       badgeAdminCharacter: document.getElementById("badgeAdminCharacter"),
@@ -3957,6 +4092,20 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       badgeAdminList: document.getElementById("badgeAdminList"),
       saveBadgeAdminButton: document.getElementById("saveBadgeAdminButton"),
       badgeAdminStatus: document.getElementById("badgeAdminStatus"),
+      broadcastAlertModal: document.getElementById("broadcastAlertModal"),
+      closeBroadcastAlertButton: document.getElementById("closeBroadcastAlertButton"),
+      broadcastAlertHeading: document.getElementById("broadcastAlertHeading"),
+      broadcastAlertText: document.getElementById("broadcastAlertText"),
+      previewBroadcastAlertButton: document.getElementById("previewBroadcastAlertButton"),
+      sendBroadcastAlertButton: document.getElementById("sendBroadcastAlertButton"),
+      broadcastAlertStatus: document.getElementById("broadcastAlertStatus"),
+      morningBriefModal: document.getElementById("morningBriefModal"),
+      closeMorningBriefButton: document.getElementById("closeMorningBriefButton"),
+      morningBriefTitle: document.getElementById("morningBriefTitle"),
+      morningBriefImage: document.getElementById("morningBriefImage"),
+      morningBriefReport: document.getElementById("morningBriefReport"),
+      morningBriefLocation: document.getElementById("morningBriefLocation"),
+      morningBriefDuration: document.getElementById("morningBriefDuration"),
       sleepReportModal: document.getElementById("sleepReportModal"),
       sleepReportForm: document.getElementById("sleepReportForm"),
       sleepReportTitle: document.getElementById("sleepReportTitle"),
@@ -5616,15 +5765,20 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       isCharacterAlertShowing = true;
 
       refs.characterAlert.classList.toggle("is-sleep", alert.type === "sleep");
+      refs.characterAlert.classList.toggle("is-broadcast", alert.type === "broadcast");
       refs.characterAlertImage.src = character.portrait;
       refs.characterAlertImage.alt = character.portraitAlt;
-      refs.characterAlertKicker.textContent = alert.type === "wake" ? "West Haven Morning Alert" : "West Haven Night Alert";
+      refs.characterAlertKicker.textContent = alert.type === "broadcast"
+        ? "West Haven Broadcast"
+        : alert.type === "wake"
+          ? "West Haven Morning Alert"
+          : "West Haven Night Alert";
       refs.characterAlertTitle.textContent = alert.title;
       refs.characterAlertText.textContent = alert.text;
       refs.characterAlert.classList.add("is-visible");
       refs.characterAlert.setAttribute("aria-hidden", "false");
 
-      playAlertSound(alert.type);
+      playAlertSound(alert.type === "sleep" ? "sleep" : "wake");
 
       characterAlertTimeoutId = setTimeout(hideCharacterAlert, 10000);
     };
@@ -5665,6 +5819,53 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         text: type === "wake" ? profile.alertWake : profile.alertSleep,
         createdAt: Date.now()
       });
+    };
+
+    const setBroadcastAlertStatus = (message = "") => {
+      refs.broadcastAlertStatus.textContent = message;
+    };
+
+    const getBroadcastPayload = () => ({
+      characterId: adminCharacterId,
+      type: "broadcast",
+      title: refs.broadcastAlertHeading.value.trim() || "West Haven Notice",
+      text: refs.broadcastAlertText.value.trim() || "Admin posílá testovací zprávu pro West Haven.",
+      createdAt: Date.now()
+    });
+
+    const previewBroadcastAlert = () => {
+      refs.adminTools.classList.remove("is-open");
+      enqueueCharacterAlert(getBroadcastPayload());
+      setBroadcastAlertStatus("Náhled zobrazený jen u tebe.");
+    };
+
+    const openBroadcastAlertModal = () => {
+      refs.adminTools.classList.remove("is-open");
+      refs.broadcastAlertHeading.value = "West Haven Notice";
+      refs.broadcastAlertText.value = "";
+      setBroadcastAlertStatus();
+      refs.broadcastAlertModal.classList.add("is-visible");
+      refs.broadcastAlertModal.setAttribute("aria-hidden", "false");
+      setTimeout(() => refs.broadcastAlertText.focus(), 0);
+    };
+
+    const closeBroadcastAlertModal = () => {
+      refs.broadcastAlertModal.classList.remove("is-visible");
+      refs.broadcastAlertModal.setAttribute("aria-hidden", "true");
+      setBroadcastAlertStatus();
+    };
+
+    const sendBroadcastAlert = async () => {
+      const alert = getBroadcastPayload();
+
+      setBroadcastAlertStatus("Posílám broadcast alert...");
+      try {
+        await setDoc(doc(characterAlertsRef, `${alert.createdAt}-broadcast`), alert);
+        closeBroadcastAlertModal();
+      } catch (error) {
+        console.error("Broadcast alert failed:", error);
+        setBroadcastAlertStatus("Broadcast alert se nepodařilo poslat.");
+      }
     };
 
     const updateCharacterTimer = () => {
@@ -5772,6 +5973,45 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         year: "numeric"
       }).format(new Date())
     );
+
+    const getLatestNightReportForCharacter = async (characterId) => {
+      const snapshot = await getDocs(query(nightReportsRef, orderBy("createdAt", "desc"), limit(50)));
+      const entry = snapshot.docs
+        .map((entryDoc) => entryDoc.data())
+        .find((data) => data.characterId === characterId);
+
+      return entry || null;
+    };
+
+    const openMorningBrief = async (characterId) => {
+      const character = characters.find((item) => item.id === characterId);
+      if (!character) return;
+
+      const state = getCharacterState(characterId);
+      refs.morningBriefTitle.textContent = `${character.listName} je vzhůru`;
+      refs.morningBriefImage.src = character.portrait;
+      refs.morningBriefImage.alt = character.portraitAlt;
+      refs.morningBriefReport.textContent = "Načítám poslední noční report...";
+      refs.morningBriefLocation.textContent = formatMapLocation(state.sleepLocation);
+      refs.morningBriefDuration.textContent = `Dnes zatím odehráno: ${formatLedgerDuration(getDailyPlayedMs(characterId))}`;
+      refs.morningBriefModal.classList.add("is-visible");
+      refs.morningBriefModal.setAttribute("aria-hidden", "false");
+
+      try {
+        const latestReport = await getLatestNightReportForCharacter(characterId);
+        refs.morningBriefReport.textContent = latestReport?.reportText
+          ? latestReport.reportText
+          : "Pro tuhle postavu zatím není uložený poslední noční text. Navazuj podle místa spánku a aktuální situace.";
+        refs.morningBriefLocation.textContent = formatMapLocation(latestReport?.sleepLocation || state.sleepLocation);
+      } catch (error) {
+        refs.morningBriefReport.textContent = "Noční report se nepodařilo načíst. Navazuj podle posledního místa spánku a aktuální situace.";
+      }
+    };
+
+    const closeMorningBrief = () => {
+      refs.morningBriefModal.classList.remove("is-visible");
+      refs.morningBriefModal.setAttribute("aria-hidden", "true");
+    };
 
     const updateAdminTools = () => {
       const isAdmin = currentPlayerCharacterId === adminCharacterId;
@@ -6104,7 +6344,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         if (newLevel > previousLevel) {
           await sendLevelAlert(activeCharacterId, newLevel, newTotal);
         }
-        if (reportText.trim()) {
+        if (reportText.trim() || sleepLocation) {
           await setDoc(doc(nightReportsRef, `${Date.now()}-${activeCharacterId}`), {
             characterId: activeCharacterId,
             characterName: character.listName,
@@ -6600,6 +6840,28 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
     refs.testCharacterAlertButton.addEventListener("click", testCharacterAlert);
 
+    refs.openBroadcastAlertButton.addEventListener("click", openBroadcastAlertModal);
+
+    refs.closeBroadcastAlertButton.addEventListener("click", closeBroadcastAlertModal);
+
+    refs.previewBroadcastAlertButton.addEventListener("click", previewBroadcastAlert);
+
+    refs.sendBroadcastAlertButton.addEventListener("click", sendBroadcastAlert);
+
+    refs.broadcastAlertModal.addEventListener("click", (event) => {
+      if (event.target === refs.broadcastAlertModal) {
+        closeBroadcastAlertModal();
+      }
+    });
+
+    refs.closeMorningBriefButton.addEventListener("click", closeMorningBrief);
+
+    refs.morningBriefModal.addEventListener("click", (event) => {
+      if (event.target === refs.morningBriefModal) {
+        closeMorningBrief();
+      }
+    });
+
     refs.closeBadgeAdminButton.addEventListener("click", closeBadgeAdminModal);
 
     refs.badgeAdminModal.addEventListener("click", (event) => {
@@ -6713,6 +6975,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       if (event.key === "Escape" && refs.badgeAdminModal.classList.contains("is-visible")) {
         closeBadgeAdminModal();
       }
+      if (event.key === "Escape" && refs.broadcastAlertModal.classList.contains("is-visible")) {
+        closeBroadcastAlertModal();
+      }
+      if (event.key === "Escape" && refs.morningBriefModal.classList.contains("is-visible")) {
+        closeMorningBrief();
+      }
       if (event.key === "Escape" && refs.levelAlert.classList.contains("is-visible")) {
         hideLevelAlert();
       }
@@ -6767,6 +7035,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         updateCharacterTimer();
         sendCharacterAlert(activeCharacterId, "wake");
         sendCharacterWebhook("wake");
+        openMorningBrief(activeCharacterId);
         return;
       }
 
