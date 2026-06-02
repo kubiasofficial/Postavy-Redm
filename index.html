@@ -2450,8 +2450,8 @@
     }
 
     .map-tool-button {
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
       display: grid;
       place-items: center;
       border: 1px solid rgba(169, 120, 57, 0.28);
@@ -2494,6 +2494,8 @@
       border-radius: var(--radius-lg);
       background: rgba(6, 6, 5, 0.72);
       cursor: grab;
+      overscroll-behavior: contain;
+      touch-action: none;
       user-select: none;
     }
 
@@ -2533,7 +2535,7 @@
         0 12px 24px rgba(0, 0, 0, 0.46),
         0 0 0 4px color-mix(in srgb, var(--marker-color, #d6a047) 26%, transparent),
         0 0 22px color-mix(in srgb, var(--marker-color, #d6a047) 34%, transparent);
-      transform: translate(-50%, -50%);
+      transform: translate(-50%, calc(-100% - 12px));
     }
 
     .map-marker img {
@@ -3396,6 +3398,18 @@
         padding: 22px 18px;
       }
 
+      .badge-modal,
+      .sleep-report-modal {
+        align-items: stretch;
+        padding: 10px;
+      }
+
+      .map-card,
+      .sleep-report-dialog {
+        width: 100%;
+        max-height: calc(100dvh - 20px);
+      }
+
       .badge-summary {
         grid-template-columns: 1fr;
       }
@@ -3409,8 +3423,27 @@
         justify-content: center;
       }
 
+      .map-tool-button {
+        width: 46px;
+        height: 46px;
+        font-size: 1.15rem;
+      }
+
       .map-viewport {
-        height: min(520px, 58vh);
+        height: min(520px, 54dvh);
+      }
+
+      .sleep-report-map .map-viewport {
+        height: min(360px, 40dvh);
+      }
+
+      .sleep-report-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .sleep-report-button {
+        width: 100%;
       }
 
       .player-profile-shell,
@@ -5667,18 +5700,20 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.sleepReportLocationStatus.classList.remove("is-missing");
     };
 
-    const pickSleepMapLocation = (event) => {
-      if (activeMapDrag?.didMove) return;
-
-      const rect = refs.sleepMapCanvas.getBoundingClientRect();
+    const getMapLocationFromEvent = (canvas, event) => {
+      const rect = canvas.getBoundingClientRect();
       const x = ((event.clientX - rect.left) / rect.width) * 100;
       const y = ((event.clientY - rect.top) / rect.height) * 100;
 
-      sleepLocationDraft = {
+      return {
         x: Math.max(0, Math.min(100, x)),
         y: Math.max(0, Math.min(100, y)),
         selectedAt: Date.now()
       };
+    };
+
+    const pickSleepMapLocation = (event) => {
+      sleepLocationDraft = getMapLocationFromEvent(refs.sleepMapCanvas, event);
       positionDraftSleepMarker();
     };
 
@@ -5715,9 +5750,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     const endMapDrag = (event) => {
       if (!activeMapDrag) return;
 
-      const { viewport } = activeMapDrag;
+      const { type, viewport, didMove } = activeMapDrag;
       viewport.classList.remove("is-dragging");
       viewport.releasePointerCapture?.(event.pointerId);
+      if (type === "sleep" && !didMove) {
+        pickSleepMapLocation(event);
+      }
       setTimeout(() => {
         activeMapDrag = null;
       }, 0);
@@ -7153,8 +7191,6 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         closeSleepReportModal(null);
       }
     });
-
-    refs.sleepMapViewport.addEventListener("click", pickSleepMapLocation);
 
     refs.sleepMapViewport.addEventListener("pointerdown", (event) => {
       startMapDrag("sleep", event);
