@@ -46,6 +46,11 @@ const commands = [
     ]
   },
   {
+    name: "wh-prikazy",
+    description: "Ukaze prehled West Haven slash prikazu.",
+    type: 1
+  },
+  {
     name: "wh-probudit",
     description: "Prepne tvoji nebo vybranou postavu na vzhuru.",
     type: 1,
@@ -348,10 +353,67 @@ const handleReportPreview = async () => {
   });
 };
 
+const handleCommandsHelp = async () => (
+  interactionResponse("", {
+    embeds: [
+      {
+        title: "West Haven | Slash prikazy",
+        description: "Prehled prikazu pro CroweBot.",
+        color: 0xb88945,
+        fields: [
+          {
+            name: "/wh-stav",
+            value: "Ukaze aktualni stav vsech postav, jejich sezeni, celkovy cas a level."
+          },
+          {
+            name: "/wh-stav postava",
+            value: "Ukaze detail jedne vybrane postavy."
+          },
+          {
+            name: "/wh-probudit",
+            value: "Prepne tvoji napojenou postavu na vzhuru a aktualizuje web."
+          },
+          {
+            name: "/wh-probudit postava",
+            value: "Prepne vybranou postavu na vzhuru. Funguje pro admina nebo vlastnika postavy."
+          },
+          {
+            name: "/wh-uspat",
+            value: "Uspe tvoji napojenou postavu, secte odehrany cas a aktualizuje web."
+          },
+          {
+            name: "/wh-uspat report",
+            value: "Uspe postavu a ulozi kratky nocni report."
+          },
+          {
+            name: "/wh-report",
+            value: "Ukaze nahled pulnocniho souhrnu postav."
+          },
+          {
+            name: "/wh-hraci",
+            value: "Ukaze Discord hrace napojene na jednotlive postavy."
+          },
+          {
+            name: "/wh-prikazy",
+            value: "Ukaze tenhle prehled prikazu."
+          }
+        ],
+        footer: {
+          text: "West Haven Office"
+        },
+        timestamp: new Date().toISOString()
+      }
+    ],
+    ephemeral: true
+  })
+);
+
 const handleCommand = async (interaction) => {
   switch (interaction.data?.name) {
     case "wh-stav":
       return handleStatus(interaction);
+    case "wh-prikazy":
+      return handleCommandsHelp(interaction);
     case "wh-probudit":
       return handleWake(interaction);
     case "wh-uspat":
