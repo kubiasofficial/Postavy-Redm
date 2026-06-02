@@ -754,6 +754,32 @@
         0 0 22px rgba(169, 120, 57, 0.16);
     }
 
+    .roster-card.is-alert-pulsing {
+      border-color: rgba(255, 224, 160, 0.96);
+      animation: roster-alert-pulse 1800ms ease both;
+      box-shadow:
+        0 34px 76px rgba(0, 0, 0, 0.54),
+        0 0 0 2px rgba(255, 224, 160, 0.34),
+        0 0 46px rgba(169, 120, 57, 0.34);
+    }
+
+    .roster-card.is-alert-pulsing::before {
+      opacity: 1;
+      transform: translateX(45%);
+    }
+
+    .roster-card.is-alert-pulsing::after {
+      background:
+        linear-gradient(180deg, rgba(255, 238, 196, 0.08), transparent 24%, rgba(0, 0, 0, 0.82)),
+        linear-gradient(0deg, rgba(143, 31, 45, 0.3), transparent 46%),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.34), transparent 34%, rgba(0, 0, 0, 0.28));
+    }
+
+    .roster-card.is-alert-pulsing .roster-alert-stamp {
+      opacity: 1;
+      transform: translateY(0) rotate(-2deg) scale(1);
+    }
+
     .roster-card.is-locked,
     .roster-card:disabled {
       cursor: not-allowed;
@@ -837,6 +863,35 @@
       height: 100%;
       display: block;
       object-fit: cover;
+    }
+
+    .roster-alert-stamp {
+      position: absolute;
+      top: 16px;
+      right: 14px;
+      z-index: 6;
+      min-width: 88px;
+      padding: 7px 10px 6px;
+      border: 1px solid rgba(255, 224, 160, 0.72);
+      border-radius: 3px;
+      background:
+        linear-gradient(180deg, rgba(255, 238, 196, 0.16), rgba(8, 8, 7, 0.78)),
+        rgba(35, 25, 17, 0.9);
+      color: #fff0cf;
+      font-size: 0.64rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-align: center;
+      text-transform: uppercase;
+      box-shadow:
+        0 14px 30px rgba(0, 0, 0, 0.42),
+        inset 0 0 0 1px rgba(0, 0, 0, 0.32);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-8px) rotate(-5deg) scale(0.88);
+      transition:
+        opacity 220ms var(--ease),
+        transform 320ms var(--ease);
     }
 
     .roster-card::after {
@@ -1526,28 +1581,30 @@
       top: 24px;
       right: 24px;
       z-index: 40;
-      width: min(520px, calc(100vw - 32px));
+      width: min(560px, calc(100vw - 32px));
       display: grid;
-      grid-template-columns: 104px minmax(0, 1fr);
-      gap: 18px;
+      grid-template-columns: 118px minmax(0, 1fr);
+      gap: 20px;
       align-items: center;
       overflow: hidden;
-      min-height: 108px;
-      padding: 12px 24px 12px 12px;
-      border: 0;
-      border-radius: 0;
+      min-height: 142px;
+      padding: 14px 24px 14px 14px;
+      border: 1px solid rgba(116, 35, 25, 0.45);
+      border-radius: 2px;
       background:
-        linear-gradient(90deg, rgba(67, 194, 121, 0.22), transparent 24%),
-        linear-gradient(90deg, rgba(5, 5, 4, 0.98), rgba(13, 11, 9, 0.9) 58%, rgba(7, 7, 6, 0.16)),
-        linear-gradient(180deg, rgba(255, 238, 196, 0.08), transparent 54%);
+        linear-gradient(90deg, rgba(92, 49, 28, 0.38), transparent 30%),
+        linear-gradient(180deg, rgba(255, 245, 215, 0.12), rgba(0, 0, 0, 0) 34%),
+        linear-gradient(135deg, rgba(54, 34, 21, 0.98), rgba(18, 13, 10, 0.96) 62%, rgba(44, 25, 17, 0.92)),
+        repeating-linear-gradient(0deg, rgba(255, 242, 207, 0.035) 0 1px, transparent 1px 6px);
       box-shadow:
-        0 26px 70px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 238, 196, 0.16),
-        inset 0 -1px 0 rgba(169, 120, 57, 0.34);
-      backdrop-filter: blur(9px);
+        0 30px 78px rgba(0, 0, 0, 0.56),
+        0 0 0 1px rgba(255, 224, 160, 0.16),
+        inset 0 0 0 1px rgba(255, 238, 196, 0.08),
+        inset 0 -3px 0 rgba(116, 35, 25, 0.46);
+      backdrop-filter: blur(7px);
       opacity: 0;
       pointer-events: none;
-      transform: translate3d(34px, -6px, 0);
+      transform: translate3d(42px, -8px, 0) rotate(0.5deg);
       transition:
         opacity 260ms var(--ease),
         transform 260ms var(--ease);
@@ -1556,13 +1613,16 @@
     .character-alert::before {
       content: "";
       position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 2px;
+      inset: 8px;
+      border: 1px solid rgba(255, 224, 160, 0.14);
+      border-radius: 1px;
       background:
-        linear-gradient(90deg, transparent, rgba(255, 222, 154, 0.96) 18%, rgba(67, 194, 121, 0.78) 44%, transparent 86%);
-      box-shadow: 0 0 22px rgba(67, 194, 121, 0.38);
+        linear-gradient(90deg, transparent, rgba(67, 194, 121, 0.18), transparent 62%),
+        radial-gradient(ellipse at 0% 50%, rgba(255, 238, 196, 0.12), transparent 42%);
+      box-shadow:
+        inset 0 -2px 0 rgba(67, 194, 121, 0.36),
+        0 0 26px rgba(67, 194, 121, 0.16);
+      pointer-events: none;
     }
 
     .character-alert::after {
@@ -1571,56 +1631,67 @@
       inset: 0;
       pointer-events: none;
       background:
-        linear-gradient(115deg, transparent 0 34%, rgba(255, 238, 196, 0.1) 42%, transparent 52%),
-        radial-gradient(ellipse at 8% 50%, rgba(255, 238, 196, 0.16), transparent 34%);
-      opacity: 0.62;
+        linear-gradient(115deg, transparent 0 32%, rgba(255, 238, 196, 0.13) 42%, transparent 54%),
+        radial-gradient(ellipse at 14% 50%, rgba(255, 238, 196, 0.16), transparent 32%),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.18), transparent 36%);
+      opacity: 0.66;
     }
 
     .character-alert.is-visible {
       opacity: 1;
-      transform: translate3d(0, 0, 0);
+      transform: translate3d(0, 0, 0) rotate(0deg);
     }
 
     .character-alert.is-sleep {
       background:
-        linear-gradient(90deg, rgba(169, 66, 77, 0.24), transparent 24%),
-        linear-gradient(90deg, rgba(5, 5, 4, 0.98), rgba(13, 11, 9, 0.9) 58%, rgba(7, 7, 6, 0.16)),
-        linear-gradient(180deg, rgba(255, 238, 196, 0.07), transparent 54%);
+        linear-gradient(90deg, rgba(116, 35, 25, 0.46), transparent 30%),
+        linear-gradient(180deg, rgba(255, 245, 215, 0.1), rgba(0, 0, 0, 0) 34%),
+        linear-gradient(135deg, rgba(54, 34, 21, 0.98), rgba(18, 13, 10, 0.96) 62%, rgba(44, 18, 18, 0.92)),
+        repeating-linear-gradient(0deg, rgba(255, 242, 207, 0.035) 0 1px, transparent 1px 6px);
     }
 
     .character-alert.is-sleep::before {
       background:
-        linear-gradient(90deg, transparent, rgba(255, 222, 154, 0.9) 18%, rgba(169, 66, 77, 0.86) 44%, transparent 86%);
-      box-shadow: 0 0 22px rgba(169, 66, 77, 0.4);
+        linear-gradient(90deg, transparent, rgba(169, 66, 77, 0.24), transparent 62%),
+        radial-gradient(ellipse at 0% 50%, rgba(255, 238, 196, 0.12), transparent 42%);
+      box-shadow:
+        inset 0 -2px 0 rgba(169, 66, 77, 0.56),
+        0 0 26px rgba(169, 66, 77, 0.2);
     }
 
     .character-alert.is-broadcast {
       background:
-        linear-gradient(90deg, rgba(220, 188, 112, 0.24), transparent 24%),
-        linear-gradient(90deg, rgba(5, 5, 4, 0.98), rgba(13, 11, 9, 0.9) 58%, rgba(7, 7, 6, 0.16)),
-        linear-gradient(180deg, rgba(255, 238, 196, 0.09), transparent 54%);
+        linear-gradient(90deg, rgba(169, 120, 57, 0.46), transparent 30%),
+        linear-gradient(180deg, rgba(255, 245, 215, 0.12), rgba(0, 0, 0, 0) 34%),
+        linear-gradient(135deg, rgba(54, 34, 21, 0.98), rgba(18, 13, 10, 0.96) 62%, rgba(54, 34, 21, 0.92)),
+        repeating-linear-gradient(0deg, rgba(255, 242, 207, 0.035) 0 1px, transparent 1px 6px);
     }
 
     .character-alert.is-broadcast::before {
       background:
-        linear-gradient(90deg, transparent, rgba(255, 222, 154, 0.96) 18%, rgba(220, 188, 112, 0.92) 44%, transparent 86%);
-      box-shadow: 0 0 26px rgba(220, 188, 112, 0.44);
+        linear-gradient(90deg, transparent, rgba(220, 188, 112, 0.24), transparent 62%),
+        radial-gradient(ellipse at 0% 50%, rgba(255, 238, 196, 0.12), transparent 42%);
+      box-shadow:
+        inset 0 -2px 0 rgba(220, 188, 112, 0.52),
+        0 0 26px rgba(220, 188, 112, 0.2);
     }
 
     .character-alert img {
       position: relative;
       z-index: 1;
-      width: 104px;
-      height: 104px;
+      width: 118px;
+      height: 118px;
       display: block;
       object-fit: cover;
       object-position: center top;
-      border: 1px solid rgba(255, 238, 196, 0.28);
-      border-radius: 0;
+      border: 1px solid rgba(255, 238, 196, 0.36);
+      border-radius: 1px;
       box-shadow:
-        16px 0 34px rgba(0, 0, 0, 0.52),
-        0 0 0 1px rgba(0, 0, 0, 0.42);
-      filter: contrast(1.08) brightness(0.9);
+        0 16px 32px rgba(0, 0, 0, 0.52),
+        0 0 0 4px rgba(20, 14, 9, 0.62),
+        0 0 0 5px rgba(255, 238, 196, 0.12);
+      filter: sepia(0.22) contrast(1.12) brightness(0.86);
+      transform: rotate(-1deg);
     }
 
     .character-alert-kicker {
@@ -1634,17 +1705,47 @@
       text-transform: uppercase;
     }
 
+    .character-alert-stamp {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      z-index: 2;
+      min-width: 86px;
+      padding: 6px 9px 5px;
+      border: 1px solid rgba(67, 194, 121, 0.64);
+      border-radius: 3px;
+      color: #bff2cd;
+      font-size: 0.58rem;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      text-align: center;
+      text-transform: uppercase;
+      transform: rotate(4deg);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.22);
+    }
+
+    .character-alert.is-sleep .character-alert-stamp {
+      border-color: rgba(169, 66, 77, 0.78);
+      color: #f0a8ad;
+    }
+
+    .character-alert.is-broadcast .character-alert-stamp {
+      border-color: rgba(220, 188, 112, 0.78);
+      color: #f5d99a;
+    }
+
     .character-alert-title {
       position: relative;
       z-index: 1;
       margin: 0;
       color: #fff0cf;
       font-family: Georgia, "Times New Roman", serif;
-      font-size: 1.68rem;
-      line-height: 0.92;
+      font-size: clamp(1.55rem, 3vw, 2.08rem);
+      line-height: 0.96;
       letter-spacing: 0.04em;
       text-transform: uppercase;
       text-shadow: 0 8px 22px rgba(0, 0, 0, 0.66);
+      padding-right: 96px;
     }
 
     .character-alert-text {
@@ -1654,6 +1755,7 @@
       color: #d8c8a9;
       font-size: 0.92rem;
       line-height: 1.48;
+      padding-right: 20px;
     }
 
     .other-level-alert {
@@ -3112,6 +3214,25 @@
       }
     }
 
+    @keyframes roster-alert-pulse {
+      0% {
+        filter: saturate(0.92) contrast(1);
+        transform: translateY(0) scale(1);
+      }
+      18% {
+        filter: saturate(1.16) contrast(1.08);
+        transform: translateY(-8px) scale(1.018);
+      }
+      48% {
+        filter: saturate(1.08) contrast(1.04);
+        transform: translateY(-4px) scale(1.01);
+      }
+      100% {
+        filter: saturate(0.95) contrast(1);
+        transform: translateY(0) scale(1);
+      }
+    }
+
     @keyframes ledger-rise {
       from {
         opacity: 0;
@@ -3878,6 +3999,7 @@
     <div>
       <p class="character-alert-kicker" id="characterAlertKicker">West Haven Alert</p>
       <h2 class="character-alert-title" id="characterAlertTitle"></h2>
+      <span class="character-alert-stamp" id="characterAlertStamp">Awake</span>
       <p class="character-alert-text" id="characterAlertText"></p>
     </div>
   </div>
@@ -4401,6 +4523,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       characterAlertImage: document.getElementById("characterAlertImage"),
       characterAlertKicker: document.getElementById("characterAlertKicker"),
       characterAlertTitle: document.getElementById("characterAlertTitle"),
+      characterAlertStamp: document.getElementById("characterAlertStamp"),
       characterAlertText: document.getElementById("characterAlertText"),
       otherLevelAlert: document.getElementById("otherLevelAlert"),
       otherLevelAlertImage: document.getElementById("otherLevelAlertImage"),
@@ -6274,6 +6397,25 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
     };
 
+    const pulseRosterCardForAlert = (alert) => {
+      if (alert.type === "broadcast") return;
+
+      const card = rosterGrid.querySelector(`[data-character-card="${alert.characterId}"]`);
+      if (!card) return;
+
+      const stamp = card.querySelector("[data-roster-alert-stamp]");
+      if (stamp) {
+        stamp.textContent = alert.type === "wake" ? "Awake" : "Asleep";
+      }
+
+      card.classList.remove("is-alert-pulsing");
+      void card.offsetWidth;
+      card.classList.add("is-alert-pulsing");
+      setTimeout(() => {
+        card.classList.remove("is-alert-pulsing");
+      }, 1900);
+    };
+
     const showNextCharacterAlert = () => {
       if (isCharacterAlertShowing || characterAlertQueue.length === 0) return;
 
@@ -6293,10 +6435,16 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         : alert.type === "wake"
           ? "West Haven Morning Alert"
           : "West Haven Night Alert";
+      refs.characterAlertStamp.textContent = alert.type === "broadcast"
+        ? "Notice"
+        : alert.type === "wake"
+          ? "Awake"
+          : "Asleep";
       refs.characterAlertTitle.textContent = alert.title;
       refs.characterAlertText.textContent = alert.text;
       refs.characterAlert.classList.add("is-visible");
       refs.characterAlert.setAttribute("aria-hidden", "false");
+      pulseRosterCardForAlert(alert);
 
       playAlertSound(alert.type === "sleep" ? "sleep" : "wake");
 
@@ -6943,6 +7091,11 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         playerAvatarImage.dataset.rosterPlayerAvatarImage = character.id;
         playerAvatar.appendChild(playerAvatarImage);
 
+        const alertStamp = document.createElement("span");
+        alertStamp.className = "roster-alert-stamp";
+        alertStamp.dataset.rosterAlertStamp = character.id;
+        alertStamp.textContent = "Notice";
+
         const name = document.createElement("span");
         name.className = "roster-name";
         name.textContent = character.listName;
@@ -6971,7 +7124,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
         status.appendChild(statusText);
 
-        button.append(image, playerAvatar, levelBadge, name, role, liveTimer, status);
+        button.append(image, playerAvatar, alertStamp, levelBadge, name, role, liveTimer, status);
 
         rosterGrid.appendChild(button);
       });
