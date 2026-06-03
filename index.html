@@ -26,6 +26,7 @@
       --radius-lg: 8px;
       --radius-md: 6px;
       --ease: 260ms cubic-bezier(0.22, 1, 0.36, 1);
+      --seasonal-background: url("images/west-haven-1899-banner.png");
     }
 
     * {
@@ -39,16 +40,14 @@
       color: var(--text);
       font-family: "Trebuchet MS", Georgia, "Times New Roman", serif;
       background:
-        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-        linear-gradient(rgba(9, 9, 8, 0.78), rgba(9, 9, 8, 0.88)),
-        url("images/west-haven-1899-banner.png"),
+        linear-gradient(rgba(9, 9, 8, 0.72), rgba(9, 9, 8, 0.86)),
+        var(--seasonal-background),
         radial-gradient(circle at top left, rgba(143, 31, 45, 0.18), transparent 28%),
         radial-gradient(circle at 82% 18%, rgba(169, 120, 57, 0.13), transparent 26%),
         linear-gradient(145deg, var(--bg-1), var(--bg-2) 44%, var(--bg-3));
-      background-size: 44px 44px, 44px 44px, auto, cover, auto, auto, auto;
-      background-position: center, center, center, center, center, center, center;
-      background-attachment: fixed, fixed, fixed, fixed, fixed, fixed, fixed;
+      background-size: auto, cover, auto, auto, auto;
+      background-position: center, center, center, center, center;
+      background-attachment: fixed, fixed, fixed, fixed, fixed;
     }
 
     body {
@@ -284,38 +283,42 @@
       min-height: 42px;
       display: inline-flex;
       align-items: center;
-      gap: 9px;
-      padding: 10px 14px;
-      border: 1px solid rgba(255, 222, 154, 0.32);
-      border-radius: var(--radius-md);
+      gap: 8px;
+      padding: 9px 13px;
+      border: 1px solid rgba(177, 130, 70, 0.28);
+      border-radius: 4px;
       background:
-        linear-gradient(180deg, rgba(255, 232, 184, 0.1), transparent 60%),
-        rgba(16, 14, 12, 0.78);
-      color: #fff0cf;
+        linear-gradient(180deg, rgba(91, 62, 35, 0.38), rgba(22, 17, 13, 0.78)),
+        rgba(14, 12, 10, 0.82);
+      color: #ead6b1;
       cursor: pointer;
       font: inherit;
-      font-size: 0.76rem;
+      font-size: 0.72rem;
       font-weight: 700;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 232, 184, 0.08),
+        0 10px 24px rgba(0, 0, 0, 0.22);
       transition:
         transform var(--ease),
+        background var(--ease),
         border-color var(--ease),
-        filter var(--ease);
+        color var(--ease);
     }
 
     .home-badges-button::before {
       content: "";
-      width: 28px;
-      height: 28px;
+      width: 20px;
+      height: 20px;
       display: grid;
       place-items: center;
       border: 0;
-      border-radius: 4px;
+      border-radius: 2px;
       background:
         url("badges/badge-level-1.png") center / contain no-repeat;
-      filter: drop-shadow(0 0 10px rgba(169, 120, 57, 0.22));
+      filter: sepia(0.25) brightness(0.82);
+      opacity: 0.78;
     }
 
     .home-players-button::before {
@@ -326,25 +329,26 @@
         radial-gradient(circle at 50% 74%, rgba(169, 120, 57, 0.9) 0 29%, transparent 30%),
         rgba(8, 8, 7, 0.84);
       box-shadow:
-        inset 0 0 0 1px rgba(255, 238, 196, 0.32),
-        0 0 12px rgba(169, 120, 57, 0.22);
+        inset 0 0 0 1px rgba(255, 238, 196, 0.18);
     }
 
     .home-map-button::before {
-      border-radius: 5px;
+      border-radius: 2px;
       background:
-        linear-gradient(135deg, rgba(255, 238, 196, 0.86) 0 20%, transparent 20% 32%, rgba(169, 120, 57, 0.84) 32% 54%, transparent 54% 66%, rgba(143, 31, 45, 0.76) 66%),
-        rgba(8, 8, 7, 0.84);
+        linear-gradient(135deg, rgba(219, 180, 109, 0.62) 0 28%, transparent 28% 42%, rgba(117, 76, 43, 0.7) 42% 64%, transparent 64%),
+        rgba(20, 15, 11, 0.84);
       box-shadow:
-        inset 0 0 0 1px rgba(255, 238, 196, 0.32),
-        0 0 12px rgba(169, 120, 57, 0.22);
+        inset 0 0 0 1px rgba(255, 238, 196, 0.16);
     }
 
     .home-badges-button:hover,
     .home-badges-button:focus-visible {
-      transform: translateY(-2px);
-      border-color: rgba(255, 222, 154, 0.64);
-      filter: brightness(1.08);
+      transform: translateY(-1px);
+      border-color: rgba(177, 130, 70, 0.54);
+      background:
+        linear-gradient(180deg, rgba(106, 72, 40, 0.48), rgba(24, 18, 13, 0.84)),
+        rgba(14, 12, 10, 0.88);
+      color: #fff0cf;
       outline: none;
     }
 
@@ -545,39 +549,21 @@
       top: 0;
       left: calc(100% + 72px);
       z-index: 5;
-      width: 190px;
-      padding: 14px;
-      border: 1px solid rgba(169, 120, 57, 0.14);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      background:
-        linear-gradient(180deg, rgba(255, 232, 184, 0.055), transparent 26%),
-        rgba(8, 8, 7, 0.22);
-      box-shadow:
-        inset 0 1px 0 rgba(255, 241, 205, 0.04),
-        0 18px 44px rgba(0, 0, 0, 0.22);
+      width: 178px;
+      padding: 4px 0;
       animation: lore-enter 700ms var(--ease) 520ms both;
     }
 
     .activity-rail::before {
-      content: "";
-      position: absolute;
-      inset: -60% -20%;
-      opacity: 0.35;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 12% 55%, rgba(143, 31, 45, 0.18), transparent 20%),
-        radial-gradient(circle at 74% 40%, rgba(169, 120, 57, 0.18), transparent 24%),
-        linear-gradient(110deg, transparent 42%, rgba(255, 239, 199, 0.06), transparent 58%);
-      animation: ember-light 9s ease-in-out infinite;
+      display: none;
     }
 
     .activity-title {
       position: relative;
-      margin: 0 0 12px;
+      margin: 0 0 14px 4px;
       color: #e8d8ba;
       font-family: Georgia, "Times New Roman", serif;
-      font-size: 1.1rem;
+      font-size: 1rem;
       line-height: 1.15;
       text-shadow: 0 8px 26px rgba(0, 0, 0, 0.58);
     }
@@ -585,51 +571,34 @@
     .time-ledger {
       position: relative;
       display: grid;
-      gap: 9px;
+      gap: 12px;
     }
 
     .time-ledger-item {
       position: relative;
-      overflow: hidden;
       display: grid;
-      grid-template-columns: 38px minmax(0, 1fr);
-      gap: 9px;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 10px;
       align-items: center;
-      min-height: 54px;
-      padding: 8px;
-      border: 1px solid rgba(169, 120, 57, 0.14);
-      border-radius: var(--radius-md);
-      background: rgba(8, 8, 7, 0.28);
+      min-height: 46px;
+      padding: 0;
       transition:
         transform var(--ease),
-        border-color var(--ease),
-        box-shadow var(--ease);
+        opacity var(--ease);
       animation: ledger-rise 420ms var(--ease) both;
       animation-delay: calc(var(--ledger-index, 0) * 45ms + 80ms);
     }
 
     .time-ledger-item::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0;
-      background: linear-gradient(115deg, transparent 30%, rgba(255, 238, 196, 0.12), transparent 62%);
-      transform: translateX(-80%);
-      transition:
-        opacity var(--ease),
-        transform 900ms ease;
+      display: none;
     }
 
     .time-ledger-item:hover {
-      transform: translateY(-3px);
-      border-color: rgba(169, 120, 57, 0.34);
-      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.24);
+      transform: translateX(3px);
     }
 
     .time-ledger-item:hover::after {
-      opacity: 1;
-      transform: translateX(80%);
+      display: none;
     }
 
     .time-ledger-name {
@@ -693,13 +662,15 @@
     }
 
     .time-ledger-avatar {
-      width: 38px;
-      height: 38px;
+      width: 42px;
+      height: 42px;
       overflow: hidden;
-      border: 1px solid rgba(255, 238, 196, 0.52);
+      border: 1px solid rgba(255, 238, 196, 0.42);
       border-radius: 999px;
       background: rgba(8, 8, 7, 0.62);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.36);
+      box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.34),
+        0 0 0 3px rgba(8, 8, 7, 0.28);
     }
 
     .time-ledger-avatar img {
@@ -4860,6 +4831,20 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         ]
       }
     };
+    const monthlyBackgrounds = [
+      "images/monthly/west-haven-january.png",
+      "images/monthly/west-haven-february.png",
+      "images/monthly/west-haven-march.png",
+      "images/monthly/west-haven-april.png",
+      "images/monthly/west-haven-may.png",
+      "images/monthly/west-haven-june.png",
+      "images/monthly/west-haven-july.png",
+      "images/monthly/west-haven-august.png",
+      "images/monthly/west-haven-september.png",
+      "images/monthly/west-haven-october.png",
+      "images/monthly/west-haven-november.png",
+      "images/monthly/west-haven-december.png"
+    ];
     let activeCharacterId = null;
     let sleepReportResolver = null;
     let timerIntervalId = null;
@@ -5129,6 +5114,16 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     };
 
     const getWakeTimerKey = (characterId) => `westHavenWakeStartedAt:${characterId}`;
+
+    const applyMonthlyBackground = () => {
+      const monthPart = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Europe/Prague",
+        month: "2-digit"
+      }).formatToParts(new Date()).find((part) => part.type === "month")?.value;
+      const monthIndex = Math.max(0, Math.min(11, Number(monthPart || 1) - 1));
+      const image = monthlyBackgrounds[monthIndex] || "images/west-haven-1899-banner.png";
+      document.documentElement.style.setProperty("--seasonal-background", `url("${image}")`);
+    };
 
     const getPragueDateKey = (timestamp = Date.now()) => {
       const parts = new Intl.DateTimeFormat("en-CA", {
@@ -7888,6 +7883,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       console.error("Firestore level alert sync failed:", error);
     });
 
+    applyMonthlyBackground();
     renderRoster();
     renderDust();
     applyAlertVolume();
