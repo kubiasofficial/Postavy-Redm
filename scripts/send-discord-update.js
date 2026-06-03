@@ -40,28 +40,34 @@ if (!env.DISCORD_BOT_TOKEN) {
 }
 
 const payload = {
+  content: "@everyone",
   allowed_mentions: {
-    parse: []
+    parse: ["everyone"]
   },
   embeds: [
     {
-      title: "West Haven mini-update",
-      description: "CroweBot byl napojen na web a dostal nove slash prikazy. Stav postav, probuzeni, uspani, reporty i prehled hracu ted zvladnete primo z Discordu.",
+      title: "West Haven update",
+      description: "Web postav dostal novou vrstvu pro vztahy, osobni deniky a ukladani lokaci. Kazda postava ma ted vic prostoru na vlastni stopu v pribehu.",
       color: 12028229,
       fields: [
         {
-          name: "Nove prikazy",
-          value: "`/wh-stav` `/wh-probudit` `/wh-uspat` `/wh-report` `/wh-hraci` `/wh-prikazy`",
+          name: "Vztahy",
+          value: "Admin muze vztahy rucne upravovat, navrhy z reportu ukazuji jistotu a duvody, a nocni report ma vztahove tagy.",
           inline: false
         },
         {
-          name: "Co je hotove",
-          value: "Bot komunikuje s webem pres Vercel endpoint a uklada zmeny do stejneho systemu postav.",
+          name: "Deniky",
+          value: "Kazda postava ma osobni denik. Hrac sve postavy a admin muzou zapisovat a mazat vlastni zapisky.",
+          inline: false
+        },
+        {
+          name: "Lokace",
+          value: "Postavy si muzou ukladat aktualni waypoint jako pojmenovanou lokaci s poznamkou. Hodi se pro tabory, stopy, tajna mista a dulezite udalosti.",
           inline: false
         }
       ],
       footer: {
-        text: "West Haven Office | mini-update"
+        text: "West Haven Office | update"
       },
       timestamp: new Date().toISOString()
     }
