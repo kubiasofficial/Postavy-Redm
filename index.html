@@ -1456,6 +1456,67 @@
       font-style: italic;
     }
 
+    .mail-button {
+      position: relative;
+      min-height: 42px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      margin-top: 14px;
+      padding: 9px 12px;
+      border: 1px solid rgba(169, 120, 57, 0.28);
+      border-radius: var(--radius-md);
+      background:
+        linear-gradient(180deg, rgba(91, 62, 35, 0.28), rgba(22, 17, 13, 0.72)),
+        rgba(14, 12, 10, 0.82);
+      color: #ead6b1;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .mail-button.is-visible {
+      display: inline-flex;
+    }
+
+    .mail-button:hover,
+    .mail-button:focus-visible {
+      border-color: rgba(212, 164, 89, 0.54);
+      color: #fff0cf;
+      outline: none;
+    }
+
+    .mail-icon {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .mail-count {
+      min-width: 20px;
+      height: 20px;
+      display: none;
+      place-items: center;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: #9a1f2d;
+      color: #fff8e8;
+      font-size: 0.68rem;
+      line-height: 1;
+      box-shadow: 0 0 18px rgba(154, 31, 45, 0.45);
+    }
+
+    .mail-count.is-visible {
+      display: grid;
+    }
+
+    .admin-menu-button .mail-count {
+      margin-left: auto;
+    }
+
     .character-actions {
       display: none;
       gap: 10px;
@@ -2381,6 +2442,131 @@
       font-size: 0.76rem;
       line-height: 1.35;
       text-transform: none;
+    }
+
+    .relationship-admin-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .relationship-suggestion {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border: 1px solid rgba(169, 120, 57, 0.2);
+      border-radius: var(--radius-md);
+      background: rgba(8, 8, 7, 0.28);
+    }
+
+    .relationship-suggestion-title {
+      margin: 0;
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.1rem;
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+
+    .relationship-suggestion-meta {
+      margin: 0;
+      color: var(--gold);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .relationship-suggestion-text {
+      margin: 0;
+      color: #d2bea0;
+      font-size: 0.86rem;
+      line-height: 1.55;
+    }
+
+    .relationship-suggestion-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .relationship-suggestion-button {
+      min-height: 38px;
+      padding: 8px 12px;
+      border: 1px solid rgba(169, 120, 57, 0.28);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.04);
+      color: #ead9bb;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .relationship-suggestion-button.approve {
+      border-color: rgba(111, 154, 93, 0.44);
+      color: #d9efc8;
+    }
+
+    .relationship-suggestion-button.dismiss {
+      border-color: rgba(159, 141, 115, 0.22);
+      color: #bfae91;
+    }
+
+    .mail-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .mail-item {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border: 1px solid rgba(169, 120, 57, 0.2);
+      border-radius: var(--radius-md);
+      background: rgba(8, 8, 7, 0.28);
+    }
+
+    .mail-item-title {
+      margin: 0;
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.08rem;
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+
+    .mail-item-meta {
+      margin: 0;
+      color: var(--gold);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .mail-item-text {
+      margin: 0;
+      color: #d2bea0;
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+
+    .mail-item-button {
+      justify-self: start;
+      min-height: 38px;
+      padding: 8px 12px;
+      border: 1px solid rgba(111, 154, 93, 0.44);
+      border-radius: var(--radius-md);
+      background: rgba(35, 76, 44, 0.18);
+      color: #d9efc8;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
     }
 
     .player-profile-shell {
@@ -4297,6 +4483,11 @@
           <img id="portraitImage" src="images/zeke.png" alt="">
         </div>
         <p class="quote" id="characterQuote"></p>
+        <button class="mail-button" id="openCharacterMailButton" type="button" aria-label="Otevřít vztahové zprávy">
+          <span class="mail-icon" aria-hidden="true">✉</span>
+          Pošta
+          <span class="mail-count" id="characterMailCount">0</span>
+        </button>
         <div class="character-actions" id="characterActions" aria-label="Testovací akce postavy">
           <button class="character-action wake" id="wakeCharacterButton" type="button">Probudit</button>
           <button class="character-action sleep" id="sleepCharacterButton" type="button">Jít spát</button>
@@ -4335,6 +4526,15 @@
       <button class="admin-menu-button" id="openBadgeAdminButton" type="button">
         <span aria-hidden="true">✦</span>
         Odznaky
+      </button>
+      <button class="admin-menu-button" id="openRelationshipAdminButton" type="button">
+        <span aria-hidden="true">◇</span>
+        Vztahy
+      </button>
+      <button class="admin-menu-button" id="openAdminMailButton" type="button">
+        <span aria-hidden="true">✉</span>
+        Pošta
+        <span class="mail-count" id="adminMailCount">0</span>
       </button>
       <button class="admin-menu-button" id="testCharacterAlertButton" type="button">
         <span aria-hidden="true">!</span>
@@ -4447,6 +4647,65 @@
             <button class="night-report-button send" id="saveBadgeAdminButton" type="button">Uložit odznaky</button>
           </div>
           <p class="night-report-status" id="badgeAdminStatus" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="night-report-modal" id="relationshipAdminModal" aria-hidden="true">
+    <section class="night-report-dialog" aria-labelledby="relationshipAdminTitle">
+      <header class="night-report-header">
+        <div>
+          <p class="night-report-kicker">West Haven Office</p>
+          <h2 class="night-report-title" id="relationshipAdminTitle">Návrhy vztahů</h2>
+        </div>
+        <button class="night-report-close" id="closeRelationshipAdminButton" type="button" aria-label="Zavřít návrhy vztahů">&times;</button>
+      </header>
+      <div class="night-report-body">
+        <div class="night-report-column">
+          <p class="night-report-label">
+            Reporty navrhují změny, ale bez schválení adminem se vztahy nemění.
+          </p>
+          <div class="relationship-admin-list" id="relationshipSuggestionList"></div>
+          <p class="night-report-status" id="relationshipAdminStatus" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="night-report-modal" id="characterMailModal" aria-hidden="true">
+    <section class="night-report-dialog" aria-labelledby="characterMailTitle">
+      <header class="night-report-header">
+        <div>
+          <p class="night-report-kicker">West Haven Mail</p>
+          <h2 class="night-report-title" id="characterMailTitle">Pošta postavy</h2>
+        </div>
+        <button class="night-report-close" id="closeCharacterMailButton" type="button" aria-label="Zavřít poštu postavy">&times;</button>
+      </header>
+      <div class="night-report-body">
+        <div class="night-report-column">
+          <p class="night-report-label">Změny vztahů vyžadují potvrzení přečtení.</p>
+          <div class="mail-list" id="characterMailList"></div>
+          <p class="night-report-status" id="characterMailStatus" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="night-report-modal" id="adminMailModal" aria-hidden="true">
+    <section class="night-report-dialog" aria-labelledby="adminMailTitle">
+      <header class="night-report-header">
+        <div>
+          <p class="night-report-kicker">West Haven Office</p>
+          <h2 class="night-report-title" id="adminMailTitle">Admin pošta</h2>
+        </div>
+        <button class="night-report-close" id="closeAdminMailButton" type="button" aria-label="Zavřít admin poštu">&times;</button>
+      </header>
+      <div class="night-report-body">
+        <div class="night-report-column">
+          <p class="night-report-label">Potvrzení hráčů, že vzali změny vztahů na vědomí.</p>
+          <div class="mail-list" id="adminMailList"></div>
+          <p class="night-report-status" id="adminMailStatus" aria-live="polite"></p>
         </div>
       </div>
     </section>
@@ -4683,6 +4942,10 @@
     const characterAlertsRef = collection(db, "characterAlerts");
     const characterLevelAlertsRef = collection(db, "characterLevelAlerts");
     const nightReportsRef = collection(db, "nightReports");
+    const characterRelationshipsRef = collection(db, "characterRelationships");
+    const relationshipSuggestionReviewsRef = collection(db, "relationshipSuggestionReviews");
+    const relationshipNotificationsRef = collection(db, "relationshipNotifications");
+    const relationshipAcknowledgementsRef = collection(db, "relationshipAcknowledgements");
 
     const characters = [
       {
@@ -4970,7 +5233,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       "thomas-mercer": { x: 36, y: 74 }
     };
 
-    const characterRelationships = [
+    let characterRelationships = [
       {
         from: "zeke",
         to: "silas",
@@ -5028,6 +5291,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         note: "Zeke respektuje lidi, kteří se nerozklepou při prvním pohledu. William mu ale stojí příliš blízko u rodiny."
       }
     ];
+    const defaultCharacterRelationships = characterRelationships.map((relationship) => ({ ...relationship }));
 
     const homeView = document.getElementById("homeView");
     const detailView = document.getElementById("detailView");
@@ -5060,6 +5324,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       personality: document.getElementById("personalityText"),
       portrait: document.getElementById("portraitImage"),
       quote: document.getElementById("characterQuote"),
+      openCharacterMailButton: document.getElementById("openCharacterMailButton"),
+      characterMailCount: document.getElementById("characterMailCount"),
       timeLedger: document.getElementById("timeLedger"),
       characterActions: document.getElementById("characterActions"),
       characterTimer: document.getElementById("characterTimer"),
@@ -5113,6 +5379,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       adminMenu: document.getElementById("adminMenu"),
       openNightReportButton: document.getElementById("openNightReportButton"),
       openBadgeAdminButton: document.getElementById("openBadgeAdminButton"),
+      openRelationshipAdminButton: document.getElementById("openRelationshipAdminButton"),
+      openAdminMailButton: document.getElementById("openAdminMailButton"),
+      adminMailCount: document.getElementById("adminMailCount"),
       testCharacterAlertButton: document.getElementById("testCharacterAlertButton"),
       openBroadcastAlertButton: document.getElementById("openBroadcastAlertButton"),
       badgeAdminModal: document.getElementById("badgeAdminModal"),
@@ -5122,6 +5391,18 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       badgeAdminList: document.getElementById("badgeAdminList"),
       saveBadgeAdminButton: document.getElementById("saveBadgeAdminButton"),
       badgeAdminStatus: document.getElementById("badgeAdminStatus"),
+      relationshipAdminModal: document.getElementById("relationshipAdminModal"),
+      closeRelationshipAdminButton: document.getElementById("closeRelationshipAdminButton"),
+      relationshipSuggestionList: document.getElementById("relationshipSuggestionList"),
+      relationshipAdminStatus: document.getElementById("relationshipAdminStatus"),
+      characterMailModal: document.getElementById("characterMailModal"),
+      closeCharacterMailButton: document.getElementById("closeCharacterMailButton"),
+      characterMailList: document.getElementById("characterMailList"),
+      characterMailStatus: document.getElementById("characterMailStatus"),
+      adminMailModal: document.getElementById("adminMailModal"),
+      closeAdminMailButton: document.getElementById("closeAdminMailButton"),
+      adminMailList: document.getElementById("adminMailList"),
+      adminMailStatus: document.getElementById("adminMailStatus"),
       broadcastAlertModal: document.getElementById("broadcastAlertModal"),
       closeBroadcastAlertButton: document.getElementById("closeBroadcastAlertButton"),
       broadcastAlertHeading: document.getElementById("broadcastAlertHeading"),
@@ -5545,6 +5826,10 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     let selectedRelationshipId = characterRelationships[0]
       ? `${characterRelationships[0].from}-${characterRelationships[0].to}`
       : "";
+    let relationshipSuggestions = [];
+    const reviewedRelationshipSuggestionIds = new Set();
+    let relationshipNotifications = [];
+    let relationshipAcknowledgements = [];
     const characterDiscordPlayers = {};
     const characterDiscordIds = {
       zeke: "417061947759001600",
@@ -6493,6 +6778,454 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     const closeRelationsModal = () => {
       refs.relationsModal.classList.remove("is-visible");
       refs.relationsModal.setAttribute("aria-hidden", "true");
+    };
+
+    const getRelationshipId = (from, to) => [from, to].sort().join("--");
+
+    const getRelationshipTitle = (from, to) => {
+      const first = characters.find((character) => character.id === from);
+      const second = characters.find((character) => character.id === to);
+      return `${first?.listName || from} / ${second?.listName || to}`;
+    };
+
+    const normalizeSearchText = (text = "") => (
+      String(text)
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+    );
+
+    const getCharacterSearchTokens = (character) => {
+      const parts = [
+        character.id,
+        character.listName,
+        character.name,
+        ...character.listName.split(/\s+/),
+        ...character.name.split(/\s+/)
+      ];
+
+      return [...new Set(parts
+        .map((part) => normalizeSearchText(part).replace(/[^a-z0-9-]/g, ""))
+        .filter((part) => part.length >= 4)
+      )];
+    };
+
+    const inferRelationshipType = (reportText) => {
+      const text = normalizeSearchText(reportText);
+      const rules = [
+        { type: "debt", words: ["dluh", "dluz", "zachran", "pomohl", "pomoh", "vded", "splatit"] },
+        { type: "ally", words: ["spojen", "kryl", "pomahal", "duvera", "verim", "ochranil", "spolu"] },
+        { type: "rivalry", words: ["hadka", "pohadal", "rival", "sok", "souboj", "vyhruz", "napadl"] },
+        { type: "distrust", words: ["neverim", "neduver", "podezr", "zrada", "lez", "lhal", "opatr"] },
+        { type: "secret", words: ["tajem", "mlcet", "nikomu", "skryl", "dohoda", "potaji"] }
+      ];
+
+      return rules.find((rule) => rule.words.some((word) => text.includes(word)))?.type || "secret";
+    };
+
+    const buildSuggestionFromReport = (report) => {
+      const fromCharacter = characters.find((character) => character.id === report.characterId);
+      if (!fromCharacter || !report.reportText) return [];
+
+      const text = normalizeSearchText(report.reportText);
+      return characters
+        .filter((character) => character.id !== fromCharacter.id)
+        .filter((character) => getCharacterSearchTokens(character).some((token) => text.includes(token)))
+        .map((toCharacter) => {
+          const type = inferRelationshipType(report.reportText);
+          const relationType = relationTypes[type] || relationTypes.secret;
+          const relationshipId = getRelationshipId(fromCharacter.id, toCharacter.id);
+          const createdAt = Number(report.createdAt || Date.now());
+          return {
+            id: `${relationshipId}-${type}-${createdAt}`,
+            relationshipId,
+            from: fromCharacter.id,
+            to: toCharacter.id,
+            type,
+            label: `${relationType.label}: ${fromCharacter.listName} / ${toCharacter.listName}`,
+            note: getChronicleReportPreview(report.reportText),
+            reportText: report.reportText,
+            reportDate: report.reportDate || getPragueDateKey(createdAt),
+            createdAt
+          };
+        });
+    };
+
+    const loadApprovedRelationships = async () => {
+      try {
+        const snapshot = await getDocs(characterRelationshipsRef);
+        const approved = snapshot.docs.map((entryDoc) => ({ id: entryDoc.id, ...entryDoc.data() }));
+        const byId = new Map(defaultCharacterRelationships.map((relationship) => [
+          getRelationshipId(relationship.from, relationship.to),
+          { ...relationship }
+        ]));
+
+        approved.forEach((relationship) => {
+          if (!relationship.from || !relationship.to || !relationship.type) return;
+          byId.set(getRelationshipId(relationship.from, relationship.to), {
+            from: relationship.from,
+            to: relationship.to,
+            type: relationship.type,
+            label: relationship.label || getRelationshipTitle(relationship.from, relationship.to),
+            note: relationship.note || "Vztah byl schválen adminem."
+          });
+        });
+
+        characterRelationships = Array.from(byId.values());
+        if (!getRelationshipById(selectedRelationshipId) && characterRelationships[0]) {
+          selectedRelationshipId = `${characterRelationships[0].from}-${characterRelationships[0].to}`;
+        }
+        if (refs.relationsModal.classList.contains("is-visible")) {
+          renderRelations();
+        }
+      } catch (error) {
+        console.warn("Approved relationships could not be loaded:", error);
+      }
+    };
+
+    const loadRelationshipReviews = async () => {
+      reviewedRelationshipSuggestionIds.clear();
+      const snapshot = await getDocs(relationshipSuggestionReviewsRef);
+      snapshot.docs.forEach((entryDoc) => {
+        reviewedRelationshipSuggestionIds.add(entryDoc.id);
+      });
+    };
+
+    const loadRelationshipSuggestions = async () => {
+      refs.relationshipSuggestionList.replaceChildren();
+      refs.relationshipAdminStatus.textContent = "Načítám poslední reporty...";
+
+      try {
+        await loadRelationshipReviews();
+        const snapshot = await getDocs(query(nightReportsRef, orderBy("createdAt", "desc"), limit(80)));
+        const suggestions = [];
+        const seen = new Set();
+
+        snapshot.docs.forEach((entryDoc) => {
+          buildSuggestionFromReport(entryDoc.data()).forEach((suggestion) => {
+            if (reviewedRelationshipSuggestionIds.has(suggestion.id) || seen.has(suggestion.id)) return;
+            seen.add(suggestion.id);
+            suggestions.push(suggestion);
+          });
+        });
+
+        relationshipSuggestions = suggestions.slice(0, 12);
+        renderRelationshipSuggestions();
+      } catch (error) {
+        console.warn("Relationship suggestions could not be loaded:", error);
+        refs.relationshipAdminStatus.textContent = "Návrhy se nepodařilo načíst.";
+      }
+    };
+
+    const renderRelationshipSuggestions = () => {
+      refs.relationshipSuggestionList.replaceChildren();
+
+      if (relationshipSuggestions.length === 0) {
+        const empty = document.createElement("p");
+        empty.className = "relations-empty";
+        empty.textContent = "Žádné nové návrhy vztahů. Reporty zatím nikoho dost jasně nepropojily, nebo už byly návrhy vyřízené.";
+        refs.relationshipSuggestionList.appendChild(empty);
+        refs.relationshipAdminStatus.textContent = "Hotovo.";
+        return;
+      }
+
+      relationshipSuggestions.forEach((suggestion) => {
+        const from = characters.find((character) => character.id === suggestion.from);
+        const to = characters.find((character) => character.id === suggestion.to);
+        const type = relationTypes[suggestion.type] || relationTypes.secret;
+
+        const article = document.createElement("article");
+        article.className = "relationship-suggestion";
+
+        const title = document.createElement("h3");
+        title.className = "relationship-suggestion-title";
+        title.textContent = suggestion.label;
+
+        const meta = document.createElement("p");
+        meta.className = "relationship-suggestion-meta";
+        meta.textContent = `${type.label} | ${from?.listName || suggestion.from} / ${to?.listName || suggestion.to} | ${suggestion.reportDate}`;
+
+        const text = document.createElement("p");
+        text.className = "relationship-suggestion-text";
+        text.textContent = suggestion.note;
+
+        const actions = document.createElement("div");
+        actions.className = "relationship-suggestion-actions";
+
+        const approve = document.createElement("button");
+        approve.type = "button";
+        approve.className = "relationship-suggestion-button approve";
+        approve.dataset.approveRelationshipSuggestion = suggestion.id;
+        approve.textContent = "Schválit";
+
+        const dismiss = document.createElement("button");
+        dismiss.type = "button";
+        dismiss.className = "relationship-suggestion-button dismiss";
+        dismiss.dataset.dismissRelationshipSuggestion = suggestion.id;
+        dismiss.textContent = "Ignorovat";
+
+        actions.append(approve, dismiss);
+        article.append(title, meta, text, actions);
+        refs.relationshipSuggestionList.appendChild(article);
+      });
+
+      refs.relationshipAdminStatus.textContent = `Nalezeno návrhů: ${relationshipSuggestions.length}.`;
+    };
+
+    const reviewRelationshipSuggestion = async (suggestionId, status) => {
+      const suggestion = relationshipSuggestions.find((item) => item.id === suggestionId);
+      if (!suggestion) return;
+
+      refs.relationshipAdminStatus.textContent = status === "approved" ? "Schvaluji vztah..." : "Ukládám ignorování...";
+      try {
+        if (status === "approved") {
+          await setDoc(doc(characterRelationshipsRef, suggestion.relationshipId), {
+            from: suggestion.from,
+            to: suggestion.to,
+            type: suggestion.type,
+            label: suggestion.label,
+            note: suggestion.note,
+            sourceReportDate: suggestion.reportDate,
+            approvedAt: Date.now()
+          }, { merge: true });
+          await createRelationshipNotifications(suggestion);
+        }
+
+        await setDoc(doc(relationshipSuggestionReviewsRef, suggestion.id), {
+          status,
+          reviewedAt: Date.now(),
+          from: suggestion.from,
+          to: suggestion.to,
+          type: suggestion.type
+        }, { merge: true });
+
+        relationshipSuggestions = relationshipSuggestions.filter((item) => item.id !== suggestion.id);
+        await loadApprovedRelationships();
+        renderRelationshipSuggestions();
+        refs.relationshipAdminStatus.textContent = status === "approved"
+          ? "Vztah schválený a uložený."
+          : "Návrh ignorovaný.";
+      } catch (error) {
+        console.error("Relationship suggestion review failed:", error);
+        refs.relationshipAdminStatus.textContent = "Návrh se nepodařilo uložit.";
+      }
+    };
+
+    const openRelationshipAdminModal = async () => {
+      refs.adminTools.classList.remove("is-open");
+      refs.relationshipAdminModal.classList.add("is-visible");
+      refs.relationshipAdminModal.setAttribute("aria-hidden", "false");
+      await loadRelationshipSuggestions();
+    };
+
+    const closeRelationshipAdminModal = () => {
+      refs.relationshipAdminModal.classList.remove("is-visible");
+      refs.relationshipAdminModal.setAttribute("aria-hidden", "true");
+      refs.relationshipAdminStatus.textContent = "";
+    };
+
+    const createRelationshipNotifications = async (suggestion) => {
+      const createdAt = Date.now();
+      const type = relationTypes[suggestion.type] || relationTypes.secret;
+
+      await Promise.all([suggestion.from, suggestion.to].map(async (recipientId) => {
+        const recipient = characters.find((character) => character.id === recipientId);
+        const otherId = recipientId === suggestion.from ? suggestion.to : suggestion.from;
+        const other = characters.find((character) => character.id === otherId);
+        const notificationId = `${suggestion.relationshipId}-${createdAt}-${recipientId}`;
+
+        await setDoc(doc(relationshipNotificationsRef, notificationId), {
+          recipientId,
+          recipientName: recipient?.listName || recipientId,
+          otherCharacterId: otherId,
+          otherCharacterName: other?.listName || otherId,
+          relationshipId: suggestion.relationshipId,
+          type: suggestion.type,
+          typeLabel: type.label,
+          title: `Změna vztahu: ${other?.listName || otherId}`,
+          text: suggestion.note,
+          createdAt,
+          readAt: null
+        });
+      }));
+    };
+
+    const getUnreadCharacterMail = (characterId = currentPlayerCharacterId) => (
+      relationshipNotifications
+        .filter((message) => message.recipientId === characterId && !message.readAt)
+        .sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0))
+    );
+
+    const getUnreadAdminMail = () => (
+      relationshipAcknowledgements
+        .filter((message) => !message.readAt)
+        .sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0))
+    );
+
+    const updateMailBadges = () => {
+      const characterCount = getUnreadCharacterMail().length;
+      refs.characterMailCount.textContent = String(characterCount);
+      refs.characterMailCount.classList.toggle("is-visible", characterCount > 0);
+
+      const canSeeCharacterMail = Boolean(
+        activeCharacterId &&
+        currentPlayerCharacterId &&
+        activeCharacterId === currentPlayerCharacterId
+      );
+      refs.openCharacterMailButton.classList.toggle("is-visible", canSeeCharacterMail);
+
+      const adminCount = getUnreadAdminMail().length;
+      refs.adminMailCount.textContent = String(adminCount);
+      refs.adminMailCount.classList.toggle("is-visible", adminCount > 0);
+    };
+
+    const renderCharacterMail = () => {
+      refs.characterMailList.replaceChildren();
+      const messages = getUnreadCharacterMail();
+
+      if (messages.length === 0) {
+        const empty = document.createElement("p");
+        empty.className = "relations-empty";
+        empty.textContent = "Nemáš žádné nové vztahové zprávy.";
+        refs.characterMailList.appendChild(empty);
+        refs.characterMailStatus.textContent = "Pošta je prázdná.";
+        return;
+      }
+
+      messages.forEach((message) => {
+        const item = document.createElement("article");
+        item.className = "mail-item";
+
+        const title = document.createElement("h3");
+        title.className = "mail-item-title";
+        title.textContent = message.title || `Změna vztahu: ${message.otherCharacterName}`;
+
+        const meta = document.createElement("p");
+        meta.className = "mail-item-meta";
+        meta.textContent = `${message.typeLabel || "Vztah"} | ${formatDateTime(message.createdAt)}`;
+
+        const text = document.createElement("p");
+        text.className = "mail-item-text";
+        text.textContent = message.text || "Vztah byl změněn a čeká na potvrzení.";
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "mail-item-button";
+        button.dataset.readRelationshipNotification = message.id;
+        button.textContent = "Beru na vědomí";
+
+        item.append(title, meta, text, button);
+        refs.characterMailList.appendChild(item);
+      });
+
+      refs.characterMailStatus.textContent = `Nepřečteno: ${messages.length}.`;
+    };
+
+    const renderAdminMail = () => {
+      refs.adminMailList.replaceChildren();
+      const messages = getUnreadAdminMail();
+
+      if (messages.length === 0) {
+        const empty = document.createElement("p");
+        empty.className = "relations-empty";
+        empty.textContent = "Žádná nová potvrzení od hráčů.";
+        refs.adminMailList.appendChild(empty);
+        refs.adminMailStatus.textContent = "Admin pošta je prázdná.";
+        return;
+      }
+
+      messages.forEach((message) => {
+        const item = document.createElement("article");
+        item.className = "mail-item";
+
+        const title = document.createElement("h3");
+        title.className = "mail-item-title";
+        title.textContent = message.title || "Potvrzení vztahu";
+
+        const meta = document.createElement("p");
+        meta.className = "mail-item-meta";
+        meta.textContent = `${message.characterName || "Postava"} | ${formatDateTime(message.createdAt)}`;
+
+        const text = document.createElement("p");
+        text.className = "mail-item-text";
+        text.textContent = message.text || "Hráč bere změnu vztahu na vědomí.";
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "mail-item-button";
+        button.dataset.readAdminMail = message.id;
+        button.textContent = "Přečteno";
+
+        item.append(title, meta, text, button);
+        refs.adminMailList.appendChild(item);
+      });
+
+      refs.adminMailStatus.textContent = `Nová potvrzení: ${messages.length}.`;
+    };
+
+    const acknowledgeRelationshipNotification = async (messageId) => {
+      const message = relationshipNotifications.find((item) => item.id === messageId);
+      if (!message || !currentPlayerCharacterId) return;
+
+      const character = characters.find((item) => item.id === currentPlayerCharacterId);
+      const createdAt = Date.now();
+      refs.characterMailStatus.textContent = "Potvrzuji přečtení...";
+
+      try {
+        await setDoc(doc(relationshipNotificationsRef, messageId), {
+          readAt: createdAt
+        }, { merge: true });
+
+        await setDoc(doc(relationshipAcknowledgementsRef, `${messageId}-${currentPlayerCharacterId}`), {
+          notificationId: messageId,
+          characterId: currentPlayerCharacterId,
+          characterName: character?.listName || currentPlayerCharacterId,
+          title: `${character?.listName || currentPlayerCharacterId} bere na vědomí změnu vztahů`,
+          text: `${character?.listName || currentPlayerCharacterId} potvrdil/a přečtení změny vztahu s ${message.otherCharacterName || "jinou postavou"}.`,
+          createdAt,
+          readAt: null
+        }, { merge: true });
+      } catch (error) {
+        console.error("Relationship notification acknowledgement failed:", error);
+        refs.characterMailStatus.textContent = "Potvrzení se nepodařilo uložit.";
+      }
+    };
+
+    const markAdminMailRead = async (messageId) => {
+      refs.adminMailStatus.textContent = "Ukládám přečtení...";
+      try {
+        await setDoc(doc(relationshipAcknowledgementsRef, messageId), {
+          readAt: Date.now()
+        }, { merge: true });
+      } catch (error) {
+        console.error("Admin mail read failed:", error);
+        refs.adminMailStatus.textContent = "Přečtení se nepodařilo uložit.";
+      }
+    };
+
+    const openCharacterMailModal = () => {
+      renderCharacterMail();
+      refs.characterMailModal.classList.add("is-visible");
+      refs.characterMailModal.setAttribute("aria-hidden", "false");
+    };
+
+    const closeCharacterMailModal = () => {
+      refs.characterMailModal.classList.remove("is-visible");
+      refs.characterMailModal.setAttribute("aria-hidden", "true");
+      refs.characterMailStatus.textContent = "";
+    };
+
+    const openAdminMailModal = () => {
+      refs.adminTools.classList.remove("is-open");
+      renderAdminMail();
+      refs.adminMailModal.classList.add("is-visible");
+      refs.adminMailModal.setAttribute("aria-hidden", "false");
+    };
+
+    const closeAdminMailModal = () => {
+      refs.adminMailModal.classList.remove("is-visible");
+      refs.adminMailModal.setAttribute("aria-hidden", "true");
+      refs.adminMailStatus.textContent = "";
     };
 
     const updateActiveDateStreak = (stats, dateKey) => {
@@ -8309,6 +9042,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       homeView.classList.remove("is-hidden");
       detailView.classList.add("is-hidden");
       setActiveTab("overview");
+      updateMailBadges();
     };
 
     const showDetail = (characterId) => {
@@ -8345,6 +9079,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.portrait.alt = character.portraitAlt;
       refs.characterActions.classList.add("is-visible");
       refs.characterActionStatus.textContent = "";
+      updateMailBadges();
       startTimerDisplay();
     };
 
@@ -8372,6 +9107,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       hideAuthModal();
       updateRosterStates();
       updateAdminTools();
+      updateMailBadges();
       if (refs.badgeModal.classList.contains("is-visible")) {
         renderBadgeModal();
       }
@@ -8662,6 +9398,61 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
     refs.openBadgeAdminButton.addEventListener("click", openBadgeAdminModal);
 
+    refs.openRelationshipAdminButton.addEventListener("click", openRelationshipAdminModal);
+
+    refs.openAdminMailButton.addEventListener("click", openAdminMailModal);
+
+    refs.closeAdminMailButton.addEventListener("click", closeAdminMailModal);
+
+    refs.adminMailModal.addEventListener("click", (event) => {
+      if (event.target === refs.adminMailModal) {
+        closeAdminMailModal();
+      }
+    });
+
+    refs.adminMailList.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-read-admin-mail]");
+      if (!button) return;
+      markAdminMailRead(button.dataset.readAdminMail);
+    });
+
+    refs.closeRelationshipAdminButton.addEventListener("click", closeRelationshipAdminModal);
+
+    refs.relationshipAdminModal.addEventListener("click", (event) => {
+      if (event.target === refs.relationshipAdminModal) {
+        closeRelationshipAdminModal();
+      }
+    });
+
+    refs.relationshipSuggestionList.addEventListener("click", (event) => {
+      const approveButton = event.target.closest("[data-approve-relationship-suggestion]");
+      if (approveButton) {
+        reviewRelationshipSuggestion(approveButton.dataset.approveRelationshipSuggestion, "approved");
+        return;
+      }
+
+      const dismissButton = event.target.closest("[data-dismiss-relationship-suggestion]");
+      if (dismissButton) {
+        reviewRelationshipSuggestion(dismissButton.dataset.dismissRelationshipSuggestion, "dismissed");
+      }
+    });
+
+    refs.openCharacterMailButton.addEventListener("click", openCharacterMailModal);
+
+    refs.closeCharacterMailButton.addEventListener("click", closeCharacterMailModal);
+
+    refs.characterMailModal.addEventListener("click", (event) => {
+      if (event.target === refs.characterMailModal) {
+        closeCharacterMailModal();
+      }
+    });
+
+    refs.characterMailList.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-read-relationship-notification]");
+      if (!button) return;
+      acknowledgeRelationshipNotification(button.dataset.readRelationshipNotification);
+    });
+
     refs.testCharacterAlertButton.addEventListener("click", testCharacterAlert);
 
     refs.openBroadcastAlertButton.addEventListener("click", openBroadcastAlertModal);
@@ -8851,6 +9642,15 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       if (event.key === "Escape" && refs.badgeAdminModal.classList.contains("is-visible")) {
         closeBadgeAdminModal();
       }
+      if (event.key === "Escape" && refs.relationshipAdminModal.classList.contains("is-visible")) {
+        closeRelationshipAdminModal();
+      }
+      if (event.key === "Escape" && refs.characterMailModal.classList.contains("is-visible")) {
+        closeCharacterMailModal();
+      }
+      if (event.key === "Escape" && refs.adminMailModal.classList.contains("is-visible")) {
+        closeAdminMailModal();
+      }
       if (event.key === "Escape" && refs.broadcastAlertModal.classList.contains("is-visible")) {
         closeBroadcastAlertModal();
       }
@@ -9032,6 +9832,34 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       console.error("Firestore level alert sync failed:", error);
     });
 
+    const relationshipNotificationsQuery = query(relationshipNotificationsRef, orderBy("createdAt", "desc"), limit(80));
+    onSnapshot(relationshipNotificationsQuery, (snapshot) => {
+      relationshipNotifications = snapshot.docs.map((messageDoc) => ({
+        id: messageDoc.id,
+        ...messageDoc.data()
+      }));
+      updateMailBadges();
+      if (refs.characterMailModal.classList.contains("is-visible")) {
+        renderCharacterMail();
+      }
+    }, (error) => {
+      console.error("Relationship notifications sync failed:", error);
+    });
+
+    const relationshipAcknowledgementsQuery = query(relationshipAcknowledgementsRef, orderBy("createdAt", "desc"), limit(80));
+    onSnapshot(relationshipAcknowledgementsQuery, (snapshot) => {
+      relationshipAcknowledgements = snapshot.docs.map((messageDoc) => ({
+        id: messageDoc.id,
+        ...messageDoc.data()
+      }));
+      updateMailBadges();
+      if (refs.adminMailModal.classList.contains("is-visible")) {
+        renderAdminMail();
+      }
+    }, (error) => {
+      console.error("Relationship acknowledgements sync failed:", error);
+    });
+
     applyMonthlyBackground();
     renderRoster();
     renderDust();
@@ -9040,6 +9868,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     startRosterTimerDisplay();
     startActivityFlip();
     startRumorSlider();
+    loadApprovedRelationships();
     loadRumorReports();
     loadDiscordPlayers();
     loadDiscordGallery();
