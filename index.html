@@ -391,6 +391,15 @@
       position: relative;
       margin: 0;
       overflow: hidden;
+      padding: 10px 10px 0;
+      border: 1px solid rgba(169, 120, 57, 0.16);
+      border-radius: var(--radius-lg);
+      background:
+        radial-gradient(ellipse at 50% 45%, rgba(255, 238, 196, 0.08), transparent 62%),
+        linear-gradient(145deg, rgba(8, 8, 7, 0.42), rgba(20, 15, 10, 0.72));
+      box-shadow:
+        inset 0 0 38px rgba(0, 0, 0, 0.34),
+        0 18px 46px rgba(0, 0, 0, 0.22);
     }
 
     .gallery-frame img {
@@ -399,11 +408,21 @@
       display: block;
       object-fit: contain;
       border: 0;
-      border-radius: 0;
-      background: transparent;
+      border-radius: var(--radius-md);
+      background:
+        radial-gradient(ellipse at center, rgba(255, 238, 196, 0.06), transparent 68%),
+        rgba(0, 0, 0, 0.18);
       opacity: 0;
       transform: scale(1.02);
       filter: contrast(1.05) saturate(0.92) brightness(0.9);
+      -webkit-mask-image:
+        linear-gradient(to right, transparent 0, #000 4%, #000 96%, transparent 100%),
+        linear-gradient(to bottom, transparent 0, #000 5%, #000 95%, transparent 100%);
+      -webkit-mask-composite: source-in;
+      mask-image:
+        linear-gradient(to right, transparent 0, #000 4%, #000 96%, transparent 100%),
+        linear-gradient(to bottom, transparent 0, #000 5%, #000 95%, transparent 100%);
+      mask-composite: intersect;
       transition:
         opacity 520ms var(--ease),
         transform 900ms ease,
@@ -1383,6 +1402,135 @@
       padding-right: 8px;
       scrollbar-width: thin;
       scrollbar-color: rgba(143, 31, 45, 0.5) rgba(36, 25, 16, 0.14);
+    }
+
+    .personal-panel {
+      display: grid;
+      gap: 18px;
+    }
+
+    .personal-form {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+      border: 1px solid rgba(49, 35, 24, 0.14);
+      border-radius: var(--radius-md);
+      background: rgba(18, 15, 12, 0.2);
+    }
+
+    .personal-form.is-hidden {
+      display: none;
+    }
+
+    .personal-label {
+      display: grid;
+      gap: 7px;
+      color: var(--paper-muted);
+      font-size: 0.74rem;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .personal-input,
+    .personal-textarea {
+      width: 100%;
+      border: 1px solid rgba(49, 35, 24, 0.18);
+      border-radius: var(--radius-md);
+      background: rgba(8, 8, 7, 0.24);
+      color: #fff3d7;
+      font: inherit;
+      font-size: 0.94rem;
+      line-height: 1.6;
+      outline: none;
+    }
+
+    .personal-input {
+      min-height: 40px;
+      padding: 9px 11px;
+    }
+
+    .personal-textarea {
+      min-height: 110px;
+      resize: vertical;
+      padding: 10px 12px;
+    }
+
+    .personal-input:focus,
+    .personal-textarea:focus {
+      border-color: rgba(143, 31, 45, 0.54);
+      box-shadow: 0 0 0 3px rgba(143, 31, 45, 0.1);
+    }
+
+    .personal-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .personal-button {
+      min-height: 40px;
+      padding: 10px 14px;
+      border: 1px solid rgba(143, 31, 45, 0.36);
+      border-radius: var(--radius-md);
+      background: linear-gradient(145deg, rgba(143, 31, 45, 0.94), rgba(93, 22, 28, 0.94));
+      color: #fff8e8;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .personal-status {
+      min-height: 20px;
+      margin: 0;
+      color: #b7a184;
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+
+    .personal-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .personal-entry {
+      padding: 16px;
+      border: 1px solid rgba(49, 35, 24, 0.13);
+      border-radius: var(--radius-md);
+      background: rgba(18, 15, 12, 0.19);
+    }
+
+    .personal-entry-title {
+      margin: 0;
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.1rem;
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+
+    .personal-entry-meta {
+      margin: 7px 0 0;
+      color: var(--gold);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .personal-entry-text {
+      margin: 11px 0 0;
+      color: var(--paper-text);
+      line-height: 1.68;
+      white-space: pre-line;
+    }
+
+    .personal-empty {
+      margin: 0;
+      color: #b7a184;
+      line-height: 1.6;
     }
 
     .scroll-box::-webkit-scrollbar {
@@ -2450,6 +2598,30 @@
       margin-top: 12px;
     }
 
+    .relationship-admin-form {
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid rgba(169, 120, 57, 0.2);
+      border-radius: var(--radius-md);
+      background: rgba(8, 8, 7, 0.28);
+    }
+
+    .relationship-admin-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .relationship-admin-note {
+      margin: 0;
+      color: #bfae91;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
     .relationship-suggestion {
       display: grid;
       gap: 10px;
@@ -2481,6 +2653,40 @@
       color: #d2bea0;
       font-size: 0.86rem;
       line-height: 1.55;
+    }
+
+    .relationship-suggestion-proof {
+      margin: 0;
+      color: #b9a37e;
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+
+    .relationship-confidence {
+      display: grid;
+      gap: 5px;
+    }
+
+    .relationship-confidence-label {
+      color: #d8c395;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .relationship-confidence-track {
+      height: 7px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .relationship-confidence-fill {
+      display: block;
+      width: var(--confidence, 0%);
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #8f1f2d, #a97839, #6f9a5d);
     }
 
     .relationship-suggestion-actions {
@@ -3587,6 +3793,50 @@
       outline: none;
     }
 
+    .sleep-report-relationship {
+      margin-top: 14px;
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid rgba(169, 120, 57, 0.18);
+      border-radius: var(--radius-md);
+      background: rgba(8, 8, 7, 0.24);
+    }
+
+    .sleep-report-relationship-title {
+      margin: 0;
+      color: var(--gold);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .sleep-report-tags {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 8px;
+    }
+
+    .sleep-report-tag {
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid rgba(169, 120, 57, 0.18);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.04);
+      color: #ead9bb;
+      cursor: pointer;
+      font-size: 0.82rem;
+    }
+
+    .sleep-report-tag input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--gold);
+    }
+
     .sleep-report-map {
       margin-top: 14px;
     }
@@ -4301,6 +4551,10 @@
         grid-template-columns: 1fr;
       }
 
+      .relationship-admin-row {
+        grid-template-columns: 1fr;
+      }
+
       .night-report-modal {
         padding: 12px;
       }
@@ -4438,6 +4692,8 @@
         <button class="tab-button" type="button" data-tab="lore" aria-selected="false">Lore</button>
         <button class="tab-button" type="button" data-tab="appearance" aria-selected="false">Vzhled</button>
         <button class="tab-button" type="button" data-tab="personality" aria-selected="false">Povaha</button>
+        <button class="tab-button" type="button" data-tab="diary" aria-selected="false">Deník</button>
+        <button class="tab-button" type="button" data-tab="locations" aria-selected="false">Lokace</button>
       </nav>
 
       <section class="panel-card">
@@ -4472,6 +4728,48 @@
         <article class="tab-panel" data-panel="personality">
           <h3 class="tab-heading">Povaha</h3>
           <p class="tab-text" id="personalityText"></p>
+        </article>
+
+        <article class="tab-panel" data-panel="diary">
+          <div class="personal-panel">
+            <h3 class="tab-heading">Osobní deník</h3>
+            <form class="personal-form" id="diaryForm">
+              <label class="personal-label">
+                Nadpis
+                <input class="personal-input" id="diaryTitleInput" type="text" placeholder="Krátký název zápisu">
+              </label>
+              <label class="personal-label">
+                Zápis
+                <textarea class="personal-textarea" id="diaryTextInput" placeholder="Co si postava nechává pro sebe?"></textarea>
+              </label>
+              <div class="personal-actions">
+                <button class="personal-button" type="submit">Uložit zápis</button>
+                <p class="personal-status" id="diaryStatus" aria-live="polite"></p>
+              </div>
+            </form>
+            <div class="personal-list" id="diaryList"></div>
+          </div>
+        </article>
+
+        <article class="tab-panel" data-panel="locations">
+          <div class="personal-panel">
+            <h3 class="tab-heading">Uložené lokace</h3>
+            <form class="personal-form" id="locationForm">
+              <label class="personal-label">
+                Název místa
+                <input class="personal-input" id="locationTitleInput" type="text" placeholder="Např. Starý tábor u řeky">
+              </label>
+              <label class="personal-label">
+                Poznámka
+                <textarea class="personal-textarea" id="locationNoteInput" placeholder="Co se na místě stalo nebo proč je důležité?"></textarea>
+              </label>
+              <div class="personal-actions">
+                <button class="personal-button" type="submit">Uložit aktuální waypoint</button>
+                <p class="personal-status" id="locationStatus" aria-live="polite"></p>
+              </div>
+            </form>
+            <div class="personal-list" id="locationList"></div>
+          </div>
         </article>
       </section>
     </section>
@@ -4559,6 +4857,10 @@
         id="sleepReportInput"
         placeholder="Napiš krátký report..."
       ></textarea>
+      <div class="sleep-report-relationship">
+        <p class="sleep-report-relationship-title">Vztahové události</p>
+        <div class="sleep-report-tags" id="sleepReportRelationshipTags"></div>
+      </div>
       <div class="sleep-report-map">
         <div class="map-toolbar">
           <p class="map-status">Klikni na mapu, kde postava usíná. Kolečkem nebo tlačítky mapu přiblížíš.</p>
@@ -4657,7 +4959,7 @@
       <header class="night-report-header">
         <div>
           <p class="night-report-kicker">West Haven Office</p>
-          <h2 class="night-report-title" id="relationshipAdminTitle">Návrhy vztahů</h2>
+          <h2 class="night-report-title" id="relationshipAdminTitle">Správa vztahů</h2>
         </div>
         <button class="night-report-close" id="closeRelationshipAdminButton" type="button" aria-label="Zavřít návrhy vztahů">&times;</button>
       </header>
@@ -4668,6 +4970,45 @@
           </p>
           <div class="relationship-admin-list" id="relationshipSuggestionList"></div>
           <p class="night-report-status" id="relationshipAdminStatus" aria-live="polite"></p>
+        </div>
+        <div class="night-report-column">
+          <form class="relationship-admin-form" id="relationshipManualForm">
+            <p class="night-report-label">Ruční úprava vztahu</p>
+            <div class="relationship-admin-row">
+              <label class="night-report-label">
+                První postava
+                <select class="night-report-input" id="relationshipManualFrom"></select>
+              </label>
+              <label class="night-report-label">
+                Druhá postava
+                <select class="night-report-input" id="relationshipManualTo"></select>
+              </label>
+            </div>
+            <div class="relationship-admin-row">
+              <label class="night-report-label">
+                Typ vztahu
+                <select class="night-report-input" id="relationshipManualType"></select>
+              </label>
+              <label class="night-report-label">
+                Název
+                <input class="night-report-input" id="relationshipManualLabel" type="text" placeholder="Např. Tichá dohoda">
+              </label>
+            </div>
+            <label class="night-report-label">
+              Veřejná poznámka
+              <textarea class="night-report-textarea" id="relationshipManualNote" placeholder="Krátký popis, který uvidí hráči v mapě vztahů."></textarea>
+            </label>
+            <label class="night-report-label">
+              Interní poznámka
+              <textarea class="night-report-textarea" id="relationshipManualPrivateNote" placeholder="Volitelné pro admina."></textarea>
+            </label>
+            <p class="relationship-admin-note">Uložení přepíše aktuální vztah mezi vybranou dvojicí a pošle oběma postavám vztahovou poštu.</p>
+            <div class="night-report-actions">
+              <button class="night-report-button" id="loadRelationshipManualButton" type="button">Načíst dvojici</button>
+              <button class="night-report-button send" type="submit">Uložit vztah</button>
+            </div>
+            <p class="night-report-status" id="relationshipManualStatus" aria-live="polite"></p>
+          </form>
         </div>
       </div>
     </section>
@@ -4946,6 +5287,8 @@
     const relationshipSuggestionReviewsRef = collection(db, "relationshipSuggestionReviews");
     const relationshipNotificationsRef = collection(db, "relationshipNotifications");
     const relationshipAcknowledgementsRef = collection(db, "relationshipAcknowledgements");
+    const characterDiaryEntriesRef = collection(db, "characterDiaryEntries");
+    const characterSavedLocationsRef = collection(db, "characterSavedLocations");
 
     const characters = [
       {
@@ -5292,6 +5635,23 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
     ];
     const defaultCharacterRelationships = characterRelationships.map((relationship) => ({ ...relationship }));
+    const relationshipEventTags = [
+      { id: "helped", label: "Pomohl/a mi", type: "ally", words: ["pomohl", "pomohla", "zachránil", "zachránila", "kryl", "kryla"], confidence: 24 },
+      { id: "betrayed", label: "Zradil/a mě", type: "distrust", words: ["zradil", "zradila", "podrazil", "podrazila", "lhal", "lhala"], confidence: 28 },
+      { id: "debt", label: "Dlužím mu/jí", type: "debt", words: ["dluh", "dlužím", "dlužil", "vděk", "splatit"], confidence: 26 },
+      { id: "covered", label: "Kryli jsme se", type: "ally", words: ["kryli", "kryl", "kryla", "spolu", "pomáhal"], confidence: 22 },
+      { id: "argued", label: "Pohádali jsme se", type: "rivalry", words: ["hádka", "pohádal", "pohádala", "spor", "vyhrožoval"], confidence: 24 },
+      { id: "secret", label: "Sdílíme tajemství", type: "secret", words: ["tajemství", "tajně", "nikomu", "mlčet", "dohoda"], confidence: 25 }
+    ];
+
+    const relationshipTypeHints = {
+      ally: { label: "pozitivní vazba", weight: 8 },
+      debt: { label: "dluh nebo závazek", weight: 8 },
+      distrust: { label: "nedůvěra", weight: 8 },
+      rivalry: { label: "konflikt", weight: 8 },
+      secret: { label: "tajemství", weight: 7 },
+      family: { label: "rodina", weight: 6 }
+    };
 
     const homeView = document.getElementById("homeView");
     const detailView = document.getElementById("detailView");
@@ -5322,6 +5682,16 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       lore: document.getElementById("loreText"),
       appearance: document.getElementById("appearanceText"),
       personality: document.getElementById("personalityText"),
+      diaryForm: document.getElementById("diaryForm"),
+      diaryTitleInput: document.getElementById("diaryTitleInput"),
+      diaryTextInput: document.getElementById("diaryTextInput"),
+      diaryStatus: document.getElementById("diaryStatus"),
+      diaryList: document.getElementById("diaryList"),
+      locationForm: document.getElementById("locationForm"),
+      locationTitleInput: document.getElementById("locationTitleInput"),
+      locationNoteInput: document.getElementById("locationNoteInput"),
+      locationStatus: document.getElementById("locationStatus"),
+      locationList: document.getElementById("locationList"),
       portrait: document.getElementById("portraitImage"),
       quote: document.getElementById("characterQuote"),
       openCharacterMailButton: document.getElementById("openCharacterMailButton"),
@@ -5395,6 +5765,15 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       closeRelationshipAdminButton: document.getElementById("closeRelationshipAdminButton"),
       relationshipSuggestionList: document.getElementById("relationshipSuggestionList"),
       relationshipAdminStatus: document.getElementById("relationshipAdminStatus"),
+      relationshipManualForm: document.getElementById("relationshipManualForm"),
+      relationshipManualFrom: document.getElementById("relationshipManualFrom"),
+      relationshipManualTo: document.getElementById("relationshipManualTo"),
+      relationshipManualType: document.getElementById("relationshipManualType"),
+      relationshipManualLabel: document.getElementById("relationshipManualLabel"),
+      relationshipManualNote: document.getElementById("relationshipManualNote"),
+      relationshipManualPrivateNote: document.getElementById("relationshipManualPrivateNote"),
+      relationshipManualStatus: document.getElementById("relationshipManualStatus"),
+      loadRelationshipManualButton: document.getElementById("loadRelationshipManualButton"),
       characterMailModal: document.getElementById("characterMailModal"),
       closeCharacterMailButton: document.getElementById("closeCharacterMailButton"),
       characterMailList: document.getElementById("characterMailList"),
@@ -5423,6 +5802,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       sleepReportQuestion: document.getElementById("sleepReportQuestion"),
       sleepReportTimer: document.getElementById("sleepReportTimer"),
       sleepReportInput: document.getElementById("sleepReportInput"),
+      sleepReportRelationshipTags: document.getElementById("sleepReportRelationshipTags"),
       sleepMapViewport: document.getElementById("sleepMapViewport"),
       sleepMapSpace: document.getElementById("sleepMapSpace"),
       sleepMapCanvas: document.getElementById("sleepMapCanvas"),
@@ -5823,6 +6203,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     let rumorIndex = 0;
     let chronicleEntries = [];
     let selectedChronicleDate = "";
+    let diaryEntries = [];
+    let savedLocationEntries = [];
     let selectedRelationshipId = characterRelationships[0]
       ? `${characterRelationships[0].from}-${characterRelationships[0].to}`
       : "";
@@ -6217,6 +6599,180 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     const getCurrentMapLocation = (location) => (
       location?.mapVersion === currentMapVersion ? location : null
     );
+
+    const canEditActiveCharacter = () => Boolean(
+      activeCharacterId &&
+      currentPlayerCharacterId &&
+      (activeCharacterId === currentPlayerCharacterId || isAdminPlayer())
+    );
+
+    const updatePersonalFormsVisibility = () => {
+      const canEdit = canEditActiveCharacter();
+      refs.diaryForm.classList.toggle("is-hidden", !canEdit);
+      refs.locationForm.classList.toggle("is-hidden", !canEdit);
+      if (!canEdit) {
+        refs.diaryStatus.textContent = "";
+        refs.locationStatus.textContent = "";
+      }
+    };
+
+    const createPersonalEmpty = (message) => {
+      const empty = document.createElement("p");
+      empty.className = "personal-empty";
+      empty.textContent = message;
+      return empty;
+    };
+
+    const renderDiaryEntries = () => {
+      refs.diaryList.replaceChildren();
+      updatePersonalFormsVisibility();
+
+      if (diaryEntries.length === 0) {
+        refs.diaryList.appendChild(createPersonalEmpty("Deník zatím nemá žádný zápis."));
+        return;
+      }
+
+      diaryEntries.forEach((entry) => {
+        const article = document.createElement("article");
+        article.className = "personal-entry";
+        const title = document.createElement("h4");
+        title.className = "personal-entry-title";
+        title.textContent = entry.title || "Zápis bez názvu";
+        const meta = document.createElement("p");
+        meta.className = "personal-entry-meta";
+        meta.textContent = formatDateTime(entry.createdAt);
+        const text = document.createElement("p");
+        text.className = "personal-entry-text";
+        text.textContent = entry.text || "";
+        article.append(title, meta, text);
+        refs.diaryList.appendChild(article);
+      });
+    };
+
+    const loadDiaryEntries = async (characterId = activeCharacterId) => {
+      if (!characterId) return;
+      refs.diaryList.replaceChildren(createPersonalEmpty("Načítám deník..."));
+      try {
+        const snapshot = await getDocs(query(characterDiaryEntriesRef, orderBy("createdAt", "desc"), limit(80)));
+        if (activeCharacterId !== characterId) return;
+        diaryEntries = snapshot.docs
+          .map((entryDoc) => ({ id: entryDoc.id, ...entryDoc.data() }))
+          .filter((entry) => entry.characterId === characterId);
+      } catch (error) {
+        console.warn("Diary entries could not be loaded:", error);
+        diaryEntries = [];
+        refs.diaryStatus.textContent = "Deník se nepodařilo načíst.";
+      }
+      renderDiaryEntries();
+    };
+
+    const renderSavedLocations = () => {
+      refs.locationList.replaceChildren();
+      updatePersonalFormsVisibility();
+      const currentLocation = getCurrentMapLocation(getCharacterState(activeCharacterId).sleepLocation);
+      refs.locationStatus.textContent = currentLocation
+        ? `Aktuální waypoint: ${formatMapLocation(currentLocation)}`
+        : "Postava zatím nemá aktuální waypoint k uložení.";
+
+      if (savedLocationEntries.length === 0) {
+        refs.locationList.appendChild(createPersonalEmpty("Žádná uložená lokace."));
+        return;
+      }
+
+      savedLocationEntries.forEach((entry) => {
+        const article = document.createElement("article");
+        article.className = "personal-entry";
+        const title = document.createElement("h4");
+        title.className = "personal-entry-title";
+        title.textContent = entry.title || "Uložená lokace";
+        const meta = document.createElement("p");
+        meta.className = "personal-entry-meta";
+        meta.textContent = `${formatDateTime(entry.createdAt)} | ${formatMapLocation(entry.location)}`;
+        const text = document.createElement("p");
+        text.className = "personal-entry-text";
+        text.textContent = entry.note || "Bez poznámky.";
+        article.append(title, meta, text);
+        refs.locationList.appendChild(article);
+      });
+    };
+
+    const loadSavedLocations = async (characterId = activeCharacterId) => {
+      if (!characterId) return;
+      refs.locationList.replaceChildren(createPersonalEmpty("Načítám uložené lokace..."));
+      try {
+        const snapshot = await getDocs(query(characterSavedLocationsRef, orderBy("createdAt", "desc"), limit(80)));
+        if (activeCharacterId !== characterId) return;
+        savedLocationEntries = snapshot.docs
+          .map((entryDoc) => ({ id: entryDoc.id, ...entryDoc.data() }))
+          .filter((entry) => entry.characterId === characterId);
+      } catch (error) {
+        console.warn("Saved locations could not be loaded:", error);
+        savedLocationEntries = [];
+        refs.locationStatus.textContent = "Lokace se nepodařilo načíst.";
+      }
+      renderSavedLocations();
+    };
+
+    const saveDiaryEntry = async () => {
+      if (!canEditActiveCharacter()) return;
+      const title = refs.diaryTitleInput.value.trim() || "Zápis bez názvu";
+      const text = refs.diaryTextInput.value.trim();
+      if (!text) {
+        refs.diaryStatus.textContent = "Nejdřív napiš text zápisu.";
+        return;
+      }
+
+      const createdAt = Date.now();
+      refs.diaryStatus.textContent = "Ukládám zápis...";
+      try {
+        await setDoc(doc(characterDiaryEntriesRef, `${createdAt}-${activeCharacterId}`), {
+          characterId: activeCharacterId,
+          title,
+          text,
+          createdBy: currentPlayerCharacterId,
+          createdAt
+        });
+        refs.diaryTitleInput.value = "";
+        refs.diaryTextInput.value = "";
+        refs.diaryStatus.textContent = "Zápis uložený.";
+        await loadDiaryEntries(activeCharacterId);
+      } catch (error) {
+        console.error("Diary entry save failed:", error);
+        refs.diaryStatus.textContent = "Zápis se nepodařilo uložit.";
+      }
+    };
+
+    const saveCurrentLocation = async () => {
+      if (!canEditActiveCharacter()) return;
+      const location = getCurrentMapLocation(getCharacterState(activeCharacterId).sleepLocation);
+      if (!location) {
+        refs.locationStatus.textContent = "Nejdřív ulož waypoint při uspání postavy.";
+        return;
+      }
+
+      const createdAt = Date.now();
+      const title = refs.locationTitleInput.value.trim() || "Uložený waypoint";
+      const note = refs.locationNoteInput.value.trim();
+      refs.locationStatus.textContent = "Ukládám lokaci...";
+      try {
+        await setDoc(doc(characterSavedLocationsRef, `${createdAt}-${activeCharacterId}`), {
+          characterId: activeCharacterId,
+          title,
+          note,
+          location,
+          mapVersion: currentMapVersion,
+          createdBy: currentPlayerCharacterId,
+          createdAt
+        });
+        refs.locationTitleInput.value = "";
+        refs.locationNoteInput.value = "";
+        await loadSavedLocations(activeCharacterId);
+        refs.locationStatus.textContent = "Lokace uložená.";
+      } catch (error) {
+        console.error("Saved location failed:", error);
+        refs.locationStatus.textContent = "Lokaci se nepodařilo uložit.";
+      }
+    };
 
     const getTotalPlayedMs = (characterId) => {
       const state = getCharacterState(characterId);
@@ -6810,7 +7366,35 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       )];
     };
 
-    const inferRelationshipType = (reportText) => {
+    const getSelectedRelationshipTags = () => (
+      Array.from(refs.sleepReportRelationshipTags.querySelectorAll("input:checked"))
+        .map((input) => input.value)
+    );
+
+    const renderSleepReportRelationshipTags = () => {
+      refs.sleepReportRelationshipTags.replaceChildren();
+      relationshipEventTags.forEach((tag) => {
+        const label = document.createElement("label");
+        label.className = "sleep-report-tag";
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.value = tag.id;
+        input.name = "relationshipEventTag";
+        const text = document.createElement("span");
+        text.textContent = tag.label;
+        label.append(input, text);
+        refs.sleepReportRelationshipTags.appendChild(label);
+      });
+    };
+
+    const getRelationshipTag = (tagId) => relationshipEventTags.find((tag) => tag.id === tagId);
+
+    const inferRelationshipType = (reportText, selectedTags = []) => {
+      const taggedType = selectedTags
+        .map(getRelationshipTag)
+        .find(Boolean)?.type;
+      if (taggedType) return taggedType;
+
       const text = normalizeSearchText(reportText);
       const rules = [
         { type: "debt", words: ["dluh", "dluz", "zachran", "pomohl", "pomoh", "vded", "splatit"] },
@@ -6823,6 +7407,34 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       return rules.find((rule) => rule.words.some((word) => text.includes(word)))?.type || "secret";
     };
 
+    const scoreRelationshipSuggestion = ({ report, toCharacter, type, selectedTags }) => {
+      const text = normalizeSearchText(report.reportText);
+      const tokens = getCharacterSearchTokens(toCharacter);
+      const matchedTokens = tokens.filter((token) => text.includes(token));
+      const selectedTagDetails = selectedTags.map(getRelationshipTag).filter(Boolean);
+      const typeWords = selectedTagDetails.length > 0
+        ? selectedTagDetails.flatMap((tag) => tag.words)
+        : relationshipEventTags
+          .filter((tag) => tag.type === type)
+          .flatMap((tag) => tag.words);
+      const matchedWords = [...new Set(typeWords.filter((word) => text.includes(normalizeSearchText(word))))];
+      const confidence = Math.min(96,
+        32 +
+        Math.min(22, matchedTokens.length * 8) +
+        Math.min(22, matchedWords.length * 7) +
+        selectedTagDetails.reduce((total, tag) => total + tag.confidence, 0) +
+        (String(report.reportText || "").length > 160 ? 8 : 0)
+      );
+      const reasons = [
+        matchedTokens.length > 0 ? `zmínka postavy: ${toCharacter.listName}` : "",
+        matchedWords.length > 0 ? `shoda slov: ${matchedWords.slice(0, 4).join(", ")}` : "",
+        selectedTagDetails.length > 0 ? `tagy: ${selectedTagDetails.map((tag) => tag.label).join(", ")}` : "",
+        relationshipTypeHints[type] ? `typ: ${relationshipTypeHints[type].label}` : ""
+      ].filter(Boolean);
+
+      return { confidence, reasons };
+    };
+
     const buildSuggestionFromReport = (report) => {
       const fromCharacter = characters.find((character) => character.id === report.characterId);
       if (!fromCharacter || !report.reportText) return [];
@@ -6832,10 +7444,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         .filter((character) => character.id !== fromCharacter.id)
         .filter((character) => getCharacterSearchTokens(character).some((token) => text.includes(token)))
         .map((toCharacter) => {
-          const type = inferRelationshipType(report.reportText);
+          const selectedTags = Array.isArray(report.relationshipTags) ? report.relationshipTags : [];
+          const type = inferRelationshipType(report.reportText, selectedTags);
           const relationType = relationTypes[type] || relationTypes.secret;
           const relationshipId = getRelationshipId(fromCharacter.id, toCharacter.id);
           const createdAt = Number(report.createdAt || Date.now());
+          const score = scoreRelationshipSuggestion({ report, toCharacter, type, selectedTags });
           return {
             id: `${relationshipId}-${type}-${createdAt}`,
             relationshipId,
@@ -6845,6 +7459,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
             label: `${relationType.label}: ${fromCharacter.listName} / ${toCharacter.listName}`,
             note: getChronicleReportPreview(report.reportText),
             reportText: report.reportText,
+            relationshipTags: selectedTags,
+            confidence: score.confidence,
+            reasons: score.reasons,
             reportDate: report.reportDate || getPragueDateKey(createdAt),
             createdAt
           };
@@ -6867,7 +7484,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
             to: relationship.to,
             type: relationship.type,
             label: relationship.label || getRelationshipTitle(relationship.from, relationship.to),
-            note: relationship.note || "Vztah byl schválen adminem."
+            note: relationship.note || "Vztah byl schválen adminem.",
+            privateNote: relationship.privateNote || "",
+            source: relationship.source || "approved",
+            confidence: Number(relationship.confidence || 0),
+            reasons: Array.isArray(relationship.reasons) ? relationship.reasons : [],
+            relationshipTags: Array.isArray(relationship.relationshipTags) ? relationship.relationshipTags : []
           });
         });
 
@@ -6949,6 +7571,25 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         text.className = "relationship-suggestion-text";
         text.textContent = suggestion.note;
 
+        const confidence = document.createElement("div");
+        confidence.className = "relationship-confidence";
+        const confidenceLabel = document.createElement("span");
+        confidenceLabel.className = "relationship-confidence-label";
+        confidenceLabel.textContent = `Jistota návrhu: ${suggestion.confidence || 0}%`;
+        const confidenceTrack = document.createElement("span");
+        confidenceTrack.className = "relationship-confidence-track";
+        const confidenceFill = document.createElement("span");
+        confidenceFill.className = "relationship-confidence-fill";
+        confidenceFill.style.setProperty("--confidence", `${suggestion.confidence || 0}%`);
+        confidenceTrack.appendChild(confidenceFill);
+        confidence.append(confidenceLabel, confidenceTrack);
+
+        const proof = document.createElement("p");
+        proof.className = "relationship-suggestion-proof";
+        proof.textContent = suggestion.reasons?.length
+          ? `Proč vznikl: ${suggestion.reasons.join(" | ")}.`
+          : "Proč vznikl: systém našel zmínku postavy v reportu.";
+
         const actions = document.createElement("div");
         actions.className = "relationship-suggestion-actions";
 
@@ -6965,7 +7606,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         dismiss.textContent = "Ignorovat";
 
         actions.append(approve, dismiss);
-        article.append(title, meta, text, actions);
+        article.append(title, meta, text, confidence, proof, actions);
         refs.relationshipSuggestionList.appendChild(article);
       });
 
@@ -6985,6 +7626,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
             type: suggestion.type,
             label: suggestion.label,
             note: suggestion.note,
+            confidence: suggestion.confidence || 0,
+            reasons: suggestion.reasons || [],
+            relationshipTags: suggestion.relationshipTags || [],
             sourceReportDate: suggestion.reportDate,
             approvedAt: Date.now()
           }, { merge: true });
@@ -7011,10 +7655,99 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
     };
 
+    const populateRelationshipManualForm = () => {
+      refs.relationshipManualFrom.replaceChildren();
+      refs.relationshipManualTo.replaceChildren();
+      characters.forEach((character) => {
+        const fromOption = document.createElement("option");
+        fromOption.value = character.id;
+        fromOption.textContent = character.listName;
+        const toOption = fromOption.cloneNode(true);
+        refs.relationshipManualFrom.appendChild(fromOption);
+        refs.relationshipManualTo.appendChild(toOption);
+      });
+
+      refs.relationshipManualType.replaceChildren();
+      Object.entries(relationTypes).forEach(([typeId, type]) => {
+        const option = document.createElement("option");
+        option.value = typeId;
+        option.textContent = type.label;
+        refs.relationshipManualType.appendChild(option);
+      });
+
+      refs.relationshipManualFrom.value = characters[0]?.id || "";
+      refs.relationshipManualTo.value = characters.find((character) => character.id !== refs.relationshipManualFrom.value)?.id || "";
+      loadRelationshipManualPair();
+    };
+
+    const getManualRelationshipPair = () => ({
+      from: refs.relationshipManualFrom.value,
+      to: refs.relationshipManualTo.value
+    });
+
+    const loadRelationshipManualPair = () => {
+      const { from, to } = getManualRelationshipPair();
+      const relationship = characterRelationships.find((item) => getRelationshipId(item.from, item.to) === getRelationshipId(from, to));
+      refs.relationshipManualType.value = relationship?.type || "ally";
+      refs.relationshipManualLabel.value = relationship?.label || getRelationshipTitle(from, to);
+      refs.relationshipManualNote.value = relationship?.note || "";
+      refs.relationshipManualPrivateNote.value = relationship?.privateNote || "";
+      refs.relationshipManualStatus.textContent = relationship
+        ? "Existující vztah načtený."
+        : "Dvojice zatím nemá uložený vztah.";
+    };
+
+    const saveManualRelationship = async () => {
+      const { from, to } = getManualRelationshipPair();
+      if (!from || !to || from === to) {
+        refs.relationshipManualStatus.textContent = "Vyber dvě různé postavy.";
+        return;
+      }
+
+      const relationshipId = getRelationshipId(from, to);
+      const type = refs.relationshipManualType.value || "ally";
+      const label = refs.relationshipManualLabel.value.trim() || getRelationshipTitle(from, to);
+      const note = refs.relationshipManualNote.value.trim() || "Vztah byl upraven adminem.";
+      const privateNote = refs.relationshipManualPrivateNote.value.trim();
+      const savedAt = Date.now();
+      const notification = {
+        relationshipId,
+        from,
+        to,
+        type,
+        label,
+        note,
+        reportDate: getPragueDateKey(savedAt)
+      };
+
+      refs.relationshipManualStatus.textContent = "Ukládám vztah...";
+      try {
+        await setDoc(doc(characterRelationshipsRef, relationshipId), {
+          from,
+          to,
+          type,
+          label,
+          note,
+          privateNote,
+          source: "manual",
+          manuallyEditedAt: savedAt,
+          confidence: 100,
+          reasons: ["ruční úprava adminem"]
+        }, { merge: true });
+        await createRelationshipNotifications(notification);
+        await loadApprovedRelationships();
+        refs.relationshipManualStatus.textContent = "Vztah uložený a hráči dostali poštu.";
+      } catch (error) {
+        console.error("Manual relationship save failed:", error);
+        refs.relationshipManualStatus.textContent = "Ruční vztah se nepodařilo uložit.";
+      }
+    };
+
     const openRelationshipAdminModal = async () => {
       refs.adminTools.classList.remove("is-open");
       refs.relationshipAdminModal.classList.add("is-visible");
       refs.relationshipAdminModal.setAttribute("aria-hidden", "false");
+      populateRelationshipManualForm();
       await loadRelationshipSuggestions();
     };
 
@@ -7022,6 +7755,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.relationshipAdminModal.classList.remove("is-visible");
       refs.relationshipAdminModal.setAttribute("aria-hidden", "true");
       refs.relationshipAdminStatus.textContent = "";
+      refs.relationshipManualStatus.textContent = "";
     };
 
     const createRelationshipNotifications = async (suggestion) => {
@@ -8462,6 +9196,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.sleepReportTimer.textContent = `Dnes zatím ${profile.breathingVerb}: ${formatDuration(getWakeDuration(activeCharacterId))}`;
       refs.sleepReportInput.placeholder = profile.reportPlaceholder;
       refs.sleepReportInput.value = "";
+      renderSleepReportRelationshipTags();
       sleepLocationDraft = null;
       setMapZoom("sleep", 1);
       positionDraftSleepMarker();
@@ -8895,6 +9630,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
             characterId: activeCharacterId,
             characterName: character.listName,
             reportText: reportText.trim(),
+            relationshipTags: Array.isArray(reportData?.relationshipTags) ? reportData.relationshipTags : [],
             sleepLocation,
             durationMs: sleepDurationMs || 0,
             reportDate: currentDateKey,
@@ -9080,6 +9816,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.characterActions.classList.add("is-visible");
       refs.characterActionStatus.textContent = "";
       updateMailBadges();
+      updatePersonalFormsVisibility();
+      loadDiaryEntries(activeCharacterId);
+      loadSavedLocations(activeCharacterId);
       startTimerDisplay();
     };
 
@@ -9108,6 +9847,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       updateRosterStates();
       updateAdminTools();
       updateMailBadges();
+      updatePersonalFormsVisibility();
       if (refs.badgeModal.classList.contains("is-visible")) {
         renderBadgeModal();
       }
@@ -9322,8 +10062,19 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
       closeSleepReportModal({
         text: refs.sleepReportInput.value.trim(),
+        relationshipTags: getSelectedRelationshipTags(),
         sleepLocation: sleepLocationDraft
       });
+    });
+
+    refs.diaryForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      saveDiaryEntry();
+    });
+
+    refs.locationForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      saveCurrentLocation();
     });
 
     refs.sleepReportCancel.addEventListener("click", () => {
@@ -9436,6 +10187,17 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         reviewRelationshipSuggestion(dismissButton.dataset.dismissRelationshipSuggestion, "dismissed");
       }
     });
+
+    refs.relationshipManualForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      saveManualRelationship();
+    });
+
+    refs.loadRelationshipManualButton.addEventListener("click", loadRelationshipManualPair);
+
+    refs.relationshipManualFrom.addEventListener("change", loadRelationshipManualPair);
+
+    refs.relationshipManualTo.addEventListener("change", loadRelationshipManualPair);
 
     refs.openCharacterMailButton.addEventListener("click", openCharacterMailModal);
 
@@ -9774,6 +10536,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
       updateRosterStates();
       updateCharacterTimer();
+      if (activeCharacterId) {
+        renderSavedLocations();
+      }
       clearStaleMapLocations().catch((error) => {
         console.error("Stale map locations could not be cleared:", error);
       });
