@@ -30,6 +30,74 @@ const characterChoices = characters.map((character) => ({
   value: character.id
 }));
 
+const relationTypes = {
+  family: { label: "Rodina", color: 0xd4a459 },
+  ally: { label: "Spojenec", color: 0x8fbc8f },
+  debt: { label: "Dluh", color: 0xc69a4a },
+  distrust: { label: "Neduvera", color: 0x9a6f73 },
+  rivalry: { label: "Rivalita", color: 0xb84a4a },
+  secret: { label: "Tajemstvi", color: 0x9f8dca }
+};
+
+const characterRelationships = [
+  {
+    from: "zeke",
+    to: "silas",
+    type: "family",
+    label: "Bratri Croweove",
+    note: "Krev je drzi pohromade, i kdyz Zeke mizi do ticha a Silas se snazi najit pravdu mezi slovy druhych."
+  },
+  {
+    from: "zeke",
+    to: "violet",
+    type: "family",
+    label: "Sourozenci Croweovi",
+    note: "Violet Zeka zna dost na to, aby se ho nebala slepe. Prave proto mezi nimi zustava opatrnost i nevyslovena loajalita."
+  },
+  {
+    from: "silas",
+    to: "violet",
+    type: "family",
+    label: "Rodinna pamet",
+    note: "Silas a Violet umi cist stejne stiny Croweovy rodiny, jen kazdy pouziva jinou zbran."
+  },
+  {
+    from: "violet",
+    to: "william",
+    type: "ally",
+    label: "Tiche spojenectvi",
+    note: "William je pro Violet vzacny typ cloveka: nestavi ji do klece a nesnazi se vlastnit jeji tajemstvi."
+  },
+  {
+    from: "zeke",
+    to: "thomas-mercer",
+    type: "distrust",
+    label: "Napjata vzdalenost",
+    note: "Thomas predstavuje rad a disciplinu. Zeke je vsechno, co se takovemu radu spatne zapisuje do knih."
+  },
+  {
+    from: "silas",
+    to: "thomas-mercer",
+    type: "secret",
+    label: "Otazky bez odpovedi",
+    note: "Silas vi, ze Thomas muze byt uzitecny zdroj. Thomas zase tusi, ze Silas se nikdy nepta jen jednou."
+  },
+  {
+    from: "william",
+    to: "thomas-mercer",
+    type: "debt",
+    label: "Nevyrovnany ucet",
+    note: "Mezi Williamem a Thomasem lezi veci, ktere nejsou nepratelstvim, ale ani cistym pratelstvim."
+  },
+  {
+    from: "zeke",
+    to: "william",
+    type: "rivalry",
+    label: "Ostrazity respekt",
+    note: "Zeke respektuje lidi, kteri se nerozklepou pri prvnim pohledu. William mu ale stoji prilis blizko u rodiny."
+  }
+];
+
 const commands = [
   {
     name: "wh-stav",
@@ -93,6 +161,47 @@ const commands = [
     name: "wh-hraci",
     description: "Ukaze Discord hrace napojene na postavy.",
     type: 1
+  },
+  {
+    name: "wh-kronika",
+    description: "Ukaze zapis West Haven kroniky.",
+    type: 1,
+    options: [
+      {
+        name: "datum",
+        description: "Datum ve formatu YYYY-MM-DD. Bez datumu ukaze dnesek nebo posledni zapis.",
+        type: 3,
+        required: false
+      }
+    ]
+  },
+  {
+    name: "wh-vztahy",
+    description: "Ukaze vztahy vybrane postavy.",
+    type: 1,
+    options: [
+      {
+        name: "postava",
+        description: "Postava, jejiz vztahy chces zobrazit.",
+        type: 3,
+        required: false,
+        choices: characterChoices
+      }
+    ]
+  },
+  {
+    name: "wh-kde",
+    description: "Ukaze posledni ulozene misto spanku postavy.",
+    type: 1,
+    options: [
+      {
+        name: "postava",
+        description: "Postava k nalezeni na mape.",
+        type: 3,
+        required: false,
+        choices: characterChoices
+      }
+    ]
   }
 ];
 
@@ -165,6 +274,53 @@ const resolveCharacterId = (interaction) => {
   const requestedCharacterId = getOption(interaction, "postava");
   if (requestedCharacterId) return requestedCharacterId;
   return getCharacterByDiscordId(interaction.member?.user?.id || interaction.user?.id)?.id;
+};
+
+const formatMapLocation = (location) => (
+  location
+    ? `X ${Math.round(Number(location.x || 0) * 10) / 10}%, Y ${Math.round(Number(location.y || 0) * 10) / 10}%`
+    : "misto neni ulozene"
+);
+
+const formatDateTime = (timestamp) => {
+  const value = Number(timestamp || 0);
+  if (!value) return "nezaznamenano";
+
+  return new Intl.DateTimeFormat("cs-CZ", {
+    timeZone: "Europe/Prague",
+    day: "numeric",
+    month: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  }).format(new Date(value));
+};
+
+const formatChronicleDate = (dateKey) => {
+  if (!dateKey) return getPragueDateKey();
+  const [year, month, day] = String(dateKey).split("-").map(Number);
+  if (!year || !month || !day) return dateKey;
+
+  return new Intl.DateTimeFormat("cs-CZ", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  }).format(new Date(Date.UTC(year, month - 1, day)));
+};
+
+const isValidDateKey = (value) => !value || /^\d{4}-\d{2}-\d{2}$/.test(String(value));
+
+const stripReportNoise = (text = "") => (
+  String(text)
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/[#*_>`~]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+);
+
+const shorten = (text, maxLength = 260) => {
+  const clean = stripReportNoise(text);
+  if (clean.length <= maxLength) return clean;
+  return `${clean.slice(0, maxLength - 1).trim()}...`;
 };
 
 const getStateRows = async () => {
@@ -329,6 +485,147 @@ const handlePlayers = async () => {
   });
 };
 
+const handleChronicle = async (interaction) => {
+  const requestedDate = getOption(interaction, "datum");
+  if (!isValidDateKey(requestedDate)) {
+    return interactionResponse("Datum zadej ve formatu `YYYY-MM-DD`, treba `2026-06-03`.", { ephemeral: true });
+  }
+
+  const documents = await fetchFirestoreCollection("nightReports");
+  const reports = documents
+    .map((document) => document.data)
+    .filter((report) => report.characterId)
+    .sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
+
+  const targetDate = requestedDate || getPragueDateKey();
+  let dayReports = reports.filter((report) => (report.reportDate || getPragueDateKey(report.createdAt)) === targetDate);
+  let resolvedDate = targetDate;
+
+  if (dayReports.length === 0 && !requestedDate && reports[0]) {
+    resolvedDate = reports[0].reportDate || getPragueDateKey(reports[0].createdAt);
+    dayReports = reports.filter((report) => (report.reportDate || getPragueDateKey(report.createdAt)) === resolvedDate);
+  }
+
+  if (dayReports.length === 0) {
+    return interactionResponse("", {
+      embeds: [
+        {
+          title: "West Haven | Kronika",
+          description: `Pro datum **${formatChronicleDate(targetDate)}** zatim neni ulozeny zadny nocni zapis.`,
+          color: 0xb88945,
+          timestamp: new Date().toISOString()
+        }
+      ]
+    });
+  }
+
+  const fields = dayReports.slice(0, 8).map((report) => {
+    const character = getCharacter(report.characterId);
+    const duration = Number(report.durationMs || 0);
+    const location = report.sleepLocation ? `\nStopa: \`${formatMapLocation(report.sleepLocation)}\`` : "";
+    const time = duration > 0 ? `\nCas: \`${formatDuration(duration)}\`` : "";
+
+    return {
+      name: character?.name || report.characterName || report.characterId,
+      value: `${shorten(report.reportText || "Bez textoveho reportu.", 360)}${location}${time}`,
+      inline: false
+    };
+  });
+
+  return interactionResponse("", {
+    embeds: [
+      {
+        title: "West Haven | Kronika",
+        description: `Zapis dne **${formatChronicleDate(resolvedDate)}**. Zachyceno stop: **${dayReports.length}**.`,
+        color: 0xb88945,
+        fields,
+        footer: dayReports.length > fields.length
+          ? { text: `Zobrazeno ${fields.length}/${dayReports.length} zapisu.` }
+          : { text: "West Haven Chronicle" },
+        timestamp: new Date().toISOString()
+      }
+    ]
+  });
+};
+
+const handleRelations = async (interaction) => {
+  const characterId = resolveCharacterId(interaction) || characters[0]?.id;
+  const character = getCharacter(characterId);
+  if (!character) return interactionResponse("Nemuzu urcit postavu. Vyber ji parametrem `postava`.", { ephemeral: true });
+
+  const relationships = characterRelationships.filter((relationship) => (
+    relationship.from === characterId || relationship.to === characterId
+  ));
+
+  if (relationships.length === 0) {
+    return interactionResponse(`**${character.name}** zatim nema zapsane vztahy.`);
+  }
+
+  return interactionResponse("", {
+    embeds: [
+      {
+        title: `West Haven | Vztahy | ${character.name}`,
+        color: character.color || 0xb88945,
+        fields: relationships.map((relationship) => {
+          const otherId = relationship.from === characterId ? relationship.to : relationship.from;
+          const other = getCharacter(otherId);
+          const type = relationTypes[relationship.type] || relationTypes.secret;
+
+          return {
+            name: `${type.label}: ${other?.name || otherId}`,
+            value: `**${relationship.label}**\n${relationship.note}`,
+            inline: false
+          };
+        }),
+        footer: {
+          text: "West Haven Relations"
+        },
+        timestamp: new Date().toISOString()
+      }
+    ]
+  });
+};
+
+const handleWhere = async (interaction) => {
+  const characterId = resolveCharacterId(interaction);
+  const character = getCharacter(characterId);
+  if (!character) return interactionResponse("Nemuzu urcit postavu. Vyber ji parametrem `postava`.", { ephemeral: true });
+
+  const state = await fetchFirestoreDocument(`characterStates/${characterId}`) || {};
+  const location = state.sleepLocation;
+  const status = state.status === "awake" ? "vzhuru" : "spi";
+
+  return interactionResponse("", {
+    embeds: [
+      {
+        title: `West Haven | Kde je ${character.name}`,
+        color: character.color || 0xb88945,
+        fields: [
+          {
+            name: "Posledni misto spanku",
+            value: `\`${formatMapLocation(location)}\``,
+            inline: false
+          },
+          {
+            name: "Stav",
+            value: `\`${status}\``,
+            inline: true
+          },
+          {
+            name: "Naposledy vzhuru",
+            value: `\`${formatDateTime(state.lastAwakeAt)}\``,
+            inline: true
+          }
+        ],
+        footer: {
+          text: location ? "Waypoint je v procentech mapy na webu." : "Postava jeste nema ulozene misto spanku."
+        },
+        timestamp: new Date().toISOString()
+      }
+    ]
+  });
+};
+
 const handleReportPreview = async () => {
   const rows = await getStateRows();
   return interactionResponse("", {
@@ -394,6 +691,18 @@ const handleCommandsHelp = async () => (
             value: "Ukaze Discord hrace napojene na jednotlive postavy."
           },
           {
+            name: "/wh-kronika datum",
+            value: "Ukaze zapis kroniky pro zadany den. Bez datumu ukaze dnesek nebo posledni dostupny zapis."
+          },
+          {
+            name: "/wh-vztahy postava",
+            value: "Ukaze vztahy vybrane postavy: rodinu, spojence, dluhy, neduveru a rivalitu."
+          },
+          {
+            name: "/wh-kde postava",
+            value: "Ukaze posledni ulozene misto spanku postavy a jeji aktualni stav."
+          },
+          {
             name: "/wh-prikazy",
             value: "Ukaze tenhle prehled prikazu."
           }
@@ -420,6 +729,12 @@ const handleCommand = async (interaction) => {
       return handleSleep(interaction);
     case "wh-hraci":
       return handlePlayers(interaction);
+    case "wh-kronika":
+      return handleChronicle(interaction);
+    case "wh-vztahy":
+      return handleRelations(interaction);
+    case "wh-kde":
+      return handleWhere(interaction);
     case "wh-report":
       return handleReportPreview(interaction);
     default:

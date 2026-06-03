@@ -30,6 +30,10 @@ DAILY_REPORT_SECRET=
 - `/wh-uspat report` uspi tvoji postavu, secte cas a ulozi nocni report.
 - `/wh-report` ukaze nahled pulnocniho souhrnu.
 - `/wh-hraci` ukaze Discord hrace napojene na postavy.
+- `/wh-kronika` ukaze dnesni nebo posledni dostupny zapis kroniky.
+- `/wh-kronika datum` ukaze kroniku pro datum ve formatu `YYYY-MM-DD`.
+- `/wh-vztahy postava` ukaze vztahy vybrane postavy.
+- `/wh-kde postava` ukaze posledni ulozene misto spanku postavy.
 
 ## Registrace prikazu
 
