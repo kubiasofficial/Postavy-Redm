@@ -1509,6 +1509,10 @@
       background: rgba(18, 15, 12, 0.19);
     }
 
+    .personal-entry.is-complete {
+      opacity: 0.72;
+    }
+
     .personal-entry-title {
       margin: 0;
       color: #fff0cf;
@@ -1537,6 +1541,10 @@
       margin: 0;
       color: #b7a184;
       line-height: 1.6;
+    }
+
+    .timeline-type {
+      color: #fff0cf;
     }
 
     .scroll-box::-webkit-scrollbar {
@@ -3505,6 +3513,21 @@
       filter: grayscale(0.35);
     }
 
+    .map-marker.is-saved-location {
+      width: 22px;
+      height: 22px;
+      border-color: rgba(255, 240, 207, 0.82);
+      background:
+        radial-gradient(circle, var(--marker-color, #d6a047) 0 38%, rgba(8, 8, 7, 0.92) 42%);
+      box-shadow:
+        0 10px 20px rgba(0, 0, 0, 0.46),
+        0 0 18px color-mix(in srgb, var(--marker-color, #d6a047) 46%, transparent);
+    }
+
+    .map-marker.is-saved-location img {
+      display: none;
+    }
+
     .map-marker.is-draft {
       width: 34px;
       height: 34px;
@@ -4700,6 +4723,8 @@
         <button class="tab-button" type="button" data-tab="personality" aria-selected="false">Povaha</button>
         <button class="tab-button" type="button" data-tab="diary" aria-selected="false">Deník</button>
         <button class="tab-button" type="button" data-tab="locations" aria-selected="false">Lokace</button>
+        <button class="tab-button" type="button" data-tab="timeline" aria-selected="false">Stopy</button>
+        <button class="tab-button" type="button" data-tab="goals" aria-selected="false">Cíle</button>
       </nav>
 
       <section class="panel-card">
@@ -4748,6 +4773,13 @@
                 Zápis
                 <textarea class="personal-textarea" id="diaryTextInput" placeholder="Co si postava nechává pro sebe?"></textarea>
               </label>
+              <label class="personal-label">
+                Viditelnost
+                <select class="personal-input" id="diaryVisibilityInput">
+                  <option value="private">Soukromé</option>
+                  <option value="public">Veřejné</option>
+                </select>
+              </label>
               <div class="personal-actions">
                 <button class="personal-button" type="submit">Uložit zápis</button>
                 <p class="personal-status" id="diaryStatus" aria-live="polite"></p>
@@ -4775,6 +4807,34 @@
               </div>
             </form>
             <div class="personal-list" id="locationList"></div>
+          </div>
+        </article>
+
+        <article class="tab-panel" data-panel="timeline">
+          <div class="personal-panel">
+            <h3 class="tab-heading">Stopy postavy</h3>
+            <div class="personal-list" id="timelineList"></div>
+          </div>
+        </article>
+
+        <article class="tab-panel" data-panel="goals">
+          <div class="personal-panel">
+            <h3 class="tab-heading">Cíle postavy</h3>
+            <form class="personal-form" id="goalForm">
+              <label class="personal-label">
+                Cíl
+                <input class="personal-input" id="goalTitleInput" type="text" placeholder="Např. Najít starý dopis">
+              </label>
+              <label class="personal-label">
+                Poznámka
+                <textarea class="personal-textarea" id="goalNoteInput" placeholder="Co k cíli vede nebo co je potřeba udělat?"></textarea>
+              </label>
+              <div class="personal-actions">
+                <button class="personal-button" type="submit">Uložit cíl</button>
+                <p class="personal-status" id="goalStatus" aria-live="polite"></p>
+              </div>
+            </form>
+            <div class="personal-list" id="goalList"></div>
           </div>
         </article>
       </section>
@@ -5296,6 +5356,7 @@
     const relationshipAcknowledgementsRef = collection(db, "relationshipAcknowledgements");
     const characterDiaryEntriesRef = collection(db, "characterDiaryEntries");
     const characterSavedLocationsRef = collection(db, "characterSavedLocations");
+    const characterGoalsRef = collection(db, "characterGoals");
 
     const characters = [
       {
@@ -5692,6 +5753,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       diaryForm: document.getElementById("diaryForm"),
       diaryTitleInput: document.getElementById("diaryTitleInput"),
       diaryTextInput: document.getElementById("diaryTextInput"),
+      diaryVisibilityInput: document.getElementById("diaryVisibilityInput"),
       diaryStatus: document.getElementById("diaryStatus"),
       diaryList: document.getElementById("diaryList"),
       locationForm: document.getElementById("locationForm"),
@@ -5699,6 +5761,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       locationNoteInput: document.getElementById("locationNoteInput"),
       locationStatus: document.getElementById("locationStatus"),
       locationList: document.getElementById("locationList"),
+      timelineList: document.getElementById("timelineList"),
+      goalForm: document.getElementById("goalForm"),
+      goalTitleInput: document.getElementById("goalTitleInput"),
+      goalNoteInput: document.getElementById("goalNoteInput"),
+      goalStatus: document.getElementById("goalStatus"),
+      goalList: document.getElementById("goalList"),
       portrait: document.getElementById("portraitImage"),
       quote: document.getElementById("characterQuote"),
       openCharacterMailButton: document.getElementById("openCharacterMailButton"),
@@ -6212,6 +6280,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     let selectedChronicleDate = "";
     let diaryEntries = [];
     let savedLocationEntries = [];
+    let allSavedLocationEntries = [];
+    let characterNightReportEntries = [];
+    let goalEntries = [];
     let selectedRelationshipId = characterRelationships[0]
       ? `${characterRelationships[0].from}-${characterRelationships[0].to}`
       : "";
@@ -6617,9 +6688,11 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       const canEdit = canEditActiveCharacter();
       refs.diaryForm.classList.toggle("is-hidden", !canEdit);
       refs.locationForm.classList.toggle("is-hidden", !canEdit);
+      refs.goalForm.classList.toggle("is-hidden", !canEdit);
       if (!canEdit) {
         refs.diaryStatus.textContent = "";
         refs.locationStatus.textContent = "";
+        refs.goalStatus.textContent = "";
       }
     };
 
@@ -6633,13 +6706,17 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     const renderDiaryEntries = () => {
       refs.diaryList.replaceChildren();
       updatePersonalFormsVisibility();
+      const visibleEntries = diaryEntries.filter((entry) => (
+        entry.visibility === "public" || canEditActiveCharacter()
+      ));
 
-      if (diaryEntries.length === 0) {
+      if (visibleEntries.length === 0) {
         refs.diaryList.appendChild(createPersonalEmpty("Deník zatím nemá žádný zápis."));
+        renderTimeline();
         return;
       }
 
-      diaryEntries.forEach((entry) => {
+      visibleEntries.forEach((entry) => {
         const article = document.createElement("article");
         article.className = "personal-entry";
         const title = document.createElement("h4");
@@ -6647,7 +6724,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         title.textContent = entry.title || "Zápis bez názvu";
         const meta = document.createElement("p");
         meta.className = "personal-entry-meta";
-        meta.textContent = formatDateTime(entry.createdAt);
+        meta.textContent = `${formatDateTime(entry.createdAt)} | ${entry.visibility === "public" ? "Veřejné" : "Soukromé"}`;
         const text = document.createElement("p");
         text.className = "personal-entry-text";
         text.textContent = entry.text || "";
@@ -6667,6 +6744,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         }
         refs.diaryList.appendChild(article);
       });
+      renderTimeline();
     };
 
     const loadDiaryEntries = async (characterId = activeCharacterId) => {
@@ -6696,6 +6774,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
       if (savedLocationEntries.length === 0) {
         refs.locationList.appendChild(createPersonalEmpty("Žádná uložená lokace."));
+        renderTimeline();
         return;
       }
 
@@ -6711,9 +6790,23 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         const text = document.createElement("p");
         text.className = "personal-entry-text";
         text.textContent = entry.note || "Bez poznámky.";
+        const actions = document.createElement("div");
+        actions.className = "personal-actions";
+        if (canEditActiveCharacter()) {
+          const deleteButton = document.createElement("button");
+          deleteButton.type = "button";
+          deleteButton.className = "personal-button delete";
+          deleteButton.dataset.deleteSavedLocation = entry.id;
+          deleteButton.textContent = "Smazat";
+          actions.appendChild(deleteButton);
+        }
         article.append(title, meta, text);
+        if (actions.childElementCount > 0) {
+          article.appendChild(actions);
+        }
         refs.locationList.appendChild(article);
       });
+      renderTimeline();
     };
 
     const loadSavedLocations = async (characterId = activeCharacterId) => {
@@ -6733,10 +6826,21 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       renderSavedLocations();
     };
 
+    const loadAllSavedLocations = async () => {
+      try {
+        const snapshot = await getDocs(query(characterSavedLocationsRef, orderBy("createdAt", "desc"), limit(160)));
+        allSavedLocationEntries = snapshot.docs.map((entryDoc) => ({ id: entryDoc.id, ...entryDoc.data() }));
+      } catch (error) {
+        console.warn("All saved locations could not be loaded:", error);
+        allSavedLocationEntries = [];
+      }
+    };
+
     const saveDiaryEntry = async () => {
       if (!canEditActiveCharacter()) return;
       const title = refs.diaryTitleInput.value.trim() || "Zápis bez názvu";
       const text = refs.diaryTextInput.value.trim();
+      const visibility = refs.diaryVisibilityInput.value === "public" ? "public" : "private";
       if (!text) {
         refs.diaryStatus.textContent = "Nejdřív napiš text zápisu.";
         return;
@@ -6749,11 +6853,13 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           characterId: activeCharacterId,
           title,
           text,
+          visibility,
           createdBy: currentPlayerCharacterId,
           createdAt
         });
         refs.diaryTitleInput.value = "";
         refs.diaryTextInput.value = "";
+        refs.diaryVisibilityInput.value = "private";
         refs.diaryStatus.textContent = "Zápis uložený.";
         await loadDiaryEntries(activeCharacterId);
       } catch (error) {
@@ -6776,6 +6882,222 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       } catch (error) {
         console.error("Diary entry delete failed:", error);
         refs.diaryStatus.textContent = "Zápis se nepodařilo smazat.";
+      }
+    };
+
+    const deleteSavedLocation = async (entryId) => {
+      if (!canEditActiveCharacter()) return;
+      const entry = savedLocationEntries.find((item) => item.id === entryId);
+      if (!entry || entry.characterId !== activeCharacterId) return;
+
+      refs.locationStatus.textContent = "Mažu lokaci...";
+      try {
+        await deleteDoc(doc(characterSavedLocationsRef, entryId));
+        savedLocationEntries = savedLocationEntries.filter((item) => item.id !== entryId);
+        allSavedLocationEntries = allSavedLocationEntries.filter((item) => item.id !== entryId);
+        renderSavedLocations();
+        if (refs.worldMapModal.classList.contains("is-visible")) {
+          renderWorldMap();
+        }
+        refs.locationStatus.textContent = "Lokace smazaná.";
+      } catch (error) {
+        console.error("Saved location delete failed:", error);
+        refs.locationStatus.textContent = "Lokaci se nepodařilo smazat.";
+      }
+    };
+
+    const renderGoals = () => {
+      refs.goalList.replaceChildren();
+      updatePersonalFormsVisibility();
+
+      if (goalEntries.length === 0) {
+        refs.goalList.appendChild(createPersonalEmpty("Postava zatím nemá žádný uložený cíl."));
+        renderTimeline();
+        return;
+      }
+
+      goalEntries.forEach((entry) => {
+        const article = document.createElement("article");
+        article.className = `personal-entry${entry.status === "complete" ? " is-complete" : ""}`;
+        const title = document.createElement("h4");
+        title.className = "personal-entry-title";
+        title.textContent = entry.title || "Cíl bez názvu";
+        const meta = document.createElement("p");
+        meta.className = "personal-entry-meta";
+        meta.textContent = `${entry.status === "complete" ? "Splněno" : "Aktivní"} | ${formatDateTime(entry.createdAt)}`;
+        const text = document.createElement("p");
+        text.className = "personal-entry-text";
+        text.textContent = entry.note || "Bez poznámky.";
+        const actions = document.createElement("div");
+        actions.className = "personal-actions";
+        if (canEditActiveCharacter()) {
+          const toggleButton = document.createElement("button");
+          toggleButton.type = "button";
+          toggleButton.className = "personal-button";
+          toggleButton.dataset.toggleGoal = entry.id;
+          toggleButton.textContent = entry.status === "complete" ? "Vrátit" : "Splněno";
+          const deleteButton = document.createElement("button");
+          deleteButton.type = "button";
+          deleteButton.className = "personal-button delete";
+          deleteButton.dataset.deleteGoal = entry.id;
+          deleteButton.textContent = "Smazat";
+          actions.append(toggleButton, deleteButton);
+        }
+        article.append(title, meta, text);
+        if (actions.childElementCount > 0) article.appendChild(actions);
+        refs.goalList.appendChild(article);
+      });
+      renderTimeline();
+    };
+
+    const loadGoals = async (characterId = activeCharacterId) => {
+      if (!characterId) return;
+      refs.goalList.replaceChildren(createPersonalEmpty("Načítám cíle..."));
+      try {
+        const snapshot = await getDocs(query(characterGoalsRef, orderBy("createdAt", "desc"), limit(80)));
+        if (activeCharacterId !== characterId) return;
+        goalEntries = snapshot.docs
+          .map((entryDoc) => ({ id: entryDoc.id, ...entryDoc.data() }))
+          .filter((entry) => entry.characterId === characterId);
+      } catch (error) {
+        console.warn("Goals could not be loaded:", error);
+        goalEntries = [];
+        refs.goalStatus.textContent = "Cíle se nepodařilo načíst.";
+      }
+      renderGoals();
+    };
+
+    const renderTimeline = () => {
+      if (!refs.timelineList) return;
+      refs.timelineList.replaceChildren();
+      const canEdit = canEditActiveCharacter();
+      const items = [
+        ...diaryEntries
+          .filter((entry) => entry.visibility === "public" || canEdit)
+          .map((entry) => ({
+            type: entry.visibility === "public" ? "Veřejný deník" : "Soukromý deník",
+            title: entry.title || "Zápis bez názvu",
+            text: entry.text || "",
+            createdAt: Number(entry.createdAt || 0)
+          })),
+        ...savedLocationEntries.map((entry) => ({
+          type: "Lokace",
+          title: entry.title || "Uložená lokace",
+          text: `${entry.note || "Bez poznámky."}\n${formatMapLocation(entry.location)}`,
+          createdAt: Number(entry.createdAt || 0)
+        })),
+        ...characterNightReportEntries.map((entry) => ({
+          type: "Noční report",
+          title: entry.reportDate || formatDateTime(entry.createdAt),
+          text: entry.reportText || "Bez textového reportu.",
+          createdAt: Number(entry.createdAt || 0)
+        })),
+        ...goalEntries.map((entry) => ({
+          type: entry.status === "complete" ? "Splněný cíl" : "Aktivní cíl",
+          title: entry.title || "Cíl bez názvu",
+          text: entry.note || "Bez poznámky.",
+          createdAt: Number(entry.updatedAt || entry.createdAt || 0)
+        }))
+      ].sort((a, b) => b.createdAt - a.createdAt);
+
+      if (items.length === 0) {
+        refs.timelineList.appendChild(createPersonalEmpty("Timeline zatím nemá žádné stopy."));
+        return;
+      }
+
+      items.slice(0, 40).forEach((item) => {
+        const article = document.createElement("article");
+        article.className = "personal-entry";
+        const title = document.createElement("h4");
+        title.className = "personal-entry-title";
+        title.textContent = item.title;
+        const meta = document.createElement("p");
+        meta.className = "personal-entry-meta";
+        meta.innerHTML = `<span class="timeline-type">${item.type}</span> | ${formatDateTime(item.createdAt)}`;
+        const text = document.createElement("p");
+        text.className = "personal-entry-text";
+        text.textContent = item.text;
+        article.append(title, meta, text);
+        refs.timelineList.appendChild(article);
+      });
+    };
+
+    const loadCharacterNightReports = async (characterId = activeCharacterId) => {
+      if (!characterId) return;
+      try {
+        const snapshot = await getDocs(query(nightReportsRef, orderBy("createdAt", "desc"), limit(80)));
+        if (activeCharacterId !== characterId) return;
+        characterNightReportEntries = snapshot.docs
+          .map((entryDoc) => ({ id: entryDoc.id, ...entryDoc.data() }))
+          .filter((entry) => entry.characterId === characterId);
+      } catch (error) {
+        console.warn("Timeline night reports could not be loaded:", error);
+        characterNightReportEntries = [];
+      }
+      renderTimeline();
+    };
+
+    const saveGoal = async () => {
+      if (!canEditActiveCharacter()) return;
+      const title = refs.goalTitleInput.value.trim();
+      const note = refs.goalNoteInput.value.trim();
+      if (!title) {
+        refs.goalStatus.textContent = "Nejdřív napiš název cíle.";
+        return;
+      }
+
+      const createdAt = Date.now();
+      refs.goalStatus.textContent = "Ukládám cíl...";
+      try {
+        await setDoc(doc(characterGoalsRef, `${createdAt}-${activeCharacterId}`), {
+          characterId: activeCharacterId,
+          title,
+          note,
+          status: "active",
+          createdBy: currentPlayerCharacterId,
+          createdAt,
+          updatedAt: createdAt
+        });
+        refs.goalTitleInput.value = "";
+        refs.goalNoteInput.value = "";
+        refs.goalStatus.textContent = "Cíl uložený.";
+        await loadGoals(activeCharacterId);
+      } catch (error) {
+        console.error("Goal save failed:", error);
+        refs.goalStatus.textContent = "Cíl se nepodařilo uložit.";
+      }
+    };
+
+    const toggleGoal = async (entryId) => {
+      if (!canEditActiveCharacter()) return;
+      const entry = goalEntries.find((item) => item.id === entryId);
+      if (!entry || entry.characterId !== activeCharacterId) return;
+      const nextStatus = entry.status === "complete" ? "active" : "complete";
+      try {
+        await setDoc(doc(characterGoalsRef, entryId), {
+          status: nextStatus,
+          updatedAt: Date.now()
+        }, { merge: true });
+        goalEntries = goalEntries.map((item) => (
+          item.id === entryId ? { ...item, status: nextStatus, updatedAt: Date.now() } : item
+        ));
+        renderGoals();
+      } catch (error) {
+        refs.goalStatus.textContent = "Cíl se nepodařilo upravit.";
+      }
+    };
+
+    const deleteGoal = async (entryId) => {
+      if (!canEditActiveCharacter()) return;
+      const entry = goalEntries.find((item) => item.id === entryId);
+      if (!entry || entry.characterId !== activeCharacterId) return;
+      try {
+        await deleteDoc(doc(characterGoalsRef, entryId));
+        goalEntries = goalEntries.filter((item) => item.id !== entryId);
+        renderGoals();
+        refs.goalStatus.textContent = "Cíl smazaný.";
+      } catch (error) {
+        refs.goalStatus.textContent = "Cíl se nepodařilo smazat.";
       }
     };
 
@@ -6804,6 +7126,10 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         refs.locationTitleInput.value = "";
         refs.locationNoteInput.value = "";
         await loadSavedLocations(activeCharacterId);
+        await loadAllSavedLocations();
+        if (refs.worldMapModal.classList.contains("is-visible")) {
+          renderWorldMap();
+        }
         refs.locationStatus.textContent = "Lokace uložená.";
       } catch (error) {
         console.error("Saved location failed:", error);
@@ -8671,12 +8997,29 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         refs.worldMapLegend.appendChild(item);
       });
 
+      allSavedLocationEntries.forEach((entry) => {
+        const character = characters.find((item) => item.id === entry.characterId);
+        const location = getCurrentMapLocation(entry.location);
+        if (!character || !location) return;
+
+        placedCount += 1;
+        const color = characterMapColors[character.id] || "#d6a047";
+        const marker = document.createElement("span");
+        marker.className = "map-marker is-saved-location";
+        marker.style.setProperty("--marker-x", `${location.x}%`);
+        marker.style.setProperty("--marker-y", `${location.y}%`);
+        marker.style.setProperty("--marker-color", color);
+        marker.title = `${entry.title || "Uložená lokace"} | ${character.listName} | ${formatMapLocation(location)}`;
+        refs.worldMapMarkers.appendChild(marker);
+      });
+
       refs.worldMapStatus.textContent = placedCount > 0
-        ? `Zobrazené waypointy: ${placedCount}/${characters.length}.`
+        ? `Zobrazené waypointy a uložené lokace: ${placedCount}.`
         : "Zatím nikdo neuložil místo spánku.";
     };
 
-    const openWorldMapModal = () => {
+    const openWorldMapModal = async () => {
+      await loadAllSavedLocations();
       renderWorldMap();
       setMapZoom("world", worldMapZoom);
       refs.worldMapModal.classList.add("is-visible");
@@ -9677,6 +10020,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           if (refs.chronicleModal.classList.contains("is-visible")) {
             loadChronicle();
           }
+          if (activeCharacterId) {
+            loadCharacterNightReports(activeCharacterId);
+          }
         }
         updateCharacterTimer();
       }
@@ -9854,8 +10200,17 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.characterActionStatus.textContent = "";
       updateMailBadges();
       updatePersonalFormsVisibility();
+      diaryEntries = [];
+      savedLocationEntries = [];
+      characterNightReportEntries = [];
+      goalEntries = [];
+      renderDiaryEntries();
+      renderSavedLocations();
+      renderGoals();
       loadDiaryEntries(activeCharacterId);
       loadSavedLocations(activeCharacterId);
+      loadCharacterNightReports(activeCharacterId);
+      loadGoals(activeCharacterId);
       startTimerDisplay();
     };
 
@@ -10118,6 +10473,30 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     refs.locationForm.addEventListener("submit", (event) => {
       event.preventDefault();
       saveCurrentLocation();
+    });
+
+    refs.locationList.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-delete-saved-location]");
+      if (!button) return;
+      deleteSavedLocation(button.dataset.deleteSavedLocation);
+    });
+
+    refs.goalForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      saveGoal();
+    });
+
+    refs.goalList.addEventListener("click", (event) => {
+      const toggleButton = event.target.closest("[data-toggle-goal]");
+      if (toggleButton) {
+        toggleGoal(toggleButton.dataset.toggleGoal);
+        return;
+      }
+
+      const deleteButton = event.target.closest("[data-delete-goal]");
+      if (deleteButton) {
+        deleteGoal(deleteButton.dataset.deleteGoal);
+      }
     });
 
     refs.sleepReportCancel.addEventListener("click", () => {
@@ -10678,6 +11057,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     startRumorSlider();
     loadApprovedRelationships();
     loadRumorReports();
+    loadAllSavedLocations();
     loadDiscordPlayers();
     loadDiscordGallery();
 
