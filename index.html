@@ -5287,6 +5287,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
     const getWakeTimerKey = (characterId) => `westHavenWakeStartedAt:${characterId}`;
 
+    const isAdminPlayer = () => currentPlayerCharacterId === adminCharacterId;
+
     const applyMonthlyBackground = () => {
       const monthPart = new Intl.DateTimeFormat("en-CA", {
         timeZone: "Europe/Prague",
@@ -6501,7 +6503,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         const playerAvatar = card.querySelector("[data-roster-player-avatar]");
         const playerAvatarImage = card.querySelector("[data-roster-player-avatar-image]");
         const isPlayerCharacter = character.id === currentPlayerCharacterId;
-        const isLocked = Boolean(currentPlayerCharacterId && !isPlayerCharacter);
+        const isLocked = Boolean(currentPlayerCharacterId && !isAdminPlayer() && !isPlayerCharacter);
         const discordPlayer = characterDiscordPlayers[character.id];
 
         card.classList.toggle("is-player-character", isPlayerCharacter);
@@ -7292,7 +7294,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         button.type = "button";
         button.className = "roster-card";
         button.dataset.characterCard = character.id;
-        button.disabled = Boolean(currentPlayerCharacterId && character.id !== currentPlayerCharacterId);
+        button.disabled = Boolean(currentPlayerCharacterId && !isAdminPlayer() && character.id !== currentPlayerCharacterId);
         button.setAttribute("aria-disabled", String(button.disabled));
         button.style.setProperty("--card-index", String(index));
         button.setAttribute("aria-label", `Otevřít postavu ${character.listName}`);
@@ -7903,7 +7905,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     document.addEventListener("click", async (event) => {
       const characterCard = event.target.closest("[data-character-card]");
       if (characterCard) {
-        if (currentPlayerCharacterId && characterCard.dataset.characterCard !== currentPlayerCharacterId) {
+        if (currentPlayerCharacterId && !isAdminPlayer() && characterCard.dataset.characterCard !== currentPlayerCharacterId) {
           return;
         }
 
