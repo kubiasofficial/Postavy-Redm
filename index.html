@@ -358,6 +358,77 @@
       display: block;
     }
 
+    .gallery-rail {
+      position: absolute;
+      top: 0;
+      right: calc(100% + 72px);
+      z-index: 5;
+      width: 230px;
+      animation: lore-enter 700ms var(--ease) 480ms both;
+    }
+
+    .gallery-title {
+      margin: 0 0 14px 4px;
+      color: #e8d8ba;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1rem;
+      line-height: 1.15;
+      text-shadow: 0 8px 26px rgba(0, 0, 0, 0.58);
+    }
+
+    .gallery-frame {
+      position: relative;
+      min-height: 300px;
+      margin: 0;
+      overflow: hidden;
+      border: 1px solid rgba(177, 130, 70, 0.2);
+      border-radius: var(--radius-lg);
+      background:
+        linear-gradient(180deg, rgba(255, 232, 184, 0.035), transparent 34%),
+        rgba(8, 8, 7, 0.26);
+      box-shadow:
+        0 18px 44px rgba(0, 0, 0, 0.22),
+        inset 0 0 0 1px rgba(255, 244, 215, 0.025);
+    }
+
+    .gallery-frame img {
+      width: 100%;
+      height: 300px;
+      display: block;
+      object-fit: cover;
+      opacity: 0;
+      transform: scale(1.02);
+      filter: contrast(1.05) saturate(0.92) brightness(0.9);
+      transition:
+        opacity 520ms var(--ease),
+        transform 900ms ease,
+        filter var(--ease);
+    }
+
+    .gallery-frame.is-ready img {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .gallery-empty {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      margin: 0;
+      padding: 18px;
+      color: #bca986;
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      line-height: 1.5;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .gallery-frame.is-ready .gallery-empty {
+      display: none;
+    }
+
     .roster-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
@@ -3442,6 +3513,20 @@
         gap: 18px;
       }
 
+      .gallery-rail {
+        position: relative;
+        top: auto;
+        right: auto;
+        width: auto;
+        order: -1;
+      }
+
+      .gallery-frame,
+      .gallery-frame img {
+        min-height: 220px;
+        height: 220px;
+      }
+
       .activity-rail {
         position: relative;
         top: auto;
@@ -3639,6 +3724,20 @@
         align-items: start;
       }
 
+      .gallery-rail {
+        position: relative;
+        top: auto;
+        right: auto;
+        width: auto;
+        grid-column: 1 / -1;
+      }
+
+      .gallery-frame,
+      .gallery-frame img {
+        min-height: 260px;
+        height: 260px;
+      }
+
       .activity-rail {
         position: sticky;
         top: 18px;
@@ -3685,6 +3784,13 @@
     </header>
 
     <div class="roster-layout">
+      <aside class="gallery-rail" aria-label="Fotky z Discordu">
+        <p class="gallery-title">Fotky</p>
+        <figure class="gallery-frame" id="discordGalleryFrame">
+          <img id="discordGalleryImage" src="" alt="">
+          <p class="gallery-empty" id="discordGalleryEmpty">Čeká se na fotky z Discordu.</p>
+        </figure>
+      </aside>
       <div>
         <div class="roster-grid" id="rosterGrid"></div>
         <section class="rumor-strip" id="rumorStrip" aria-live="polite">
@@ -4412,6 +4518,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       rumorTitle: document.getElementById("rumorTitle"),
       rumorText: document.getElementById("rumorText"),
       rumorMeta: document.getElementById("rumorMeta"),
+      discordGalleryFrame: document.getElementById("discordGalleryFrame"),
+      discordGalleryImage: document.getElementById("discordGalleryImage"),
+      discordGalleryEmpty: document.getElementById("discordGalleryEmpty"),
       name: document.getElementById("characterName"),
       role: document.getElementById("characterRole"),
       meta: document.getElementById("characterMeta"),
@@ -4852,6 +4961,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     let activityFlipTimeoutId = null;
     let rumorIntervalId = null;
     let rumorTimeoutId = null;
+    let galleryIntervalId = null;
+    let galleryPhotos = [];
+    let galleryIndex = 0;
     let isActivityShowingTime = false;
     let characterAlertTimeoutId = null;
     let levelAlertTimeoutId = null;
@@ -5110,6 +5222,62 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         }
       } catch (error) {
         console.warn("Discord players could not be loaded:", error);
+      }
+    };
+
+    const setGalleryEmpty = (message) => {
+      if (!refs.discordGalleryFrame || !refs.discordGalleryEmpty) return;
+      refs.discordGalleryFrame.classList.remove("is-ready");
+      refs.discordGalleryEmpty.textContent = message;
+    };
+
+    const showGalleryPhoto = (index = 0) => {
+      if (!refs.discordGalleryFrame || !refs.discordGalleryImage || galleryPhotos.length === 0) return;
+
+      galleryIndex = ((index % galleryPhotos.length) + galleryPhotos.length) % galleryPhotos.length;
+      const photo = galleryPhotos[galleryIndex];
+      refs.discordGalleryFrame.classList.remove("is-ready");
+      refs.discordGalleryImage.alt = "Fotka z Discord galerie West Havenu";
+      refs.discordGalleryImage.onload = () => {
+        refs.discordGalleryFrame.classList.add("is-ready");
+      };
+      refs.discordGalleryImage.src = photo.proxyUrl || photo.url;
+    };
+
+    const startGalleryRotation = () => {
+      clearInterval(galleryIntervalId);
+      if (galleryPhotos.length <= 1) return;
+
+      galleryIntervalId = setInterval(() => {
+        showGalleryPhoto(galleryIndex + 1);
+      }, 7000);
+    };
+
+    const loadDiscordGallery = async () => {
+      if (!refs.discordGalleryFrame) return;
+
+      try {
+        setGalleryEmpty("Načítám fotky z Discordu.");
+        const response = await fetch("/api/discord-gallery");
+        if (!response.ok) {
+          setGalleryEmpty("Fotky se nepodařilo načíst.");
+          return;
+        }
+
+        const data = await response.json();
+        galleryPhotos = Array.isArray(data.photos)
+          ? data.photos.filter((photo) => photo?.url || photo?.proxyUrl)
+          : [];
+        if (galleryPhotos.length === 0) {
+          setGalleryEmpty("V kanálu zatím nejsou fotky.");
+          return;
+        }
+
+        showGalleryPhoto(0);
+        startGalleryRotation();
+      } catch (error) {
+        console.warn("Discord gallery could not be loaded:", error);
+        setGalleryEmpty("Fotky se nepodařilo načíst.");
       }
     };
 
@@ -7893,6 +8061,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     startRumorSlider();
     loadRumorReports();
     loadDiscordPlayers();
+    loadDiscordGallery();
 
     const initialCharacterId = window.location.hash.replace("#", "");
     if (initialCharacterId) {
