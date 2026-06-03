@@ -2611,13 +2611,24 @@
       cursor: grabbing;
     }
 
-    .map-canvas {
+    .map-scroll-space {
       position: relative;
       width: calc(var(--map-zoom, 1) * 100%);
       min-width: 100%;
+      aspect-ratio: 21617 / 16785;
+      line-height: 0;
+    }
+
+    .map-canvas {
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: calc(100% / var(--map-zoom, 1));
+      min-width: calc(100% / var(--map-zoom, 1));
       line-height: 0;
       contain: layout paint style;
       transform-origin: top left;
+      transform: scale(var(--map-zoom, 1));
+      will-change: transform;
     }
 
     .map-canvas img {
@@ -3864,9 +3875,11 @@
           </div>
         </div>
         <div class="map-viewport" id="sleepMapViewport">
-          <div class="map-canvas" id="sleepMapCanvas">
-            <img src="images/newmap.jpg" alt="Mapa Red Dead Redemption 2" loading="lazy" decoding="async">
-            <span class="map-marker is-draft" id="sleepMapMarker" aria-hidden="true"></span>
+          <div class="map-scroll-space" id="sleepMapSpace">
+            <div class="map-canvas" id="sleepMapCanvas">
+              <img src="images/newmap.jpg" alt="Mapa Red Dead Redemption 2" loading="lazy" decoding="async">
+              <span class="map-marker is-draft" id="sleepMapMarker" aria-hidden="true"></span>
+            </div>
           </div>
         </div>
         <p class="sleep-report-location" id="sleepReportLocationStatus">Waypoint není vybraný.</p>
@@ -4078,9 +4091,11 @@
         </div>
       </div>
       <div class="map-viewport" id="worldMapViewport">
-        <div class="map-canvas" id="worldMapCanvas">
-          <img src="images/newmap.jpg" alt="Mapa Red Dead Redemption 2" loading="lazy" decoding="async">
-          <div id="worldMapMarkers"></div>
+        <div class="map-scroll-space" id="worldMapSpace">
+          <div class="map-canvas" id="worldMapCanvas">
+            <img src="images/newmap.jpg" alt="Mapa Red Dead Redemption 2" loading="lazy" decoding="async">
+            <div id="worldMapMarkers"></div>
+          </div>
         </div>
       </div>
       <div class="map-legend" id="worldMapLegend"></div>
@@ -4465,6 +4480,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       worldMapModal: document.getElementById("worldMapModal"),
       closeWorldMapButton: document.getElementById("closeWorldMapButton"),
       worldMapViewport: document.getElementById("worldMapViewport"),
+      worldMapSpace: document.getElementById("worldMapSpace"),
       worldMapCanvas: document.getElementById("worldMapCanvas"),
       worldMapMarkers: document.getElementById("worldMapMarkers"),
       worldMapLegend: document.getElementById("worldMapLegend"),
@@ -4508,6 +4524,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       sleepReportTimer: document.getElementById("sleepReportTimer"),
       sleepReportInput: document.getElementById("sleepReportInput"),
       sleepMapViewport: document.getElementById("sleepMapViewport"),
+      sleepMapSpace: document.getElementById("sleepMapSpace"),
       sleepMapCanvas: document.getElementById("sleepMapCanvas"),
       sleepMapMarker: document.getElementById("sleepMapMarker"),
       sleepMapZoomOut: document.getElementById("sleepMapZoomOut"),
@@ -4883,7 +4900,6 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     let sleepMapZoom = 1;
     let worldMapZoom = 1;
     let activeMapDrag = null;
-    const pendingMapWheelZoom = {};
     let hasClearedStaleMapLocations = false;
     let discordPlayers = [];
     let rumorEntriesByCharacter = {};
@@ -4907,6 +4923,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     const mapZoomMax = 8;
     const mapZoomButtonStep = 0.5;
     const mapZoomWheelStep = 0.25;
+    const mapAspectRatio = 16785 / 21617;
     const currentMapVersion = "newmap-2026-06";
     const characterRumorPronouns = {
       violet: "ní"
@@ -5832,22 +5849,35 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       type === "sleep"
         ? {
             viewport: refs.sleepMapViewport,
+            space: refs.sleepMapSpace,
             canvas: refs.sleepMapCanvas,
             label: refs.sleepMapZoomLabel,
             range: refs.sleepMapZoomRange
           }
         : {
             viewport: refs.worldMapViewport,
+            space: refs.worldMapSpace,
             canvas: refs.worldMapCanvas,
             label: refs.worldMapZoomLabel,
             range: refs.worldMapZoomRange
           }
     );
 
+    const updateMapSpaceHeight = (space, canvas, zoom) => {
+      const baseWidth = Math.max(1, space.getBoundingClientRect().width / zoom);
+      const baseHeight = Math.max(
+        1,
+        canvas.offsetHeight,
+        canvas.getBoundingClientRect().height / zoom,
+        baseWidth * mapAspectRatio
+      );
+      space.style.height = `${baseHeight * zoom}px`;
+    };
+
     const setMapZoom = (type, value, anchor = null) => {
       const zoom = Math.max(mapZoomMin, Math.min(mapZoomMax, Math.round(value * 10) / 10));
       const currentZoom = type === "sleep" ? sleepMapZoom : worldMapZoom;
-      const { viewport, canvas, label, range } = getMapRefs(type);
+      const { viewport, space, canvas, label, range } = getMapRefs(type);
       const viewportRect = viewport.getBoundingClientRect();
       const anchorX = anchor
         ? Math.max(0, Math.min(viewportRect.width, anchor.clientX - viewportRect.left))
@@ -5855,8 +5885,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       const anchorY = anchor
         ? Math.max(0, Math.min(viewportRect.height, anchor.clientY - viewportRect.top))
         : viewportRect.height / 2;
-      const oldWidth = Math.max(1, canvas.getBoundingClientRect().width);
-      const oldHeight = Math.max(1, canvas.getBoundingClientRect().height);
+      updateMapSpaceHeight(space, canvas, currentZoom);
+      const oldWidth = Math.max(1, space.getBoundingClientRect().width);
+      const oldHeight = Math.max(1, space.getBoundingClientRect().height);
       const xRatio = (viewport.scrollLeft + anchorX) / oldWidth;
       const yRatio = (viewport.scrollTop + anchorY) / oldHeight;
       const newWidth = oldWidth * (zoom / currentZoom);
@@ -5869,7 +5900,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
 
       if (zoom !== currentZoom) {
-        canvas.style.setProperty("--map-zoom", zoom);
+        space.style.setProperty("--map-zoom", zoom);
+        updateMapSpaceHeight(space, canvas, zoom);
         viewport.scrollLeft = Math.max(0, (xRatio * newWidth) - anchorX);
         viewport.scrollTop = Math.max(0, (yRatio * newHeight) - anchorY);
       }
@@ -5968,30 +6000,31 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
     const adjustMapZoomFromWheel = (type, event) => {
       event.preventDefault();
-      const pending = pendingMapWheelZoom[type] || {
-        delta: 0,
-        anchor: null,
-        frame: null
-      };
-
+      const currentZoom = type === "sleep" ? sleepMapZoom : worldMapZoom;
       const direction = event.deltaY < 0 ? 1 : -1;
-      const amount = Math.min(3, Math.max(1, Math.abs(event.deltaY) / 100));
-      pending.delta += direction * mapZoomWheelStep * amount;
-      pending.anchor = {
+      const deltaBase = event.deltaMode === 0 ? 100 : 3;
+      const amount = Math.min(2, Math.max(0.35, Math.abs(event.deltaY) / deltaBase));
+      setMapZoom(type, currentZoom + (direction * mapZoomWheelStep * amount), {
         clientX: event.clientX,
         clientY: event.clientY
-      };
+      });
+    };
 
-      if (!pending.frame) {
-        pending.frame = requestAnimationFrame(() => {
-          const currentZoom = type === "sleep" ? sleepMapZoom : worldMapZoom;
-          setMapZoom(type, currentZoom + pending.delta, pending.anchor);
-          pending.delta = 0;
-          pending.frame = null;
-        });
+    const refreshMapLayout = (type) => {
+      const currentZoom = type === "sleep" ? sleepMapZoom : worldMapZoom;
+      const { space, canvas } = getMapRefs(type);
+      updateMapSpaceHeight(space, canvas, currentZoom);
+    };
+
+    const bindMapImageLayoutRefresh = (type) => {
+      const { canvas } = getMapRefs(type);
+      const image = canvas.querySelector("img");
+      if (!image) return;
+      if (image.complete) {
+        refreshMapLayout(type);
+      } else {
+        image.addEventListener("load", () => refreshMapLayout(type), { once: true });
       }
-
-      pendingMapWheelZoom[type] = pending;
     };
 
     const renderWorldMap = () => {
@@ -7666,6 +7699,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     refs.worldMapZoomRange.addEventListener("input", () => {
       setMapZoom("world", Number(refs.worldMapZoomRange.value));
     });
+
+    bindMapImageLayoutRefresh("sleep");
+    bindMapImageLayoutRefresh("world");
 
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && refs.sleepReportModal.classList.contains("is-visible")) {
