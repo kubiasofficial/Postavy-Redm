@@ -2613,12 +2613,11 @@
 
     .map-canvas {
       position: relative;
-      width: 100%;
+      width: calc(var(--map-zoom, 1) * 100%);
       min-width: 100%;
       line-height: 0;
       contain: layout paint style;
       transform-origin: top left;
-      will-change: width;
     }
 
     .map-canvas img {
@@ -2682,6 +2681,13 @@
       box-shadow:
         0 12px 24px rgba(0, 0, 0, 0.46),
         0 0 24px rgba(255, 222, 154, 0.42);
+      cursor: grab;
+      pointer-events: auto;
+      touch-action: none;
+    }
+
+    .map-marker.is-draft:active {
+      cursor: grabbing;
     }
 
     .map-marker.is-draft img {
@@ -5853,6 +5859,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       const oldHeight = Math.max(1, canvas.getBoundingClientRect().height);
       const xRatio = (viewport.scrollLeft + anchorX) / oldWidth;
       const yRatio = (viewport.scrollTop + anchorY) / oldHeight;
+      const newWidth = oldWidth * (zoom / currentZoom);
+      const newHeight = oldHeight * (zoom / currentZoom);
 
       if (type === "sleep") {
         sleepMapZoom = zoom;
@@ -5861,10 +5869,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
 
       if (zoom !== currentZoom) {
-        canvas.style.width = `${zoom * 100}%`;
-        const newRect = canvas.getBoundingClientRect();
-        viewport.scrollLeft = (xRatio * newRect.width) - anchorX;
-        viewport.scrollTop = (yRatio * newRect.height) - anchorY;
+        canvas.style.setProperty("--map-zoom", zoom);
+        viewport.scrollLeft = Math.max(0, (xRatio * newWidth) - anchorX);
+        viewport.scrollTop = Math.max(0, (yRatio * newHeight) - anchorY);
       }
 
       label.textContent = `${Math.round(zoom * 100)}%`;
@@ -5907,10 +5914,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     const startMapDrag = (type, event) => {
       if (event.button !== 0) return;
       const viewport = type === "sleep" ? refs.sleepMapViewport : refs.worldMapViewport;
+      const isDraftMarkerDrag = type === "sleep" && sleepLocationDraft && event.target === refs.sleepMapMarker;
 
       activeMapDrag = {
         type,
         viewport,
+        mode: isDraftMarkerDrag ? "marker" : "pan",
         startX: event.clientX,
         startY: event.clientY,
         scrollLeft: viewport.scrollLeft,
@@ -5930,6 +5939,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         activeMapDrag.didMove = true;
       }
 
+      if (activeMapDrag.mode === "marker") {
+        sleepLocationDraft = getMapLocationFromEvent(refs.sleepMapCanvas, event);
+        positionDraftSleepMarker();
+        return;
+      }
+
       activeMapDrag.viewport.scrollLeft = activeMapDrag.scrollLeft - dx;
       activeMapDrag.viewport.scrollTop = activeMapDrag.scrollTop - dy;
     };
@@ -5940,7 +5955,10 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       const { type, viewport, didMove } = activeMapDrag;
       viewport.classList.remove("is-dragging");
       viewport.releasePointerCapture?.(event.pointerId);
-      if (type === "sleep" && !didMove) {
+      if (type === "sleep" && activeMapDrag.mode === "marker") {
+        sleepLocationDraft = getMapLocationFromEvent(refs.sleepMapCanvas, event);
+        positionDraftSleepMarker();
+      } else if (type === "sleep" && !didMove) {
         pickSleepMapLocation(event);
       }
       setTimeout(() => {
@@ -6325,10 +6343,11 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     };
 
     const setRemoteCharacterState = async (characterId, state) => {
+      const updatedAt = Date.now();
       characterStates[characterId] = {
         ...getCharacterState(characterId),
         ...state,
-        updatedAt: Date.now()
+        updatedAt
       };
       updateRosterStates();
 
@@ -6336,7 +6355,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         updateCharacterTimer();
       }
 
-      await setDoc(doc(characterStatesRef, characterId), characterStates[characterId], { merge: true });
+      await setDoc(doc(characterStatesRef, characterId), { ...state, updatedAt }, { merge: true });
     };
 
     const clearStaleMapLocations = async () => {
@@ -6822,8 +6841,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
     const loadNightReportInputs = async () => {
       try {
-        setNightReportStatus("Načítám dnešní podklady...");
-        const dateKey = getPragueDateKey();
+        const currentDateKey = getPragueDateKey();
+        const dateKey = getPragueHour() === 0 ? getDateKeyOffset(currentDateKey, -1) : currentDateKey;
+        setNightReportStatus(`Načítám podklady za ${dateKey}...`);
         const snapshot = await getDocs(query(nightReportsRef, orderBy("createdAt", "desc"), limit(50)));
         const entries = {};
 
@@ -7701,27 +7721,38 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         return;
       }
 
-      if (event.target.closest("#wakeCharacterButton")) {
+      const wakeButton = event.target.closest("#wakeCharacterButton");
+      if (wakeButton) {
         if (currentPlayerCharacterId && activeCharacterId !== currentPlayerCharacterId) return;
 
+        wakeButton.disabled = true;
+        refs.characterActionStatus.textContent = "Ukládám probuzení...";
         const startedAt = startWakeTimer(activeCharacterId);
         const wakeDateKey = getPragueDateKey(startedAt);
         const achievementStats = updateActiveDateStreak(getAchievementStats(activeCharacterId), wakeDateKey);
-        await setRemoteCharacterState(activeCharacterId, {
-          status: "awake",
-          wakeStartedAt: startedAt,
-          lastAwakeAt: startedAt,
-          dailyDate: wakeDateKey,
-          achievementStats
-        });
-        updateCharacterTimer();
-        sendCharacterAlert(activeCharacterId, "wake");
-        sendCharacterWebhook("wake");
-        openMorningBrief(activeCharacterId);
+        try {
+          await setRemoteCharacterState(activeCharacterId, {
+            status: "awake",
+            wakeStartedAt: startedAt,
+            lastAwakeAt: startedAt,
+            dailyDate: wakeDateKey,
+            achievementStats
+          });
+          updateCharacterTimer();
+          sendCharacterAlert(activeCharacterId, "wake");
+          await sendCharacterWebhook("wake");
+          openMorningBrief(activeCharacterId);
+        } catch (error) {
+          console.error("Wake action failed:", error);
+          refs.characterActionStatus.textContent = "Probuzení se nepodařilo uložit. Zkus to prosím znovu.";
+        } finally {
+          wakeButton.disabled = false;
+        }
         return;
       }
 
-      if (event.target.closest("#sleepCharacterButton")) {
+      const sleepButton = event.target.closest("#sleepCharacterButton");
+      if (sleepButton) {
         if (currentPlayerCharacterId && activeCharacterId !== currentPlayerCharacterId) return;
 
         const profile = characterActionProfiles[activeCharacterId];
@@ -7733,8 +7764,17 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           return;
         }
 
-        sendCharacterAlert(activeCharacterId, "sleep");
-        sendCharacterWebhook("sleep", reportData);
+        sleepButton.disabled = true;
+        refs.characterActionStatus.textContent = "Ukládám noční report a polohu...";
+        try {
+          sendCharacterAlert(activeCharacterId, "sleep");
+          await sendCharacterWebhook("sleep", reportData);
+        } catch (error) {
+          console.error("Sleep action failed:", error);
+          refs.characterActionStatus.textContent = "Noční report nebo poloha se nepodařily uložit. Zkus to prosím znovu.";
+        } finally {
+          sleepButton.disabled = false;
+        }
       }
     });
 

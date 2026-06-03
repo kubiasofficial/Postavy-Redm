@@ -2,7 +2,7 @@ const DISCORD_API_BASE = "https://discord.com/api/v10";
 const FIREBASE_PROJECT_ID = "postavy-redm";
 const FIREBASE_API_KEY = "AIzaSyBXUgRu0V3a2xQG1-r-pEXug5Vdj6nIJyE";
 const FIRESTORE_BASE = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents`;
-const DAILY_REPORT_CHANNEL_ID = "1505429461267386449";
+const DAILY_REPORT_CHANNEL_ID = "1511585681586257990";
 
 const hour = 60 * 60 * 1000;
 const minute = 60 * 1000;
@@ -241,7 +241,7 @@ const buildEmbed = (rows, reportDateKey) => ({
   fields: rows.map((row) => ({
     name: row.name,
     value: [
-      `Dnes: \`${formatDuration(row.dailyPlayedMs)}\``,
+      `Za den: \`${formatDuration(row.dailyPlayedMs)}\``,
       `Celkem: \`${formatDuration(row.totalPlayedMs)}\``,
       `Level: \`LVL ${row.level}\``,
       `Odznak: \`${row.badgeName}\``,
@@ -250,7 +250,7 @@ const buildEmbed = (rows, reportDateKey) => ({
     inline: true
   })),
   footer: {
-    text: "West Haven automaticky report | odeslano o pulnoci"
+    text: "West Haven automaticky report | uzaverka predchoziho dne"
   },
   timestamp: new Date().toISOString()
 });
