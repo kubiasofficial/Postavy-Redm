@@ -326,6 +326,27 @@
         inset 0 0 0 1px rgba(255, 238, 196, 0.16);
     }
 
+    .home-chronicle-button::before {
+      border-radius: 2px;
+      background:
+        linear-gradient(90deg, rgba(255, 238, 196, 0.24) 0 1px, transparent 1px 100%),
+        linear-gradient(180deg, rgba(232, 203, 145, 0.82) 0 14%, transparent 14% 24%, rgba(169, 120, 57, 0.74) 24% 34%, transparent 34% 44%, rgba(232, 203, 145, 0.68) 44% 54%, transparent 54%),
+        rgba(20, 15, 11, 0.84);
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 238, 196, 0.16);
+    }
+
+    .home-relations-button::before {
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 22% 50%, rgba(255, 238, 196, 0.9) 0 12%, transparent 13%),
+        radial-gradient(circle at 78% 50%, rgba(255, 238, 196, 0.84) 0 12%, transparent 13%),
+        linear-gradient(90deg, transparent 0 24%, rgba(169, 120, 57, 0.86) 24% 76%, transparent 76%),
+        rgba(20, 15, 11, 0.84);
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 238, 196, 0.16);
+    }
+
     .home-badges-button:hover,
     .home-badges-button:focus-visible {
       transform: translateY(-1px);
@@ -2566,6 +2587,376 @@
       line-height: 1.6;
     }
 
+    .chronicle-card,
+    .relations-card {
+      width: min(1180px, 100%);
+    }
+
+    .chronicle-shell {
+      display: grid;
+      grid-template-columns: 230px minmax(0, 1fr) 260px;
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .chronicle-days,
+    .chronicle-sidebar,
+    .chronicle-paper,
+    .relations-detail,
+    .relations-legend {
+      border: 1px solid rgba(169, 120, 57, 0.18);
+      border-radius: var(--radius-lg);
+      background: rgba(8, 8, 7, 0.28);
+    }
+
+    .chronicle-days {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      padding: 14px;
+    }
+
+    .chronicle-day-button {
+      display: grid;
+      gap: 4px;
+      padding: 12px;
+      border: 1px solid rgba(169, 120, 57, 0.2);
+      border-radius: var(--radius-md);
+      background: rgba(18, 14, 10, 0.72);
+      color: #ead9bb;
+      cursor: pointer;
+      font: inherit;
+      text-align: left;
+      transition:
+        transform var(--ease),
+        border-color var(--ease),
+        background var(--ease);
+    }
+
+    .chronicle-day-button:hover,
+    .chronicle-day-button:focus-visible,
+    .chronicle-day-button.is-active {
+      transform: translateY(-1px);
+      border-color: rgba(212, 164, 89, 0.54);
+      background: rgba(68, 45, 25, 0.54);
+      outline: none;
+    }
+
+    .chronicle-day-date {
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1rem;
+      line-height: 1.1;
+    }
+
+    .chronicle-day-meta {
+      color: #a99472;
+      font-size: 0.72rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .chronicle-paper {
+      min-height: 560px;
+      padding: 24px;
+      background:
+        linear-gradient(180deg, rgba(255, 238, 196, 0.08), transparent 22%),
+        linear-gradient(145deg, rgba(41, 32, 23, 0.82), rgba(12, 11, 9, 0.94));
+    }
+
+    .chronicle-date {
+      margin: 0;
+      color: var(--gold);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .chronicle-headline {
+      margin: 8px 0 0;
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.7rem, 4vw, 3.2rem);
+      line-height: 0.98;
+      text-transform: uppercase;
+    }
+
+    .chronicle-lead {
+      max-width: 760px;
+      margin: 16px 0 0;
+      color: #dac5a2;
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+
+    .chronicle-events {
+      display: grid;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .chronicle-event {
+      display: grid;
+      grid-template-columns: 46px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      padding: 12px;
+      border: 1px solid rgba(169, 120, 57, 0.16);
+      border-radius: var(--radius-md);
+      background: rgba(8, 8, 7, 0.22);
+    }
+
+    .chronicle-event img,
+    .relations-node img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .chronicle-event-avatar {
+      width: 46px;
+      height: 46px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 238, 196, 0.36);
+      border-radius: 999px;
+      background: #15110e;
+    }
+
+    .chronicle-event-title {
+      margin: 0;
+      color: #fff0cf;
+      font-size: 0.84rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .chronicle-event-text {
+      margin: 6px 0 0;
+      color: #cdb995;
+      font-size: 0.88rem;
+      line-height: 1.52;
+    }
+
+    .chronicle-sidebar {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+      padding: 14px;
+    }
+
+    .chronicle-stat {
+      padding: 12px;
+      border: 1px solid rgba(169, 120, 57, 0.14);
+      border-radius: var(--radius-md);
+      background: rgba(18, 14, 10, 0.5);
+    }
+
+    .chronicle-stat-label {
+      margin: 0 0 6px;
+      color: #a99472;
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .chronicle-stat-value {
+      margin: 0;
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.2rem;
+    }
+
+    .chronicle-empty,
+    .relations-empty {
+      margin: 0;
+      color: #b9a37e;
+      line-height: 1.55;
+    }
+
+    .relations-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .relations-map {
+      position: relative;
+      min-height: 620px;
+      overflow: hidden;
+      border: 1px solid rgba(169, 120, 57, 0.18);
+      border-radius: var(--radius-lg);
+      background:
+        radial-gradient(circle at 50% 48%, rgba(169, 120, 57, 0.13), transparent 42%),
+        linear-gradient(145deg, rgba(16, 14, 12, 0.86), rgba(7, 7, 6, 0.96));
+    }
+
+    .relations-lines {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .relation-line {
+      stroke: var(--relation-color, #a97839);
+      stroke-width: var(--relation-width, 2);
+      stroke-linecap: round;
+      opacity: 0.78;
+      filter: drop-shadow(0 0 8px rgba(169, 120, 57, 0.18));
+    }
+
+    .relation-line.is-debt {
+      stroke-dasharray: 8 7;
+    }
+
+    .relation-line.is-secret {
+      stroke-dasharray: 2 8;
+    }
+
+    .relations-node {
+      position: absolute;
+      left: var(--node-x);
+      top: var(--node-y);
+      width: 112px;
+      min-height: 144px;
+      display: grid;
+      justify-items: center;
+      gap: 8px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #fff0cf;
+      cursor: pointer;
+      font: inherit;
+      text-align: center;
+      transform: translate(-50%, -50%);
+    }
+
+    .relations-node-portrait {
+      width: 86px;
+      height: 86px;
+      overflow: hidden;
+      border: 2px solid color-mix(in srgb, var(--node-color, #a97839) 72%, #fff0cf);
+      border-radius: 999px;
+      background: #15110e;
+      box-shadow:
+        0 18px 38px rgba(0, 0, 0, 0.42),
+        0 0 28px color-mix(in srgb, var(--node-color, #a97839) 26%, transparent);
+      transition:
+        transform var(--ease),
+        filter var(--ease);
+    }
+
+    .relations-node:hover .relations-node-portrait,
+    .relations-node:focus-visible .relations-node-portrait,
+    .relations-node.is-active .relations-node-portrait {
+      transform: scale(1.06);
+      filter: brightness(1.1);
+    }
+
+    .relations-node:focus-visible {
+      outline: none;
+    }
+
+    .relations-node-name {
+      max-width: 120px;
+      color: #ead9bb;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.25;
+      text-transform: uppercase;
+      text-shadow: 0 8px 18px rgba(0, 0, 0, 0.78);
+    }
+
+    .relations-side {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .relations-detail,
+    .relations-legend {
+      padding: 14px;
+    }
+
+    .relations-detail-title {
+      margin: 0;
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.45rem;
+      line-height: 1.05;
+      text-transform: uppercase;
+    }
+
+    .relations-detail-meta {
+      margin: 8px 0 0;
+      color: var(--gold);
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .relations-detail-text {
+      margin: 12px 0 0;
+      color: #d2bea0;
+      line-height: 1.58;
+    }
+
+    .relations-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .relations-list-button {
+      padding: 10px;
+      border: 1px solid rgba(169, 120, 57, 0.18);
+      border-radius: var(--radius-md);
+      background: rgba(18, 14, 10, 0.54);
+      color: #ead9bb;
+      cursor: pointer;
+      font: inherit;
+      text-align: left;
+    }
+
+    .relations-list-button:hover,
+    .relations-list-button:focus-visible,
+    .relations-list-button.is-active {
+      border-color: rgba(212, 164, 89, 0.5);
+      color: #fff0cf;
+      outline: none;
+    }
+
+    .relations-legend-title {
+      margin: 0 0 12px;
+      color: #fff0cf;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .relations-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-top: 8px;
+      color: #cdb995;
+      font-size: 0.82rem;
+    }
+
+    .relations-legend-line {
+      width: 34px;
+      height: 2px;
+      background: var(--legend-color, #a97839);
+      box-shadow: 0 0 10px color-mix(in srgb, var(--legend-color, #a97839) 42%, transparent);
+    }
+
     .map-card {
       width: min(1120px, 100%);
     }
@@ -3652,6 +4043,34 @@
         grid-template-columns: 1fr;
       }
 
+      .chronicle-shell,
+      .relations-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .chronicle-days {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      }
+
+      .chronicle-paper {
+        min-height: 0;
+        padding: 20px 16px;
+      }
+
+      .relations-map {
+        min-height: 520px;
+      }
+
+      .relations-node {
+        width: 92px;
+        min-height: 126px;
+      }
+
+      .relations-node-portrait {
+        width: 72px;
+        height: 72px;
+      }
+
       .player-profile-portrait {
         justify-self: center;
       }
@@ -3773,6 +4192,8 @@
       </div>
       <div class="home-actions">
         <button class="home-badges-button" id="openBadgesButton" type="button">Odznaky</button>
+        <button class="home-badges-button home-chronicle-button" id="openChronicleButton" type="button">Kronika</button>
+        <button class="home-badges-button home-relations-button" id="openRelationsButton" type="button">Vztahy</button>
         <button class="home-badges-button home-players-button" id="openPlayerProfilesButton" type="button">Hráči</button>
         <button class="home-badges-button home-map-button" id="openWorldMapButton" type="button">Mapa</button>
         <div class="home-mark" aria-hidden="true"></div>
@@ -4150,6 +4571,37 @@
     </section>
   </div>
 
+  <div class="badge-modal" id="chronicleModal" aria-hidden="true">
+    <section class="badge-card chronicle-card" aria-labelledby="chronicleTitle">
+      <button class="badge-modal-x" id="closeChronicleButton" type="button" aria-label="Zavřít kroniku">&times;</button>
+      <p class="level-alert-kicker">West Haven Chronicle</p>
+      <h2 class="badge-title" id="chronicleTitle">Kronika</h2>
+      <div class="chronicle-shell">
+        <div class="chronicle-days" id="chronicleDays"></div>
+        <article class="chronicle-paper" id="chroniclePaper"></article>
+        <aside class="chronicle-sidebar" id="chronicleSidebar"></aside>
+      </div>
+    </section>
+  </div>
+
+  <div class="badge-modal" id="relationsModal" aria-hidden="true">
+    <section class="badge-card relations-card" aria-labelledby="relationsTitle">
+      <button class="badge-modal-x" id="closeRelationsButton" type="button" aria-label="Zavřít vztahy">&times;</button>
+      <p class="level-alert-kicker">West Haven Relations</p>
+      <h2 class="badge-title" id="relationsTitle">Vztahy</h2>
+      <div class="relations-shell">
+        <div class="relations-map" id="relationsMap">
+          <svg class="relations-lines" id="relationsLines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <div id="relationsNodes"></div>
+        </div>
+        <aside class="relations-side">
+          <div class="relations-detail" id="relationsDetail"></div>
+          <div class="relations-legend" id="relationsLegend"></div>
+        </aside>
+      </div>
+    </section>
+  </div>
+
   <div class="badge-modal" id="worldMapModal" aria-hidden="true">
     <section class="badge-card map-card" aria-labelledby="worldMapTitle">
       <button class="badge-modal-x" id="closeWorldMapButton" type="button" aria-label="Zavřít mapu">&times;</button>
@@ -4501,6 +4953,82 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
     ];
 
+    const relationTypes = {
+      family: { label: "Rodina", color: "#d4a459", width: 2.8 },
+      ally: { label: "Spojenec", color: "#8fbc8f", width: 2.2 },
+      debt: { label: "Dluh", color: "#c69a4a", width: 2 },
+      distrust: { label: "Nedůvěra", color: "#9a6f73", width: 1.8 },
+      rivalry: { label: "Rivalita", color: "#b84a4a", width: 2.4 },
+      secret: { label: "Tajemství", color: "#9f8dca", width: 1.8 }
+    };
+
+    const relationshipNodes = {
+      zeke: { x: 48, y: 22 },
+      silas: { x: 25, y: 43 },
+      violet: { x: 72, y: 43 },
+      william: { x: 61, y: 74 },
+      "thomas-mercer": { x: 36, y: 74 }
+    };
+
+    const characterRelationships = [
+      {
+        from: "zeke",
+        to: "silas",
+        type: "family",
+        label: "Bratři Croweové",
+        note: "Krev je drží pohromadě, i když Zeke mizí do ticha a Silas se snaží najít pravdu mezi slovy druhých."
+      },
+      {
+        from: "zeke",
+        to: "violet",
+        type: "family",
+        label: "Sourozenci Croweovi",
+        note: "Violet Zeka zná dost na to, aby se ho nebála slepě. Právě proto mezi nimi zůstává opatrnost i nevyřčená loajalita."
+      },
+      {
+        from: "silas",
+        to: "violet",
+        type: "family",
+        label: "Rodinná paměť",
+        note: "Silas a Violet umí číst stejné stíny Croweovy rodiny, jen každý používá jinou zbraň: on řeč, ona pozorování."
+      },
+      {
+        from: "violet",
+        to: "william",
+        type: "ally",
+        label: "Tiché spojenectví",
+        note: "William je pro Violet vzácný typ člověka: nestaví ji do klece a nesnaží se vlastnit její tajemství."
+      },
+      {
+        from: "zeke",
+        to: "thomas-mercer",
+        type: "distrust",
+        label: "Napjatá vzdálenost",
+        note: "Thomas představuje řád a disciplínu. Zeke je všechno, co se takovému řádu špatně zapisuje do knih."
+      },
+      {
+        from: "silas",
+        to: "thomas-mercer",
+        type: "secret",
+        label: "Otázky bez odpovědi",
+        note: "Silas ví, že Thomas může být užitečný zdroj. Thomas zase tuší, že Silas se nikdy neptá jen jednou."
+      },
+      {
+        from: "william",
+        to: "thomas-mercer",
+        type: "debt",
+        label: "Nevyrovnaný účet",
+        note: "Mezi Williamem a Thomasem leží věci, které nejsou nepřátelstvím, ale ani čistým přátelstvím."
+      },
+      {
+        from: "zeke",
+        to: "william",
+        type: "rivalry",
+        label: "Ostražitý respekt",
+        note: "Zeke respektuje lidi, kteří se nerozklepou při prvním pohledu. William mu ale stojí příliš blízko u rodiny."
+      }
+    ];
+
     const homeView = document.getElementById("homeView");
     const detailView = document.getElementById("detailView");
     const rosterGrid = document.getElementById("rosterGrid");
@@ -4545,12 +5073,25 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       characterLevelNote: document.getElementById("characterLevelNote"),
       characterActionStatus: document.getElementById("characterActionStatus"),
       openBadgesButton: document.getElementById("openBadgesButton"),
+      openChronicleButton: document.getElementById("openChronicleButton"),
+      openRelationsButton: document.getElementById("openRelationsButton"),
       openPlayerProfilesButton: document.getElementById("openPlayerProfilesButton"),
       openWorldMapButton: document.getElementById("openWorldMapButton"),
       badgeModal: document.getElementById("badgeModal"),
       closeBadgesButton: document.getElementById("closeBadgesButton"),
       badgeSummary: document.getElementById("badgeSummary"),
       badgeList: document.getElementById("badgeList"),
+      chronicleModal: document.getElementById("chronicleModal"),
+      closeChronicleButton: document.getElementById("closeChronicleButton"),
+      chronicleDays: document.getElementById("chronicleDays"),
+      chroniclePaper: document.getElementById("chroniclePaper"),
+      chronicleSidebar: document.getElementById("chronicleSidebar"),
+      relationsModal: document.getElementById("relationsModal"),
+      closeRelationsButton: document.getElementById("closeRelationsButton"),
+      relationsLines: document.getElementById("relationsLines"),
+      relationsNodes: document.getElementById("relationsNodes"),
+      relationsDetail: document.getElementById("relationsDetail"),
+      relationsLegend: document.getElementById("relationsLegend"),
       playerProfilesModal: document.getElementById("playerProfilesModal"),
       closePlayerProfilesButton: document.getElementById("closePlayerProfilesButton"),
       playerProfilesList: document.getElementById("playerProfilesList"),
@@ -4999,6 +5540,11 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     let discordPlayers = [];
     let rumorEntriesByCharacter = {};
     let rumorIndex = 0;
+    let chronicleEntries = [];
+    let selectedChronicleDate = "";
+    let selectedRelationshipId = characterRelationships[0]
+      ? `${characterRelationships[0].from}-${characterRelationships[0].to}`
+      : "";
     const characterDiscordPlayers = {};
     const characterDiscordIds = {
       zeke: "417061947759001600",
@@ -5575,6 +6121,378 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         console.warn("Rumor reports could not be loaded:", error);
         renderRumorSlide();
       }
+    };
+
+    const formatChronicleDate = (dateKey) => {
+      if (!dateKey) return "Dnes";
+      const [year, month, day] = dateKey.split("-").map(Number);
+      return new Intl.DateTimeFormat("cs-CZ", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      }).format(new Date(Date.UTC(year, month - 1, day)));
+    };
+
+    const getChronicleReportPreview = (text = "") => {
+      const fragments = splitReportFragments(text);
+      return fragments[0] || "Noční report byl uložen, ale kronikář z něj zatím nevytáhl čitelnou stopu.";
+    };
+
+    const buildChronicleEvent = (character, data) => {
+      const state = getCharacterState(character.id);
+      const reportText = data?.reportText || "";
+      const sleepLocation = data?.sleepLocation || state.sleepLocation;
+      const playedMs = Number(data?.playedMs || data?.durationMs || 0);
+      const level = getLevelForTotal(getTotalPlayedMs(character.id));
+      const parts = [];
+
+      if (reportText) {
+        parts.push(getChronicleReportPreview(reportText));
+      } else {
+        parts.push(state.status === "awake"
+          ? `${character.listName} je právě vzhůru a město s ním ještě neskončilo.`
+          : `${character.listName} zatím nenechal kronice žádný noční zápis.`);
+      }
+
+      if (sleepLocation) {
+        parts.push(`Poslední stopa: ${formatMapLocation(sleepLocation)}`);
+      }
+
+      if (playedMs > 0) {
+        parts.push(`Čas v terénu: ${formatLedgerDuration(playedMs)}.`);
+      }
+
+      return {
+        characterId: character.id,
+        title: `${character.listName} | LVL ${level}`,
+        text: parts.join(" "),
+        createdAt: Number(data?.createdAt || state.updatedAt || state.lastAwakeAt || 0)
+      };
+    };
+
+    const buildChronicleFromReports = (reports) => {
+      const grouped = new Map();
+      const todayKey = getPragueDateKey();
+
+      reports.forEach((report) => {
+        const character = characters.find((item) => item.id === report.characterId);
+        if (!character) return;
+        const dateKey = report.reportDate || getPragueDateKey(report.createdAt || Date.now());
+        if (!grouped.has(dateKey)) {
+          grouped.set(dateKey, {
+            dateKey,
+            reports: [],
+            events: []
+          });
+        }
+
+        const entry = grouped.get(dateKey);
+        entry.reports.push(report);
+        entry.events.push(buildChronicleEvent(character, report));
+      });
+
+      if (!grouped.has(todayKey)) {
+        grouped.set(todayKey, {
+          dateKey: todayKey,
+          reports: [],
+          events: characters.map((character) => buildChronicleEvent(character, null))
+        });
+      }
+
+      return Array.from(grouped.values())
+        .map((entry) => ({
+          ...entry,
+          events: entry.events.sort((a, b) => b.createdAt - a.createdAt)
+        }))
+        .sort((a, b) => b.dateKey.localeCompare(a.dateKey))
+        .slice(0, 12);
+    };
+
+    const renderChronicleDays = () => {
+      refs.chronicleDays.replaceChildren();
+      if (chronicleEntries.length === 0) {
+        const empty = document.createElement("p");
+        empty.className = "chronicle-empty";
+        empty.textContent = "Kronika zatím čeká na první zápis.";
+        refs.chronicleDays.appendChild(empty);
+        return;
+      }
+
+      chronicleEntries.forEach((entry) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `chronicle-day-button${entry.dateKey === selectedChronicleDate ? " is-active" : ""}`;
+        button.dataset.chronicleDate = entry.dateKey;
+
+        const date = document.createElement("span");
+        date.className = "chronicle-day-date";
+        date.textContent = formatChronicleDate(entry.dateKey);
+
+        const meta = document.createElement("span");
+        meta.className = "chronicle-day-meta";
+        meta.textContent = `${entry.events.length} stop`;
+
+        button.append(date, meta);
+        refs.chronicleDays.appendChild(button);
+      });
+    };
+
+    const renderChroniclePaper = () => {
+      refs.chroniclePaper.replaceChildren();
+      refs.chronicleSidebar.replaceChildren();
+
+      const entry = chronicleEntries.find((item) => item.dateKey === selectedChronicleDate) || chronicleEntries[0];
+      if (!entry) {
+        const empty = document.createElement("p");
+        empty.className = "chronicle-empty";
+        empty.textContent = "Zatím není co zapsat. Jakmile někdo uloží noční report, objeví se tady denní kronika.";
+        refs.chroniclePaper.appendChild(empty);
+        return;
+      }
+
+      const date = document.createElement("p");
+      date.className = "chronicle-date";
+      date.textContent = formatChronicleDate(entry.dateKey);
+
+      const headline = document.createElement("h3");
+      headline.className = "chronicle-headline";
+      headline.textContent = entry.reports.length > 0
+        ? "Stopy dne ve West Havenu"
+        : "Město čeká na další zápis";
+
+      const lead = document.createElement("p");
+      lead.className = "chronicle-lead";
+      lead.textContent = entry.reports.length > 0
+        ? `Kronika zachytila ${entry.events.length} stop z nočních zápisů. Některé jsou jasné, jiné zůstávají mezi řádky.`
+        : "Dnešní stránka je připravená. Jakmile postavy usnou a zanechají report, město si z jejich slov složí vlastní paměť.";
+
+      const events = document.createElement("div");
+      events.className = "chronicle-events";
+
+      entry.events.forEach((event) => {
+        const character = characters.find((item) => item.id === event.characterId);
+        if (!character) return;
+
+        const article = document.createElement("article");
+        article.className = "chronicle-event";
+
+        const avatar = document.createElement("span");
+        avatar.className = "chronicle-event-avatar";
+        const image = document.createElement("img");
+        image.src = character.portrait;
+        image.alt = character.portraitAlt;
+        avatar.appendChild(image);
+
+        const body = document.createElement("div");
+        const title = document.createElement("p");
+        title.className = "chronicle-event-title";
+        title.textContent = event.title;
+        const text = document.createElement("p");
+        text.className = "chronicle-event-text";
+        text.textContent = event.text;
+        body.append(title, text);
+
+        article.append(avatar, body);
+        events.appendChild(article);
+      });
+
+      refs.chroniclePaper.append(date, headline, lead, events);
+
+      const activeCharacters = characters.filter((character) => getCharacterState(character.id).status === "awake").length;
+      const stats = [
+        ["Zápisy dne", String(entry.reports.length)],
+        ["Stopy v kronice", String(entry.events.length)],
+        ["Postavy vzhůru", `${activeCharacters}/${characters.length}`],
+        ["Celkový čas", formatLedgerDuration(characters.reduce((total, character) => total + getTotalPlayedMs(character.id), 0))]
+      ];
+
+      stats.forEach(([labelText, valueText]) => {
+        const panel = document.createElement("article");
+        panel.className = "chronicle-stat";
+        const label = document.createElement("p");
+        label.className = "chronicle-stat-label";
+        label.textContent = labelText;
+        const value = document.createElement("p");
+        value.className = "chronicle-stat-value";
+        value.textContent = valueText;
+        panel.append(label, value);
+        refs.chronicleSidebar.appendChild(panel);
+      });
+    };
+
+    const renderChronicle = () => {
+      if (!selectedChronicleDate && chronicleEntries[0]) {
+        selectedChronicleDate = chronicleEntries[0].dateKey;
+      }
+      renderChronicleDays();
+      renderChroniclePaper();
+    };
+
+    const loadChronicle = async () => {
+      refs.chroniclePaper.replaceChildren();
+      const loading = document.createElement("p");
+      loading.className = "chronicle-empty";
+      loading.textContent = "Kronikář otevírá poslední zápisy...";
+      refs.chroniclePaper.appendChild(loading);
+
+      try {
+        const snapshot = await getDocs(query(nightReportsRef, orderBy("createdAt", "desc"), limit(120)));
+        const reports = snapshot.docs.map((entryDoc) => entryDoc.data());
+        chronicleEntries = buildChronicleFromReports(reports);
+        if (!chronicleEntries.some((entry) => entry.dateKey === selectedChronicleDate)) {
+          selectedChronicleDate = chronicleEntries[0]?.dateKey || "";
+        }
+      } catch (error) {
+        console.warn("Chronicle could not be loaded:", error);
+        chronicleEntries = buildChronicleFromReports([]);
+        selectedChronicleDate = chronicleEntries[0]?.dateKey || "";
+      }
+
+      renderChronicle();
+    };
+
+    const getRelationshipById = (id) => (
+      characterRelationships.find((relationship) => `${relationship.from}-${relationship.to}` === id)
+    );
+
+    const getRelationCharacterLabel = (relationship) => {
+      const from = characters.find((character) => character.id === relationship.from);
+      const to = characters.find((character) => character.id === relationship.to);
+      return `${from?.listName || relationship.from} / ${to?.listName || relationship.to}`;
+    };
+
+    const renderRelationsDetail = () => {
+      refs.relationsDetail.replaceChildren();
+      const relationship = getRelationshipById(selectedRelationshipId) || characterRelationships[0];
+
+      if (!relationship) {
+        const empty = document.createElement("p");
+        empty.className = "relations-empty";
+        empty.textContent = "Síť vztahů zatím čeká na první propojení.";
+        refs.relationsDetail.appendChild(empty);
+        return;
+      }
+
+      selectedRelationshipId = `${relationship.from}-${relationship.to}`;
+      const type = relationTypes[relationship.type] || relationTypes.secret;
+
+      const title = document.createElement("h3");
+      title.className = "relations-detail-title";
+      title.textContent = relationship.label;
+      const meta = document.createElement("p");
+      meta.className = "relations-detail-meta";
+      meta.textContent = `${type.label} | ${getRelationCharacterLabel(relationship)}`;
+      const text = document.createElement("p");
+      text.className = "relations-detail-text";
+      text.textContent = relationship.note;
+
+      const list = document.createElement("div");
+      list.className = "relations-list";
+      characterRelationships.forEach((item) => {
+        const id = `${item.from}-${item.to}`;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `relations-list-button${id === selectedRelationshipId ? " is-active" : ""}`;
+        button.dataset.relationship = id;
+        button.textContent = `${item.label} | ${(relationTypes[item.type] || relationTypes.secret).label}`;
+        list.appendChild(button);
+      });
+
+      refs.relationsDetail.append(title, meta, text, list);
+    };
+
+    const renderRelationsLegend = () => {
+      refs.relationsLegend.replaceChildren();
+      const title = document.createElement("p");
+      title.className = "relations-legend-title";
+      title.textContent = "Typy vazeb";
+      refs.relationsLegend.appendChild(title);
+
+      Object.values(relationTypes).forEach((type) => {
+        const item = document.createElement("div");
+        item.className = "relations-legend-item";
+        const line = document.createElement("span");
+        line.className = "relations-legend-line";
+        line.style.setProperty("--legend-color", type.color);
+        const label = document.createElement("span");
+        label.textContent = type.label;
+        item.append(line, label);
+        refs.relationsLegend.appendChild(item);
+      });
+    };
+
+    const renderRelations = () => {
+      refs.relationsLines.replaceChildren();
+      refs.relationsNodes.replaceChildren();
+
+      characterRelationships.forEach((relationship) => {
+        const fromNode = relationshipNodes[relationship.from];
+        const toNode = relationshipNodes[relationship.to];
+        const type = relationTypes[relationship.type] || relationTypes.secret;
+        if (!fromNode || !toNode) return;
+
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", fromNode.x);
+        line.setAttribute("y1", fromNode.y);
+        line.setAttribute("x2", toNode.x);
+        line.setAttribute("y2", toNode.y);
+        line.classList.add("relation-line", `is-${relationship.type}`);
+        line.style.setProperty("--relation-color", type.color);
+        line.style.setProperty("--relation-width", type.width);
+        refs.relationsLines.appendChild(line);
+      });
+
+      characters.forEach((character) => {
+        const node = relationshipNodes[character.id];
+        if (!node) return;
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "relations-node";
+        button.dataset.relationCharacter = character.id;
+        button.style.setProperty("--node-x", `${node.x}%`);
+        button.style.setProperty("--node-y", `${node.y}%`);
+        button.style.setProperty("--node-color", characterMapColors[character.id] || "#a97839");
+
+        const portrait = document.createElement("span");
+        portrait.className = "relations-node-portrait";
+        const image = document.createElement("img");
+        image.src = character.portrait;
+        image.alt = character.portraitAlt;
+        portrait.appendChild(image);
+
+        const name = document.createElement("span");
+        name.className = "relations-node-name";
+        name.textContent = character.listName;
+
+        button.append(portrait, name);
+        refs.relationsNodes.appendChild(button);
+      });
+
+      renderRelationsDetail();
+      renderRelationsLegend();
+    };
+
+    const openChronicleModal = () => {
+      refs.chronicleModal.classList.add("is-visible");
+      refs.chronicleModal.setAttribute("aria-hidden", "false");
+      loadChronicle();
+    };
+
+    const closeChronicleModal = () => {
+      refs.chronicleModal.classList.remove("is-visible");
+      refs.chronicleModal.setAttribute("aria-hidden", "true");
+    };
+
+    const openRelationsModal = () => {
+      renderRelations();
+      refs.relationsModal.classList.add("is-visible");
+      refs.relationsModal.setAttribute("aria-hidden", "false");
+    };
+
+    const closeRelationsModal = () => {
+      refs.relationsModal.classList.remove("is-visible");
+      refs.relationsModal.setAttribute("aria-hidden", "true");
     };
 
     const updateActiveDateStreak = (stats, dateKey) => {
@@ -6536,6 +7454,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       if (refs.worldMapModal.classList.contains("is-visible")) {
         renderWorldMap();
       }
+      if (refs.chronicleModal.classList.contains("is-visible")) {
+        renderChroniclePaper();
+      }
     };
 
     const startRosterTimerDisplay = () => {
@@ -7247,6 +8168,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
             createdAt: Date.now()
           });
           loadRumorReports();
+          if (refs.chronicleModal.classList.contains("is-visible")) {
+            loadChronicle();
+          }
         }
         updateCharacterTimer();
       }
@@ -7817,6 +8741,51 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
     });
 
+    refs.openChronicleButton.addEventListener("click", openChronicleModal);
+
+    refs.closeChronicleButton.addEventListener("click", closeChronicleModal);
+
+    refs.chronicleModal.addEventListener("click", (event) => {
+      if (event.target === refs.chronicleModal) {
+        closeChronicleModal();
+      }
+    });
+
+    refs.chronicleDays.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-chronicle-date]");
+      if (!button) return;
+      selectedChronicleDate = button.dataset.chronicleDate;
+      renderChronicle();
+    });
+
+    refs.openRelationsButton.addEventListener("click", openRelationsModal);
+
+    refs.closeRelationsButton.addEventListener("click", closeRelationsModal);
+
+    refs.relationsModal.addEventListener("click", (event) => {
+      if (event.target === refs.relationsModal) {
+        closeRelationsModal();
+      }
+    });
+
+    refs.relationsDetail.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-relationship]");
+      if (!button) return;
+      selectedRelationshipId = button.dataset.relationship;
+      renderRelationsDetail();
+    });
+
+    refs.relationsNodes.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-relation-character]");
+      if (!button) return;
+      const relationship = characterRelationships.find((item) => (
+        item.from === button.dataset.relationCharacter || item.to === button.dataset.relationCharacter
+      ));
+      if (!relationship) return;
+      selectedRelationshipId = `${relationship.from}-${relationship.to}`;
+      renderRelationsDetail();
+    });
+
     refs.openPlayerProfilesButton.addEventListener("click", openPlayerProfilesModal);
 
     refs.closePlayerProfilesButton.addEventListener("click", closePlayerProfilesModal);
@@ -7893,6 +8862,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
       if (event.key === "Escape" && refs.badgeModal.classList.contains("is-visible")) {
         closeBadgeModal();
+      }
+      if (event.key === "Escape" && refs.chronicleModal.classList.contains("is-visible")) {
+        closeChronicleModal();
+      }
+      if (event.key === "Escape" && refs.relationsModal.classList.contains("is-visible")) {
+        closeRelationsModal();
       }
       if (event.key === "Escape" && refs.playerProfilesModal.classList.contains("is-visible")) {
         closePlayerProfilesModal();
