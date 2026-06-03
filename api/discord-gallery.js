@@ -10,6 +10,14 @@ const isPhotoAttachment = (attachment) => {
   return /\.(jpe?g|png|webp)$/.test(filename);
 };
 
+const cleanCaption = (content = "") => (
+  String(content)
+    .replace(/<a?:[^:>]+:\d+>/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 220)
+);
+
 module.exports = async (req, res) => {
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
@@ -46,6 +54,7 @@ module.exports = async (req, res) => {
                 url: attachment.url,
                 proxyUrl: attachment.proxy_url || attachment.url,
                 filename: attachment.filename || "photo",
+                caption: cleanCaption(message.content),
                 width: attachment.width || null,
                 height: attachment.height || null,
                 uploadedAt: message.timestamp || null

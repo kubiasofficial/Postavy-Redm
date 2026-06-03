@@ -378,24 +378,20 @@
 
     .gallery-frame {
       position: relative;
-      min-height: 300px;
       margin: 0;
       overflow: hidden;
-      border: 1px solid rgba(177, 130, 70, 0.2);
-      border-radius: var(--radius-lg);
-      background:
-        linear-gradient(180deg, rgba(255, 232, 184, 0.035), transparent 34%),
-        rgba(8, 8, 7, 0.26);
-      box-shadow:
-        0 18px 44px rgba(0, 0, 0, 0.22),
-        inset 0 0 0 1px rgba(255, 244, 215, 0.025);
     }
 
     .gallery-frame img {
       width: 100%;
       height: 300px;
       display: block;
-      object-fit: cover;
+      object-fit: contain;
+      border: 1px solid rgba(177, 130, 70, 0.18);
+      border-radius: var(--radius-lg);
+      background:
+        linear-gradient(180deg, rgba(255, 232, 184, 0.035), transparent 34%),
+        rgba(8, 8, 7, 0.46);
       opacity: 0;
       transform: scale(1.02);
       filter: contrast(1.05) saturate(0.92) brightness(0.9);
@@ -403,6 +399,19 @@
         opacity 520ms var(--ease),
         transform 900ms ease,
         filter var(--ease);
+    }
+
+    .gallery-caption {
+      max-width: 100%;
+      margin: 10px 2px 0;
+      color: #d6c39f;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      text-shadow: 0 8px 20px rgba(0, 0, 0, 0.68);
+    }
+
+    .gallery-caption:empty {
+      display: none;
     }
 
     .gallery-frame.is-ready img {
@@ -3521,7 +3530,6 @@
         order: -1;
       }
 
-      .gallery-frame,
       .gallery-frame img {
         min-height: 220px;
         height: 220px;
@@ -3732,7 +3740,6 @@
         grid-column: 1 / -1;
       }
 
-      .gallery-frame,
       .gallery-frame img {
         min-height: 260px;
         height: 260px;
@@ -3788,6 +3795,7 @@
         <p class="gallery-title">Fotky</p>
         <figure class="gallery-frame" id="discordGalleryFrame">
           <img id="discordGalleryImage" src="" alt="">
+          <figcaption class="gallery-caption" id="discordGalleryCaption"></figcaption>
           <p class="gallery-empty" id="discordGalleryEmpty">Čeká se na fotky z Discordu.</p>
         </figure>
       </aside>
@@ -4520,6 +4528,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       rumorMeta: document.getElementById("rumorMeta"),
       discordGalleryFrame: document.getElementById("discordGalleryFrame"),
       discordGalleryImage: document.getElementById("discordGalleryImage"),
+      discordGalleryCaption: document.getElementById("discordGalleryCaption"),
       discordGalleryEmpty: document.getElementById("discordGalleryEmpty"),
       name: document.getElementById("characterName"),
       role: document.getElementById("characterRole"),
@@ -5228,6 +5237,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     const setGalleryEmpty = (message) => {
       if (!refs.discordGalleryFrame || !refs.discordGalleryEmpty) return;
       refs.discordGalleryFrame.classList.remove("is-ready");
+      if (refs.discordGalleryCaption) {
+        refs.discordGalleryCaption.textContent = "";
+      }
       refs.discordGalleryEmpty.textContent = message;
     };
 
@@ -5238,6 +5250,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       const photo = galleryPhotos[galleryIndex];
       refs.discordGalleryFrame.classList.remove("is-ready");
       refs.discordGalleryImage.alt = "Fotka z Discord galerie West Havenu";
+      if (refs.discordGalleryCaption) {
+        refs.discordGalleryCaption.textContent = photo.caption || "";
+      }
       refs.discordGalleryImage.onload = () => {
         refs.discordGalleryFrame.classList.add("is-ready");
       };
