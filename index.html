@@ -1483,6 +1483,12 @@
       text-transform: uppercase;
     }
 
+    .personal-button.delete {
+      border-color: rgba(159, 80, 80, 0.36);
+      background: rgba(80, 20, 24, 0.34);
+      color: #f0c8c8;
+    }
+
     .personal-status {
       min-height: 20px;
       margin: 0;
@@ -5258,6 +5264,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
     import {
       collection,
+      deleteDoc,
       doc,
       getFirestore,
       getDocs,
@@ -6644,7 +6651,20 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         const text = document.createElement("p");
         text.className = "personal-entry-text";
         text.textContent = entry.text || "";
+        const actions = document.createElement("div");
+        actions.className = "personal-actions";
+        if (canEditActiveCharacter()) {
+          const deleteButton = document.createElement("button");
+          deleteButton.type = "button";
+          deleteButton.className = "personal-button delete";
+          deleteButton.dataset.deleteDiaryEntry = entry.id;
+          deleteButton.textContent = "Smazat";
+          actions.appendChild(deleteButton);
+        }
         article.append(title, meta, text);
+        if (actions.childElementCount > 0) {
+          article.appendChild(actions);
+        }
         refs.diaryList.appendChild(article);
       });
     };
@@ -6739,6 +6759,23 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       } catch (error) {
         console.error("Diary entry save failed:", error);
         refs.diaryStatus.textContent = "Zápis se nepodařilo uložit.";
+      }
+    };
+
+    const deleteDiaryEntry = async (entryId) => {
+      if (!canEditActiveCharacter()) return;
+      const entry = diaryEntries.find((item) => item.id === entryId);
+      if (!entry || entry.characterId !== activeCharacterId) return;
+
+      refs.diaryStatus.textContent = "Mažu zápis...";
+      try {
+        await deleteDoc(doc(characterDiaryEntriesRef, entryId));
+        diaryEntries = diaryEntries.filter((item) => item.id !== entryId);
+        renderDiaryEntries();
+        refs.diaryStatus.textContent = "Zápis smazaný.";
+      } catch (error) {
+        console.error("Diary entry delete failed:", error);
+        refs.diaryStatus.textContent = "Zápis se nepodařilo smazat.";
       }
     };
 
@@ -10070,6 +10107,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     refs.diaryForm.addEventListener("submit", (event) => {
       event.preventDefault();
       saveDiaryEntry();
+    });
+
+    refs.diaryList.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-delete-diary-entry]");
+      if (!button) return;
+      deleteDiaryEntry(button.dataset.deleteDiaryEntry);
     });
 
     refs.locationForm.addEventListener("submit", (event) => {
