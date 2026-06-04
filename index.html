@@ -1562,6 +1562,28 @@
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
     }
 
+    .diary-page.is-featured {
+      min-height: 168px;
+      padding: 18px 16px 18px 22px;
+      background:
+        linear-gradient(90deg, rgba(103, 54, 35, 0.3) 0 5px, transparent 5px),
+        repeating-linear-gradient(180deg, transparent 0 25px, rgba(91, 62, 35, 0.28) 25px 26px),
+        linear-gradient(180deg, rgba(236, 211, 159, 0.16), rgba(132, 91, 46, 0.08));
+    }
+
+    .diary-page.is-featured .diary-page-title {
+      font-size: 1.18rem;
+    }
+
+    .diary-section-label,
+    .goal-section-label {
+      margin: 2px 0 -2px;
+      color: var(--gold);
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
     .diary-page-title,
     .goal-entry-title {
       margin: 0;
@@ -1594,6 +1616,13 @@
       border: 1px solid rgba(169, 120, 57, 0.16);
       border-radius: 7px;
       background: rgba(9, 8, 7, 0.28);
+    }
+
+    .goal-entry.is-active {
+      border-color: rgba(212, 164, 89, 0.32);
+      background:
+        linear-gradient(90deg, rgba(143, 31, 45, 0.14), transparent 36%),
+        rgba(9, 8, 7, 0.31);
     }
 
     .goal-entry.is-complete {
@@ -3867,6 +3896,26 @@
       outline: none;
     }
 
+    .sleep-report-diary {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 11px;
+      border: 1px solid rgba(169, 120, 57, 0.18);
+      border-radius: var(--radius-md);
+      background: rgba(8, 8, 7, 0.24);
+      color: #d8c49d;
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+
+    .sleep-report-diary input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--gold);
+    }
+
     .sleep-report-relationship {
       margin-top: 14px;
       display: grid;
@@ -4925,6 +4974,10 @@
         id="sleepReportInput"
         placeholder="Napiš krátký report..."
       ></textarea>
+      <label class="sleep-report-diary">
+        <input id="sleepReportSaveDiary" type="checkbox" checked>
+        Uložit report i jako soukromý zápis do deníku
+      </label>
       <div class="sleep-report-relationship">
         <p class="sleep-report-relationship-title">Vztahové události</p>
         <div class="sleep-report-tags" id="sleepReportRelationshipTags"></div>
@@ -5872,6 +5925,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       sleepReportQuestion: document.getElementById("sleepReportQuestion"),
       sleepReportTimer: document.getElementById("sleepReportTimer"),
       sleepReportInput: document.getElementById("sleepReportInput"),
+      sleepReportSaveDiary: document.getElementById("sleepReportSaveDiary"),
       sleepReportRelationshipTags: document.getElementById("sleepReportRelationshipTags"),
       sleepMapViewport: document.getElementById("sleepMapViewport"),
       sleepMapSpace: document.getElementById("sleepMapSpace"),
@@ -6705,12 +6759,21 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         return;
       }
 
-      visibleEntries.slice(0, 8).forEach((entry) => {
+      visibleEntries.slice(0, 8).forEach((entry, index) => {
+        if (index === 1) {
+          const olderLabel = document.createElement("p");
+          olderLabel.className = "diary-section-label";
+          olderLabel.textContent = "Starší stránky";
+          refs.diaryList.appendChild(olderLabel);
+        }
+
         const article = document.createElement("article");
-        article.className = "diary-page";
+        article.className = `diary-page${index === 0 ? " is-featured" : ""}`;
         const title = document.createElement("h4");
         title.className = "diary-page-title";
-        title.textContent = entry.title || "Zápis bez názvu";
+        title.textContent = index === 0
+          ? `Poslední zápis: ${entry.title || "Zápis bez názvu"}`
+          : (entry.title || "Zápis bez názvu");
         const meta = document.createElement("p");
         meta.className = "diary-page-meta";
         meta.textContent = `${formatDateTime(entry.createdAt)} | ${entry.visibility === "public" ? "Veřejné" : "Soukromé"}`;
@@ -6810,9 +6873,23 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         return;
       }
 
-      goalEntries.slice(0, 6).forEach((entry) => {
+      const activeGoals = goalEntries.filter((entry) => entry.status !== "complete");
+      const completeGoals = goalEntries.filter((entry) => entry.status === "complete");
+      const sections = [
+        ["Aktivní", activeGoals],
+        ["Splněné", completeGoals]
+      ];
+
+      sections.forEach(([label, entries]) => {
+        if (entries.length === 0) return;
+        const sectionLabel = document.createElement("p");
+        sectionLabel.className = "goal-section-label";
+        sectionLabel.textContent = label;
+        refs.goalList.appendChild(sectionLabel);
+
+        entries.slice(0, 4).forEach((entry) => {
         const article = document.createElement("article");
-        article.className = `goal-entry${entry.status === "complete" ? " is-complete" : ""}`;
+        article.className = `goal-entry${entry.status === "complete" ? " is-complete" : " is-active"}`;
         const title = document.createElement("h4");
         title.className = "goal-entry-title";
         title.textContent = entry.title || "Cíl bez názvu";
@@ -6840,6 +6917,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         article.append(title, meta, text);
         if (actions.childElementCount > 0) article.appendChild(actions);
         refs.goalList.appendChild(article);
+        });
       });
     };
 
@@ -9346,6 +9424,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.sleepReportTimer.textContent = `Dnes zatím ${profile.breathingVerb}: ${formatDuration(getWakeDuration(activeCharacterId))}`;
       refs.sleepReportInput.placeholder = profile.reportPlaceholder;
       refs.sleepReportInput.value = "";
+      refs.sleepReportSaveDiary.checked = true;
       renderSleepReportRelationshipTags();
       sleepLocationDraft = null;
       setMapZoom("sleep", 1);
@@ -9776,16 +9855,39 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           await sendLevelAlert(activeCharacterId, newLevel, newTotal);
         }
         if (reportText.trim() || sleepLocation) {
-          await setDoc(doc(nightReportsRef, `${Date.now()}-${activeCharacterId}`), {
+          const reportCreatedAt = Date.now();
+          const trimmedReport = reportText.trim();
+          await setDoc(doc(nightReportsRef, `${reportCreatedAt}-${activeCharacterId}`), {
             characterId: activeCharacterId,
             characterName: character.listName,
-            reportText: reportText.trim(),
+            reportText: trimmedReport,
             relationshipTags: Array.isArray(reportData?.relationshipTags) ? reportData.relationshipTags : [],
             sleepLocation,
             durationMs: sleepDurationMs || 0,
             reportDate: currentDateKey,
-            createdAt: Date.now()
+            createdAt: reportCreatedAt
           });
+          if (reportData?.saveToDiary && trimmedReport) {
+            try {
+              const diaryCreatedAt = reportCreatedAt + 1;
+              const diaryEntry = {
+                characterId: activeCharacterId,
+                title: `Noční zápis ${formatPragueDate()}`,
+                text: trimmedReport,
+                visibility: "private",
+                source: "nightReport",
+                createdBy: currentPlayerCharacterId,
+                createdAt: diaryCreatedAt
+              };
+              await setDoc(doc(characterDiaryEntriesRef, `${diaryCreatedAt}-${activeCharacterId}`), diaryEntry);
+              if (activeCharacterId === character.id) {
+                diaryEntries = [{ id: `${diaryCreatedAt}-${activeCharacterId}`, ...diaryEntry }, ...diaryEntries];
+                renderDiaryEntries();
+              }
+            } catch (error) {
+              console.warn("Night report diary entry could not be saved:", error);
+            }
+          }
           loadRumorReports();
           if (refs.chronicleModal.classList.contains("is-visible")) {
             loadChronicle();
@@ -10217,7 +10319,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       closeSleepReportModal({
         text: refs.sleepReportInput.value.trim(),
         relationshipTags: getSelectedRelationshipTags(),
-        sleepLocation: sleepLocationDraft
+        sleepLocation: sleepLocationDraft,
+        saveToDiary: refs.sleepReportSaveDiary.checked
       });
     });
 
