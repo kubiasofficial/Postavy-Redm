@@ -47,22 +47,27 @@ const payload = {
   embeds: [
     {
       title: "West Haven update",
-      description: "Profil postav je uklizeny po posledni uprave. Denik a cile jsou ted primo v pravem profilu nad postou a stare taby Denik, Lokace a Stopy zmizely.",
+      description: "Dnes jsme upravili profil postav, mobilni rozlozeni, mapu a vratili osobni RP zapisky v lepsi podobe.",
       color: 12028229,
       fields: [
         {
-          name: "Denik",
-          value: "Denik uz nevypada jako obycejna klikaci polozka. Zobrazuje se jako osobni zapisky ve stylu stranky a hrac sve postavy muze zapisky mazat.",
+          name: "Profil postavy",
+          value: "Detail postav je lehci, ma jemnejsi zalozky, prehlednejsi metadata a mene tezkych panelu.",
           inline: false
         },
         {
-          name: "Cile",
-          value: "Cile jsou presunute nad tlacitko Posta, aby byly po ruce primo v profilu postavy.",
+          name: "Soukrome zapisky",
+          value: "Do profilu se vratil osobni denik. Vidi ho jen dana postava a admin, vcetne moznosti zapisy mazat.",
           inline: false
         },
         {
-          name: "Uklid",
-          value: "Lokace a Stopy jsou odstranene z hlavniho profilu vcetne starych zbytku v kodu.",
+          name: "WestHaven vztahy",
+          value: "Kazda postava si muze soukrome zapsat vlastni vztahy: jmeno, typ vazby a volitelny popis. Typy vazeb jsou rozsirene.",
+          inline: false
+        },
+        {
+          name: "Mapa a mobil",
+          value: "Mapa pri zoomu pouziva ostrejsi vykreslovani a rozlozeni pro telefony je kompaktnejsi.",
           inline: false
         }
       ],

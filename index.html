@@ -1507,6 +1507,115 @@
       line-height: 1.6;
     }
 
+    .private-panel {
+      display: grid;
+      gap: 18px;
+      max-width: 880px;
+    }
+
+    .private-panel-head {
+      display: grid;
+      gap: 6px;
+    }
+
+    .private-panel-title {
+      margin: 0;
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.45rem, 2.4vw, 2.05rem);
+      line-height: 1.1;
+    }
+
+    .private-panel-note {
+      margin: 0;
+      color: #bda98a;
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+
+    .private-form {
+      display: grid;
+      gap: 11px;
+      padding: 15px;
+      border: 1px solid rgba(169, 120, 57, 0.14);
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(255, 232, 184, 0.04), transparent),
+        rgba(12, 10, 8, 0.22);
+    }
+
+    .private-form.is-hidden {
+      display: none;
+    }
+
+    .private-form-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(150px, 0.45fr);
+      gap: 10px;
+    }
+
+    .private-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .diary-entry,
+    .private-relation-entry {
+      position: relative;
+      padding: 16px 17px;
+      border: 1px solid rgba(169, 120, 57, 0.14);
+      border-radius: 8px;
+      background:
+        linear-gradient(90deg, rgba(143, 31, 45, 0.1), transparent 34%),
+        rgba(15, 12, 9, 0.18);
+    }
+
+    .diary-entry {
+      background:
+        linear-gradient(90deg, rgba(103, 54, 35, 0.22) 0 5px, transparent 5px),
+        repeating-linear-gradient(180deg, transparent 0 25px, rgba(91, 62, 35, 0.2) 25px 26px),
+        rgba(236, 211, 159, 0.06);
+    }
+
+    .diary-entry-title,
+    .private-relation-title {
+      margin: 0;
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.1rem;
+      line-height: 1.2;
+    }
+
+    .diary-entry-meta,
+    .private-relation-meta {
+      margin: 6px 0 0;
+      color: var(--gold);
+      font-size: 0.66rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .diary-entry-text,
+    .private-relation-text {
+      margin: 10px 0 0;
+      color: #decbaa;
+      line-height: 1.65;
+      white-space: pre-line;
+    }
+
+    .private-relation-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .private-relation-line {
+      width: 36px;
+      height: 2px;
+      background: var(--relation-color, var(--gold));
+      box-shadow: 0 0 14px color-mix(in srgb, var(--relation-color, var(--gold)) 42%, transparent);
+    }
+
     .scroll-box::-webkit-scrollbar {
       width: 8px;
     }
@@ -4443,6 +4552,10 @@
         grid-template-columns: 1fr;
       }
 
+      .private-form-row {
+        grid-template-columns: 1fr;
+      }
+
       .content {
         order: 2;
       }
@@ -4839,6 +4952,8 @@
         <button class="tab-button" type="button" data-tab="lore" aria-selected="false">Lore</button>
         <button class="tab-button" type="button" data-tab="appearance" aria-selected="false">Vzhled</button>
         <button class="tab-button" type="button" data-tab="personality" aria-selected="false">Povaha</button>
+        <button class="tab-button" type="button" data-tab="diary" aria-selected="false">Deník</button>
+        <button class="tab-button" type="button" data-tab="private-relations" aria-selected="false">WestHaven vztahy</button>
       </nav>
 
       <section class="panel-card">
@@ -4873,6 +4988,45 @@
         <article class="tab-panel" data-panel="personality">
           <h3 class="tab-heading">Povaha</h3>
           <p class="tab-text" id="personalityText"></p>
+        </article>
+
+        <article class="tab-panel" data-panel="diary">
+          <section class="private-panel">
+            <div class="private-panel-head">
+              <h3 class="private-panel-title">Osobní deník</h3>
+              <p class="private-panel-note">Soukromé zápisy postavy. Vidí je jen hráč této postavy a admin.</p>
+            </div>
+            <form class="private-form" id="diaryForm">
+              <input class="personal-input" id="diaryTitleInput" type="text" placeholder="Nadpis zápisu">
+              <textarea class="personal-textarea" id="diaryTextInput" placeholder="Co si postava nechává pro sebe?"></textarea>
+              <div class="personal-actions">
+                <button class="personal-button" type="submit">Uložit zápis</button>
+                <p class="personal-status" id="diaryStatus" aria-live="polite"></p>
+              </div>
+            </form>
+            <div class="private-list" id="diaryList"></div>
+          </section>
+        </article>
+
+        <article class="tab-panel" data-panel="private-relations">
+          <section class="private-panel">
+            <div class="private-panel-head">
+              <h3 class="private-panel-title">WestHaven vztahy</h3>
+              <p class="private-panel-note">Osobní pohled postavy na lidi kolem ní. Zápisy jsou soukromé pro postavu a admina.</p>
+            </div>
+            <form class="private-form" id="privateRelationshipForm">
+              <div class="private-form-row">
+                <input class="personal-input" id="privateRelationshipNameInput" type="text" placeholder="Jméno postavy nebo hráče">
+                <select class="personal-input" id="privateRelationshipTypeInput" aria-label="Typ vztahu"></select>
+              </div>
+              <textarea class="personal-textarea" id="privateRelationshipNoteInput" placeholder="Volitelný krátký popis vztahu"></textarea>
+              <div class="personal-actions">
+                <button class="personal-button" type="submit">Uložit vztah</button>
+                <p class="personal-status" id="privateRelationshipStatus" aria-live="polite"></p>
+              </div>
+            </form>
+            <div class="private-list" id="privateRelationshipList"></div>
+          </section>
         </article>
 
       </section>
@@ -5392,6 +5546,8 @@
     const relationshipSuggestionReviewsRef = collection(db, "relationshipSuggestionReviews");
     const relationshipNotificationsRef = collection(db, "relationshipNotifications");
     const relationshipAcknowledgementsRef = collection(db, "relationshipAcknowledgements");
+    const characterDiaryEntriesRef = collection(db, "characterDiaryEntries");
+    const characterPrivateRelationshipsRef = collection(db, "characterPrivateRelationships");
 
     const characters = [
       {
@@ -5665,9 +5821,15 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     const relationTypes = {
       family: { label: "Rodina", color: "#d4a459", width: 2.8 },
       ally: { label: "Spojenec", color: "#8fbc8f", width: 2.2 },
+      close: { label: "Blízký člověk", color: "#e2bd75", width: 2.4 },
+      trust: { label: "Důvěra", color: "#78b7a4", width: 2.1 },
+      respect: { label: "Respekt", color: "#9db3c7", width: 2 },
       debt: { label: "Dluh", color: "#c69a4a", width: 2 },
       distrust: { label: "Nedůvěra", color: "#9a6f73", width: 1.8 },
       rivalry: { label: "Rivalita", color: "#b84a4a", width: 2.4 },
+      fear: { label: "Strach", color: "#7f8a93", width: 1.7 },
+      romance: { label: "Náklonnost", color: "#d2789b", width: 2.2 },
+      mentor: { label: "Mentor", color: "#b8a36a", width: 2 },
       secret: { label: "Tajemství", color: "#9f8dca", width: 1.8 }
     };
 
@@ -5785,6 +5947,17 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       lore: document.getElementById("loreText"),
       appearance: document.getElementById("appearanceText"),
       personality: document.getElementById("personalityText"),
+      diaryForm: document.getElementById("diaryForm"),
+      diaryTitleInput: document.getElementById("diaryTitleInput"),
+      diaryTextInput: document.getElementById("diaryTextInput"),
+      diaryStatus: document.getElementById("diaryStatus"),
+      diaryList: document.getElementById("diaryList"),
+      privateRelationshipForm: document.getElementById("privateRelationshipForm"),
+      privateRelationshipNameInput: document.getElementById("privateRelationshipNameInput"),
+      privateRelationshipTypeInput: document.getElementById("privateRelationshipTypeInput"),
+      privateRelationshipNoteInput: document.getElementById("privateRelationshipNoteInput"),
+      privateRelationshipStatus: document.getElementById("privateRelationshipStatus"),
+      privateRelationshipList: document.getElementById("privateRelationshipList"),
       portrait: document.getElementById("portraitImage"),
       quote: document.getElementById("characterQuote"),
       openCharacterMailButton: document.getElementById("openCharacterMailButton"),
@@ -6296,6 +6469,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     let rumorIndex = 0;
     let chronicleEntries = [];
     let selectedChronicleDate = "";
+    let diaryEntries = [];
+    let privateRelationshipEntries = [];
     let selectedRelationshipId = characterRelationships[0]
       ? `${characterRelationships[0].from}-${characterRelationships[0].to}`
       : "";
@@ -6686,6 +6861,265 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     const getCurrentMapLocation = (location) => (
       location?.mapVersion === currentMapVersion ? location : null
     );
+
+    const canEditActiveCharacter = () => Boolean(
+      activeCharacterId &&
+      currentPlayerCharacterId &&
+      (activeCharacterId === currentPlayerCharacterId || isAdminPlayer())
+    );
+
+    const createPersonalEmpty = (message) => {
+      const empty = document.createElement("p");
+      empty.className = "personal-empty";
+      empty.textContent = message;
+      return empty;
+    };
+
+    const updatePrivatePanelsVisibility = () => {
+      const canEdit = canEditActiveCharacter();
+      refs.diaryForm.classList.toggle("is-hidden", !canEdit);
+      refs.privateRelationshipForm.classList.toggle("is-hidden", !canEdit);
+      if (!canEdit) {
+        refs.diaryStatus.textContent = "";
+        refs.privateRelationshipStatus.textContent = "";
+      }
+    };
+
+    const renderDiaryEntries = () => {
+      refs.diaryList.replaceChildren();
+      updatePrivatePanelsVisibility();
+
+      if (!canEditActiveCharacter()) {
+        refs.diaryList.appendChild(createPersonalEmpty("Tenhle deník je soukromý. Vidí ho jen jeho postava a admin."));
+        return;
+      }
+
+      if (diaryEntries.length === 0) {
+        refs.diaryList.appendChild(createPersonalEmpty("Deník zatím nemá žádný zápis."));
+        return;
+      }
+
+      diaryEntries.slice(0, 20).forEach((entry) => {
+        const article = document.createElement("article");
+        article.className = "diary-entry";
+        const title = document.createElement("h4");
+        title.className = "diary-entry-title";
+        title.textContent = entry.title || "Zápis bez názvu";
+        const meta = document.createElement("p");
+        meta.className = "diary-entry-meta";
+        meta.textContent = formatDateTime(entry.createdAt);
+        const text = document.createElement("p");
+        text.className = "diary-entry-text";
+        text.textContent = entry.text || "";
+        const actions = document.createElement("div");
+        actions.className = "personal-actions";
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.className = "personal-button delete";
+        deleteButton.dataset.deleteDiaryEntry = entry.id;
+        deleteButton.textContent = "Smazat";
+        actions.appendChild(deleteButton);
+        article.append(title, meta, text, actions);
+        refs.diaryList.appendChild(article);
+      });
+    };
+
+    const loadDiaryEntries = async (characterId = activeCharacterId) => {
+      if (!characterId) return;
+      diaryEntries = [];
+      renderDiaryEntries();
+      if (!canEditActiveCharacter()) return;
+
+      refs.diaryList.replaceChildren(createPersonalEmpty("Načítám deník..."));
+      try {
+        const snapshot = await getDocs(query(characterDiaryEntriesRef, orderBy("createdAt", "desc"), limit(120)));
+        if (activeCharacterId !== characterId) return;
+        diaryEntries = snapshot.docs
+          .map((entryDoc) => ({ id: entryDoc.id, ...entryDoc.data() }))
+          .filter((entry) => entry.characterId === characterId);
+      } catch (error) {
+        console.warn("Diary entries could not be loaded:", error);
+        diaryEntries = [];
+        refs.diaryStatus.textContent = "Deník se nepodařilo načíst.";
+      }
+      renderDiaryEntries();
+    };
+
+    const saveDiaryEntry = async () => {
+      if (!canEditActiveCharacter()) return;
+      const title = refs.diaryTitleInput.value.trim() || "Zápis bez názvu";
+      const text = refs.diaryTextInput.value.trim();
+      if (!text) {
+        refs.diaryStatus.textContent = "Nejdřív napiš text zápisu.";
+        return;
+      }
+
+      const createdAt = Date.now();
+      const entry = {
+        characterId: activeCharacterId,
+        title,
+        text,
+        visibility: "private",
+        createdBy: currentPlayerCharacterId,
+        createdAt
+      };
+      refs.diaryStatus.textContent = "Ukládám zápis...";
+      try {
+        await setDoc(doc(characterDiaryEntriesRef, `${createdAt}-${activeCharacterId}`), entry);
+        refs.diaryTitleInput.value = "";
+        refs.diaryTextInput.value = "";
+        diaryEntries = [{ id: `${createdAt}-${activeCharacterId}`, ...entry }, ...diaryEntries];
+        renderDiaryEntries();
+        refs.diaryStatus.textContent = "Zápis uložený.";
+      } catch (error) {
+        console.error("Diary entry save failed:", error);
+        refs.diaryStatus.textContent = "Zápis se nepodařilo uložit.";
+      }
+    };
+
+    const deleteDiaryEntry = async (entryId) => {
+      if (!canEditActiveCharacter()) return;
+      const entry = diaryEntries.find((item) => item.id === entryId);
+      if (!entry || entry.characterId !== activeCharacterId) return;
+
+      refs.diaryStatus.textContent = "Mažu zápis...";
+      try {
+        await deleteDoc(doc(characterDiaryEntriesRef, entryId));
+        diaryEntries = diaryEntries.filter((item) => item.id !== entryId);
+        renderDiaryEntries();
+        refs.diaryStatus.textContent = "Zápis smazaný.";
+      } catch (error) {
+        console.error("Diary entry delete failed:", error);
+        refs.diaryStatus.textContent = "Zápis se nepodařilo smazat.";
+      }
+    };
+
+    const populatePrivateRelationshipTypes = () => {
+      refs.privateRelationshipTypeInput.replaceChildren();
+      Object.entries(relationTypes).forEach(([typeId, type]) => {
+        const option = document.createElement("option");
+        option.value = typeId;
+        option.textContent = type.label;
+        refs.privateRelationshipTypeInput.appendChild(option);
+      });
+    };
+
+    const renderPrivateRelationships = () => {
+      refs.privateRelationshipList.replaceChildren();
+      updatePrivatePanelsVisibility();
+
+      if (!canEditActiveCharacter()) {
+        refs.privateRelationshipList.appendChild(createPersonalEmpty("Osobní vztahy jsou soukromé. Vidí je jen jejich postava a admin."));
+        return;
+      }
+
+      if (privateRelationshipEntries.length === 0) {
+        refs.privateRelationshipList.appendChild(createPersonalEmpty("Postava zatím nemá žádný osobní vztahový zápis."));
+        return;
+      }
+
+      privateRelationshipEntries.slice(0, 40).forEach((entry) => {
+        const type = relationTypes[entry.type] || relationTypes.secret;
+        const article = document.createElement("article");
+        article.className = "private-relation-entry";
+        article.style.setProperty("--relation-color", type.color);
+        const title = document.createElement("h4");
+        title.className = "private-relation-title";
+        title.textContent = entry.targetName || "Neznámé jméno";
+        const meta = document.createElement("p");
+        meta.className = "private-relation-meta";
+        const line = document.createElement("span");
+        line.className = "private-relation-line";
+        const label = document.createElement("span");
+        label.textContent = `${type.label} | ${formatDateTime(entry.createdAt)}`;
+        meta.append(line, label);
+        const text = document.createElement("p");
+        text.className = "private-relation-text";
+        text.textContent = entry.note || "Bez popisku.";
+        const actions = document.createElement("div");
+        actions.className = "personal-actions";
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.className = "personal-button delete";
+        deleteButton.dataset.deletePrivateRelationship = entry.id;
+        deleteButton.textContent = "Smazat";
+        actions.appendChild(deleteButton);
+        article.append(title, meta, text, actions);
+        refs.privateRelationshipList.appendChild(article);
+      });
+    };
+
+    const loadPrivateRelationships = async (characterId = activeCharacterId) => {
+      if (!characterId) return;
+      privateRelationshipEntries = [];
+      renderPrivateRelationships();
+      if (!canEditActiveCharacter()) return;
+
+      refs.privateRelationshipList.replaceChildren(createPersonalEmpty("Načítám osobní vztahy..."));
+      try {
+        const snapshot = await getDocs(query(characterPrivateRelationshipsRef, orderBy("createdAt", "desc"), limit(160)));
+        if (activeCharacterId !== characterId) return;
+        privateRelationshipEntries = snapshot.docs
+          .map((entryDoc) => ({ id: entryDoc.id, ...entryDoc.data() }))
+          .filter((entry) => entry.characterId === characterId);
+      } catch (error) {
+        console.warn("Private relationships could not be loaded:", error);
+        privateRelationshipEntries = [];
+        refs.privateRelationshipStatus.textContent = "Vztahy se nepodařilo načíst.";
+      }
+      renderPrivateRelationships();
+    };
+
+    const savePrivateRelationship = async () => {
+      if (!canEditActiveCharacter()) return;
+      const targetName = refs.privateRelationshipNameInput.value.trim();
+      const type = refs.privateRelationshipTypeInput.value || "ally";
+      const note = refs.privateRelationshipNoteInput.value.trim();
+      if (!targetName) {
+        refs.privateRelationshipStatus.textContent = "Nejdřív napiš jméno.";
+        return;
+      }
+
+      const createdAt = Date.now();
+      const entry = {
+        characterId: activeCharacterId,
+        targetName,
+        type,
+        note,
+        createdBy: currentPlayerCharacterId,
+        createdAt
+      };
+      refs.privateRelationshipStatus.textContent = "Ukládám vztah...";
+      try {
+        await setDoc(doc(characterPrivateRelationshipsRef, `${createdAt}-${activeCharacterId}`), entry);
+        refs.privateRelationshipNameInput.value = "";
+        refs.privateRelationshipNoteInput.value = "";
+        refs.privateRelationshipTypeInput.value = type;
+        privateRelationshipEntries = [{ id: `${createdAt}-${activeCharacterId}`, ...entry }, ...privateRelationshipEntries];
+        renderPrivateRelationships();
+        refs.privateRelationshipStatus.textContent = "Vztah uložený.";
+      } catch (error) {
+        console.error("Private relationship save failed:", error);
+        refs.privateRelationshipStatus.textContent = "Vztah se nepodařilo uložit.";
+      }
+    };
+
+    const deletePrivateRelationship = async (entryId) => {
+      if (!canEditActiveCharacter()) return;
+      const entry = privateRelationshipEntries.find((item) => item.id === entryId);
+      if (!entry || entry.characterId !== activeCharacterId) return;
+
+      refs.privateRelationshipStatus.textContent = "Mažu vztah...";
+      try {
+        await deleteDoc(doc(characterPrivateRelationshipsRef, entryId));
+        privateRelationshipEntries = privateRelationshipEntries.filter((item) => item.id !== entryId);
+        renderPrivateRelationships();
+        refs.privateRelationshipStatus.textContent = "Vztah smazaný.";
+      } catch (error) {
+        console.error("Private relationship delete failed:", error);
+        refs.privateRelationshipStatus.textContent = "Vztah se nepodařilo smazat.";
+      }
+    };
 
     const getTotalPlayedMs = (characterId) => {
       const state = getCharacterState(characterId);
@@ -9698,7 +10132,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.name.textContent = character.name;
       refs.role.textContent = character.role;
       refs.meta.innerHTML = [
-        ["Věk", `${character.age} let`],
+        ["Věk", character.age],
         ["Původ", character.origin],
         ["Rok", character.year],
         ["Status", character.status]
@@ -9716,6 +10150,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.portrait.alt = character.portraitAlt;
       refs.characterActions.classList.add("is-visible");
       refs.characterActionStatus.textContent = "";
+      diaryEntries = [];
+      privateRelationshipEntries = [];
+      renderDiaryEntries();
+      renderPrivateRelationships();
+      loadDiaryEntries(activeCharacterId);
+      loadPrivateRelationships(activeCharacterId);
       updateMailBadges();
       startTimerDisplay();
     };
@@ -9745,6 +10185,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       updateRosterStates();
       updateAdminTools();
       updateMailBadges();
+      if (activeCharacterId) {
+        renderDiaryEntries();
+        renderPrivateRelationships();
+        loadDiaryEntries(activeCharacterId);
+        loadPrivateRelationships(activeCharacterId);
+      }
       if (refs.badgeModal.classList.contains("is-visible")) {
         renderBadgeModal();
       }
@@ -10085,6 +10531,28 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     refs.relationshipManualFrom.addEventListener("change", loadRelationshipManualPair);
 
     refs.relationshipManualTo.addEventListener("change", loadRelationshipManualPair);
+
+    refs.diaryForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      saveDiaryEntry();
+    });
+
+    refs.diaryList.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-delete-diary-entry]");
+      if (!button) return;
+      deleteDiaryEntry(button.dataset.deleteDiaryEntry);
+    });
+
+    refs.privateRelationshipForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      savePrivateRelationship();
+    });
+
+    refs.privateRelationshipList.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-delete-private-relationship]");
+      if (!button) return;
+      deletePrivateRelationship(button.dataset.deletePrivateRelationship);
+    });
 
     refs.openCharacterMailButton.addEventListener("click", openCharacterMailModal);
 
@@ -10514,6 +10982,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     renderDust();
     applyAlertVolume();
     updateAdminTools();
+    populatePrivateRelationshipTypes();
     startRosterTimerDisplay();
     startActivityFlip();
     startRumorSlider();
