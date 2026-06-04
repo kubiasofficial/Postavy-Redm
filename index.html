@@ -6691,6 +6691,15 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         targetDays: 7
       },
       {
+        id: "home-ground",
+        name: "Známá půda",
+        image: "badges/badge-special-steady-citizen.png",
+        description: "Pro postavy, které se opakovaně vrací spát do stejného kraje. Některá místa si člověka prostě zapamatují.",
+        requirement: "Uspi postavu 4x ve stejné lokalitě na mapě.",
+        type: "automatic",
+        targetCount: 4
+      },
+      {
         id: "event",
         name: "Eventový odznak",
         image: "badges/badge-special-event.png",
@@ -6902,6 +6911,16 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         ? `Waypoint X ${Math.round(location.x * 10) / 10}%, Y ${Math.round(location.y * 10) / 10}%`
         : "Waypoint není vybraný."
     );
+
+    const getSleepLocationKey = (location) => {
+      const currentLocation = getCurrentMapLocation(location);
+      if (!currentLocation) return "";
+
+      const gridSize = 5;
+      const x = Math.round(currentLocation.x / gridSize) * gridSize;
+      const y = Math.round(currentLocation.y / gridSize) * gridSize;
+      return `${currentLocation.mapVersion}:${x}:${y}`;
+    };
 
     const getCurrentMapLocation = (location) => (
       location?.mapVersion === currentMapVersion ? location : null
@@ -7182,11 +7201,17 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
     const getAchievementStats = (characterId) => {
       const stats = getCharacterState(characterId).achievementStats || {};
+      const sleepLocationVisits = stats.sleepLocationVisits && typeof stats.sleepLocationVisits === "object"
+        ? stats.sleepLocationVisits
+        : {};
       return {
         nightPlayedMs: Number(stats.nightPlayedMs || 0),
         reportCount: Number(stats.reportCount || 0),
         activeDateStreak: Number(stats.activeDateStreak || 0),
-        lastActiveDate: stats.lastActiveDate || ""
+        lastActiveDate: stats.lastActiveDate || "",
+        sleepLocationVisits: Object.fromEntries(Object.entries(sleepLocationVisits)
+          .map(([key, value]) => [key, Number(value || 0)])
+          .filter(([key, value]) => key && value > 0))
       };
     };
 
@@ -8374,6 +8399,11 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       return nightPlayedMs;
     };
 
+    const getTopSleepLocationVisitCount = (stats) => {
+      const visits = stats.sleepLocationVisits || {};
+      return Object.values(visits).reduce((max, value) => Math.max(max, Number(value || 0)), 0);
+    };
+
     const getAutomaticSpecialBadgeProgress = (badge, stats) => {
       if (badge.id === "night-soul") {
         const value = stats.nightPlayedMs;
@@ -8396,6 +8426,14 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         return {
           earned: value >= badge.targetDays,
           label: `Aktivní série: ${value} / ${badge.targetDays} dní`
+        };
+      }
+
+      if (badge.id === "home-ground") {
+        const value = getTopSleepLocationVisitCount(stats);
+        return {
+          earned: value >= badge.targetCount,
+          label: `Nejčastější lokalita: ${value} / ${badge.targetCount}`
         };
       }
 
@@ -10115,10 +10153,16 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         const hadPlayedSegment = Boolean(sleepDurationMs && sleepDurationMs > 0);
         const hadReport = hadPlayedSegment && Boolean(reportText.trim());
         const currentAchievementStats = getAchievementStats(activeCharacterId);
+        const sleepLocationKey = getSleepLocationKey(sleepLocation);
+        const sleepLocationVisits = { ...currentAchievementStats.sleepLocationVisits };
+        if (sleepLocationKey) {
+          sleepLocationVisits[sleepLocationKey] = Number(sleepLocationVisits[sleepLocationKey] || 0) + 1;
+        }
         const achievementStats = updateActiveDateStreak({
           ...currentAchievementStats,
           nightPlayedMs: currentAchievementStats.nightPlayedMs + nightPlayedMs,
-          reportCount: currentAchievementStats.reportCount + (hadReport ? 1 : 0)
+          reportCount: currentAchievementStats.reportCount + (hadReport ? 1 : 0),
+          sleepLocationVisits
         }, currentDateKey);
         await setRemoteCharacterState(activeCharacterId, {
           status: "asleep",
