@@ -6357,10 +6357,6 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     const mapZoomWheelStep = 0.25;
     const mapAspectRatio = 16785 / 21617;
     const currentMapVersion = "newmap-2026-06";
-    const characterRumorPronouns = {
-      violet: "ní"
-    };
-
     const hour = 60 * 60 * 1000;
     const maxLevel = 100;
     const getLevelThresholdHours = (level) => {
@@ -7083,24 +7079,19 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
     const getRumorFragmentsForCharacter = (character) => {
       const report = rumorEntriesByCharacter[character.id];
-      if (!report?.hasAnyReport) return [];
-
-      if (report.previousDayFragments.length > 0) {
-        return report.previousDayFragments;
-      }
-
-      const pronoun = characterRumorPronouns[character.id] || "něm";
-      return [`Dnes se o ${pronoun} po West Havenu nic moc neříká.`];
+      return report?.previousDayFragments || [];
     };
 
     const renderRumorSlide = () => {
       if (!refs.rumorStrip || characters.length === 0) return;
 
-      const rumorCharacters = characters.filter((character) => rumorEntriesByCharacter[character.id]?.hasAnyReport);
+      const rumorCharacters = characters.filter((character) => (
+        rumorEntriesByCharacter[character.id]?.previousDayFragments?.length > 0
+      ));
       if (rumorCharacters.length === 0) {
         refs.rumorTitle.textContent = "Městské drby";
-        refs.rumorText.textContent = "Noční kancelář zatím nemá žádný report, ze kterého by šlo tahat drby.";
-        refs.rumorMeta.textContent = "Čeká se na první zápis";
+        refs.rumorText.textContent = "Noční kancelář nemá žádný včerejší report, ze kterého by šlo tahat drby.";
+        refs.rumorMeta.textContent = "Čeká se na včerejší zápis";
         refs.rumorAvatarImage.src = "images/zeke.png";
         refs.rumorAvatarImage.alt = "";
         refs.rumorCharacterImage.src = "images/zeke.png";
@@ -7114,7 +7105,6 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       const fragment = fragments[fragmentCycle % Math.max(1, fragments.length)] || character.overview;
       const avatar = getCharacterAvatar(character);
       const color = characterMapColors[character.id] || "#d6a047";
-      const hasPreviousDayReport = Boolean(rumorEntriesByCharacter[character.id]?.previousDayFragments?.length);
 
       refs.rumorStrip.style.setProperty("--rumor-color", color);
       refs.rumorAvatar.style.setProperty("--rumor-color", color);
@@ -7124,12 +7114,8 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.rumorCharacterImage.src = character.portrait;
       refs.rumorCharacterImage.alt = character.portraitAlt;
       refs.rumorTitle.textContent = character.listName;
-      refs.rumorText.textContent = hasPreviousDayReport
-        ? makeRumorLine(character, fragment, fragmentCycle)
-        : fragment;
-      refs.rumorMeta.textContent = hasPreviousDayReport
-        ? `Úryvek z předchozího dne | ${avatar.label}`
-        : `Bez včerejšího reportu | ${avatar.label}`;
+      refs.rumorText.textContent = makeRumorLine(character, fragment, fragmentCycle);
+      refs.rumorMeta.textContent = `Úryvek ze včerejšího dne | ${avatar.label}`;
     };
 
     const getRumorReadDelay = () => {
@@ -7171,17 +7157,14 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           const data = entryDoc.data();
           if (!data.characterId || !data.reportText) return;
           const reportDate = data.reportDate || getPragueDateKey(data.createdAt);
+          if (reportDate !== previousDateKey) return;
           if (!entries[data.characterId]) {
             entries[data.characterId] = {
-              hasAnyReport: false,
               previousDayFragments: []
             };
           }
 
-          entries[data.characterId].hasAnyReport = true;
-          if (reportDate === previousDateKey) {
-            entries[data.characterId].previousDayFragments.push(...splitReportFragments(data.reportText));
-          }
+          entries[data.characterId].previousDayFragments.push(...splitReportFragments(data.reportText));
         });
 
         rumorEntriesByCharacter = entries;
