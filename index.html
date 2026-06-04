@@ -104,16 +104,16 @@
       position: relative;
       z-index: 1;
       width: min(1380px, 100%);
-      min-height: min(850px, calc(100vh - 48px));
+      min-height: min(800px, calc(100vh - 48px));
       display: grid;
       grid-template-columns: minmax(0, 1fr) 340px;
-      border: 1px solid rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 10px;
       overflow: hidden;
       background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 18%),
-        linear-gradient(145deg, rgba(32, 29, 25, 0.96), rgba(9, 9, 8, 0.99));
-      box-shadow: var(--shadow);
+        linear-gradient(180deg, rgba(255, 240, 207, 0.035), transparent 22%),
+        linear-gradient(145deg, rgba(43, 33, 24, 0.72), rgba(9, 9, 8, 0.92));
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.46);
       animation: view-rise 520ms var(--ease) both;
     }
 
@@ -1142,14 +1142,12 @@
     }
 
     .content {
-      padding: 40px 44px;
+      padding: 40px 44px 34px;
       color: var(--paper-text);
       background:
-        linear-gradient(rgba(255, 242, 207, 0.035) 1px, transparent 1px),
-        radial-gradient(circle at top left, rgba(143, 31, 45, 0.12), transparent 30%),
-        linear-gradient(180deg, rgba(255, 232, 184, 0.08), rgba(0, 0, 0, 0.1)),
-        var(--panel);
-      background-size: 100% 30px, auto, auto, auto;
+        radial-gradient(circle at 0 0, rgba(143, 31, 45, 0.1), transparent 34%),
+        linear-gradient(180deg, rgba(255, 232, 184, 0.055), rgba(0, 0, 0, 0.08)),
+        rgba(66, 48, 33, 0.5);
       animation: content-slide 520ms var(--ease) 90ms both;
     }
 
@@ -1247,13 +1245,13 @@
     }
 
     .content-header {
-      margin-bottom: 28px;
+      margin-bottom: 22px;
     }
 
     .content-title {
-      margin: 6px 0 10px;
+      margin: 6px 0 8px;
       font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 4vw, 4.15rem);
+      font-size: clamp(2.55rem, 4vw, 4.45rem);
       line-height: 0.95;
       letter-spacing: 0.02em;
       text-transform: uppercase;
@@ -1268,16 +1266,31 @@
     }
 
     .meta-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
       margin: 0;
       color: var(--paper-muted);
-      font-size: 0.98rem;
-      line-height: 1.8;
-      letter-spacing: 0.03em;
+      font-size: 0.82rem;
+      line-height: 1.35;
+      letter-spacing: 0.04em;
     }
 
-    .meta-line strong {
+    .meta-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 6px 10px;
+      border: 1px solid rgba(169, 120, 57, 0.18);
+      border-radius: 6px;
+      background: rgba(17, 14, 11, 0.2);
+      color: #cdbb9a;
+    }
+
+    .meta-chip strong {
       color: #fff0cf;
       font-weight: 600;
+      margin-right: 5px;
     }
 
     .tabs {
@@ -1285,20 +1298,19 @@
       z-index: 3;
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin: 24px 0 18px;
-      padding: 5px;
-      border: 1px solid rgba(49, 35, 24, 0.12);
-      border-radius: var(--radius-lg);
-      background: rgba(15, 13, 11, 0.24);
+      gap: 22px;
+      margin: 22px 0 18px;
+      padding: 0 0 9px;
+      border-bottom: 1px solid rgba(169, 120, 57, 0.16);
+      background: transparent;
     }
 
     .tab-button {
       position: relative;
       z-index: 1;
-      padding: 11px 16px;
-      border: 1px solid transparent;
-      border-radius: var(--radius-md);
+      padding: 0 0 8px;
+      border: 0;
+      border-radius: 0;
       background: transparent;
       color: var(--paper-muted);
       cursor: pointer;
@@ -1306,45 +1318,51 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       transition:
-        transform var(--ease),
-        border-color var(--ease),
-        background var(--ease),
         color var(--ease),
         box-shadow var(--ease);
     }
 
     .tab-button:hover,
     .tab-button:focus-visible {
-      transform: translateY(-2px);
-      border-color: rgba(143, 31, 45, 0.2);
       color: #fff0cf;
-      background: rgba(143, 31, 45, 0.075);
       outline: none;
+    }
+
+    .tab-button::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -10px;
+      height: 2px;
+      background: transparent;
+      transition: background var(--ease), box-shadow var(--ease);
     }
 
     .tab-button.is-active {
       color: #fff8e8;
-      border-color: var(--line-strong);
-      background:
-        linear-gradient(145deg, rgba(143, 31, 45, 0.96), rgba(93, 22, 28, 0.96)),
-        rgba(255, 255, 255, 0.03);
-      box-shadow: 0 10px 24px rgba(91, 20, 27, 0.18);
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .tab-button.is-active::after {
+      background: linear-gradient(90deg, rgba(143, 31, 45, 0.98), rgba(212, 164, 89, 0.62));
+      box-shadow: 0 0 18px rgba(143, 31, 45, 0.28);
     }
 
     .panel-card {
-      min-height: 420px;
-      border: 1px solid rgba(49, 35, 24, 0.17);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      background:
-        linear-gradient(180deg, rgba(255, 232, 184, 0.08), transparent 24%),
-        rgba(20, 17, 14, 0.24);
-      box-shadow: var(--glow);
+      min-height: 0;
+      border: 0;
+      border-radius: 0;
+      overflow: visible;
+      background: transparent;
+      box-shadow: none;
     }
 
     .tab-panel {
       display: none;
-      padding: 28px 30px 32px;
+      max-width: 950px;
+      padding: 10px 0 0;
       animation: tab-fade 280ms var(--ease) both;
     }
 
@@ -1353,9 +1371,9 @@
     }
 
     .tab-heading {
-      margin: 0 0 14px;
+      margin: 0 0 12px;
       color: var(--red);
-      font-size: 0.86rem;
+      font-size: 0.78rem;
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
@@ -1363,23 +1381,26 @@
     .tab-text {
       margin: 0;
       color: var(--paper-text);
-      font-size: 1rem;
-      line-height: 1.85;
+      max-width: 850px;
+      font-size: 1.02rem;
+      line-height: 1.82;
       white-space: pre-line;
     }
 
     .overview-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-      margin-top: 22px;
+      gap: 14px;
+      margin-top: 24px;
     }
 
     .overview-card {
-      padding: 18px 18px 20px;
-      border: 1px solid rgba(49, 35, 24, 0.13);
-      border-radius: var(--radius-md);
-      background: rgba(18, 15, 12, 0.2);
+      padding: 16px 18px 17px;
+      border: 1px solid rgba(169, 120, 57, 0.12);
+      border-radius: 6px;
+      background:
+        linear-gradient(180deg, rgba(255, 232, 184, 0.035), transparent),
+        rgba(15, 12, 9, 0.18);
     }
 
     .overview-card h4 {
@@ -4335,12 +4356,12 @@
       }
 
       .tabs {
-        gap: 8px;
+        gap: 16px;
       }
 
       .tab-button {
-        flex: 1 1 calc(50% - 8px);
-        text-align: center;
+        flex: 0 0 auto;
+        text-align: left;
       }
 
       .panel-card {
@@ -4497,7 +4518,7 @@
       }
 
       .tab-panel {
-        padding: 22px 20px 24px;
+        padding: 12px 0 0;
       }
 
       .night-report-body {
@@ -9509,7 +9530,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
       refs.name.textContent = character.name;
       refs.role.textContent = character.role;
-      refs.meta.innerHTML = `<strong>Věk:</strong> ${character.age} &nbsp;&nbsp;•&nbsp;&nbsp; <strong>Původ:</strong> ${character.origin} &nbsp;&nbsp;•&nbsp;&nbsp; <strong>Rok:</strong> ${character.year} &nbsp;&nbsp;•&nbsp;&nbsp; <strong>Status:</strong> ${character.status}`;
+      refs.meta.innerHTML = [
+        ["Věk", `${character.age} let`],
+        ["Původ", character.origin],
+        ["Rok", character.year],
+        ["Status", character.status]
+      ].map(([label, value]) => `<span class="meta-chip"><strong>${label}:</strong> ${value}</span>`).join("");
       refs.overview.textContent = character.overview;
       refs.overviewTitleOne.textContent = character.overviewBlocks[0].title;
       refs.overviewTextOne.textContent = character.overviewBlocks[0].text;
