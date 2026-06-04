@@ -20,11 +20,14 @@ const levelThresholds = Array.from(
 );
 const badgeTiers = [
   { level: 1, name: "Poutnik" },
+  { level: 5, name: "Usazeny poutnik" },
   { level: 10, name: "Obcan West Havenu" },
+  { level: 15, name: "Mistni hlas" },
   { level: 20, name: "Znama tvar" },
   { level: 30, name: "Starousedlik" },
   { level: 40, name: "Respektovana postava" },
   { level: 50, name: "Legenda mesta" },
+  { level: 60, name: "Pilir West Havenu" },
   { level: 75, name: "Ziva kronika" },
   { level: 100, name: "Mytus West Havenu" }
 ];
