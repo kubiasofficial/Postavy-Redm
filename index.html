@@ -3412,13 +3412,11 @@
     .map-canvas {
       position: absolute;
       inset: 0 auto auto 0;
-      width: calc(100% / var(--map-zoom, 1));
-      min-width: calc(100% / var(--map-zoom, 1));
+      width: 100%;
+      min-width: 100%;
       line-height: 0;
       contain: layout paint style;
       transform-origin: top left;
-      transform: scale(var(--map-zoom, 1));
-      will-change: transform;
     }
 
     .map-canvas img {
@@ -3426,6 +3424,8 @@
       display: block;
       user-select: none;
       pointer-events: none;
+      image-rendering: auto;
+      image-rendering: high-quality;
     }
 
     .map-marker {
@@ -8319,13 +8319,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
     const updateMapSpaceHeight = (space, canvas, zoom) => {
       const baseWidth = Math.max(1, space.getBoundingClientRect().width / zoom);
-      const baseHeight = Math.max(
-        1,
-        canvas.offsetHeight,
-        canvas.getBoundingClientRect().height / zoom,
-        baseWidth * mapAspectRatio
-      );
-      space.style.height = `${baseHeight * zoom}px`;
+      space.style.height = `${baseWidth * mapAspectRatio * zoom}px`;
     };
 
     const setMapZoom = (type, value, anchor = null) => {
