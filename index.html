@@ -1922,6 +1922,57 @@
       text-transform: uppercase;
     }
 
+    .character-badge-showcase {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(38px, 1fr));
+      gap: 6px;
+      padding-top: 2px;
+    }
+
+    .character-badge-showcase-item {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 46px;
+      padding: 5px 3px 3px;
+      border: 1px solid rgba(255, 222, 154, 0.1);
+      border-radius: 6px;
+      background: rgba(8, 8, 7, 0.22);
+      opacity: 0.42;
+    }
+
+    .character-badge-showcase-item.is-earned {
+      border-color: rgba(218, 153, 75, 0.32);
+      background: rgba(169, 120, 57, 0.12);
+      opacity: 1;
+    }
+
+    .character-badge-showcase-item.is-current {
+      box-shadow: inset 0 0 0 1px rgba(255, 232, 169, 0.28), 0 0 16px rgba(218, 153, 75, 0.16);
+    }
+
+    .character-badge-showcase-item img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      filter: grayscale(0.8) drop-shadow(0 0 10px rgba(169, 120, 57, 0.08));
+    }
+
+    .character-badge-showcase-item.is-earned img {
+      filter: drop-shadow(0 0 12px var(--badge-glow, rgba(169, 120, 57, 0.2)));
+    }
+
+    .character-badge-showcase-level {
+      margin-top: 2px;
+      color: #b9a37e;
+      font-size: 0.54rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      line-height: 1;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
     .character-alert {
       position: fixed;
       top: 24px;
@@ -5065,6 +5116,7 @@
               <span class="character-progress-fill" id="characterProgressFill"></span>
             </div>
             <p class="character-level-note" id="characterLevelNote">Zbývá do další úrovně: 0min</p>
+            <div class="character-badge-showcase" id="characterBadgeShowcase" aria-label="Výstava úrovňových odznaků"></div>
           </div>
           <p class="character-action-status" id="characterActionStatus" aria-live="polite"></p>
         </div>
@@ -6011,6 +6063,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       characterBadgeMeta: document.getElementById("characterBadgeMeta"),
       characterProgressFill: document.getElementById("characterProgressFill"),
       characterLevelNote: document.getElementById("characterLevelNote"),
+      characterBadgeShowcase: document.getElementById("characterBadgeShowcase"),
       characterActionStatus: document.getElementById("characterActionStatus"),
       openBadgesButton: document.getElementById("openBadgesButton"),
       openChronicleButton: document.getElementById("openChronicleButton"),
@@ -9731,6 +9784,35 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
     };
 
+    const renderCharacterBadgeShowcase = (level) => {
+      if (!refs.characterBadgeShowcase) return;
+
+      refs.characterBadgeShowcase.replaceChildren();
+      badgeTiers.forEach((badge) => {
+        const item = document.createElement("span");
+        const isEarned = level >= badge.level;
+        const isCurrent = getBadgeForLevel(level).level === badge.level;
+        item.className = [
+          "character-badge-showcase-item",
+          isEarned ? "is-earned" : "",
+          isCurrent ? "is-current" : ""
+        ].filter(Boolean).join(" ");
+        item.title = `${badge.name} | LVL ${badge.level}${isEarned ? " získáno" : ""}`;
+        applyBadgeTheme(item, badge);
+
+        const image = document.createElement("img");
+        image.src = badge.image;
+        image.alt = `Odznak ${badge.name}`;
+
+        const label = document.createElement("span");
+        label.className = "character-badge-showcase-level";
+        label.textContent = `L${badge.level}`;
+
+        item.append(image, label);
+        refs.characterBadgeShowcase.appendChild(item);
+      });
+    };
+
     const updateCharacterTimer = () => {
       const profile = characterActionProfiles[activeCharacterId];
       const state = getCharacterState(activeCharacterId);
@@ -9751,6 +9833,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       refs.characterLevelNote.textContent = progress.isMaxLevel
         ? "Nejvyšší úroveň dosažena"
         : `Zbývá do další úrovně: ${formatLedgerDuration(progress.remainingMs)}`;
+      renderCharacterBadgeShowcase(progress.level);
 
       if (!profile || state.status !== "awake" || !duration) {
         refs.characterTimer.textContent = "Dýchá: nezaznamenáno";
