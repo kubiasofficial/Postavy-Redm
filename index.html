@@ -4269,32 +4269,56 @@
 
     @media (max-width: 680px) {
       body {
-        padding: 12px;
+        padding: 8px;
+        align-items: start;
+      }
+
+      .app,
+      .home {
+        width: 100%;
+        min-height: auto;
+        border-radius: 8px;
       }
 
       .home,
       .content,
       .visual {
-        padding: 22px 18px;
+        padding: 18px 14px;
       }
 
       .home-header {
         display: block;
-        margin-bottom: 22px;
+        margin-bottom: 18px;
+        padding-bottom: 10px;
+      }
+
+      .home-title {
+        font-size: clamp(3rem, 17vw, 4.2rem);
       }
 
       .home-actions {
         display: grid;
-        gap: 14px;
-        margin-top: 18px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 16px;
       }
 
       .home-badges-button {
         width: 100%;
+        min-height: 38px;
+        padding: 8px 9px;
         justify-content: center;
+        font-size: 0.7rem;
+        letter-spacing: 0.07em;
+      }
+
+      .home-badges-button::before {
+        width: 17px;
+        height: 17px;
       }
 
       .home-mark {
+        grid-column: 1 / -1;
         width: 100%;
         margin: 0;
       }
@@ -4310,9 +4334,11 @@
         top: auto;
         right: auto;
         width: auto;
-        grid-template-columns: 1fr;
-        gap: 14px;
-        padding: 0;
+        grid-template-columns: 92px minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+        padding: 10px 0 12px;
+        border-bottom: 1px solid rgba(169, 120, 57, 0.14);
       }
 
       .gallery-rail {
@@ -4320,11 +4346,12 @@
         top: auto;
         right: auto;
         width: auto;
+        order: 2;
       }
 
       .gallery-frame img {
-        min-height: 220px;
-        height: 220px;
+        min-height: 190px;
+        height: 190px;
       }
 
       .activity-rail {
@@ -4332,31 +4359,127 @@
         top: auto;
         left: auto;
         width: auto;
+        order: 3;
+      }
+
+      .activity-title {
+        margin-top: 0;
+      }
+
+      .time-ledger {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
       }
 
       .roster-card,
       .roster-card > img {
-        min-height: 330px;
+        min-height: 300px;
+      }
+
+      .roster-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        width: 100%;
+      }
+
+      .roster-card {
+        border-radius: 6px;
+      }
+
+      .roster-name {
+        left: 12px;
+        right: 12px;
+        bottom: 88px;
+        font-size: clamp(1.45rem, 7vw, 2rem);
+      }
+
+      .roster-role {
+        left: 12px;
+        right: 12px;
+        bottom: 62px;
+        font-size: 0.62rem;
+      }
+
+      .roster-status {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
       }
 
       .rumor-visual {
-        min-height: 150px;
+        min-height: 92px;
+      }
+
+      .rumor-avatar {
+        width: 72px;
+        height: 72px;
+        transform: translate(-22px, 10px);
+      }
+
+      .rumor-character {
+        width: 84px;
+        height: 112px;
+        transform: translate(18px, -2px) rotateY(-8deg);
       }
 
       .rumor-copy {
-        text-align: center;
+        text-align: left;
+      }
+
+      .rumor-title {
+        font-size: clamp(1.7rem, 9vw, 2.35rem);
+      }
+
+      .rumor-text {
+        font-size: 0.92rem;
+      }
+
+      .rumor-meta {
+        font-size: 0.62rem;
       }
 
       .overview-grid {
         grid-template-columns: 1fr;
       }
 
+      .content {
+        order: 2;
+      }
+
       .content-title {
-        font-size: 2.3rem;
+        font-size: clamp(2.05rem, 12vw, 3rem);
+      }
+
+      .content-role {
+        font-size: 0.78rem;
+      }
+
+      .meta-line {
+        gap: 6px;
+      }
+
+      .meta-chip {
+        min-height: 28px;
+        padding: 5px 8px;
+        font-size: 0.72rem;
+      }
+
+      .back-button {
+        width: 100%;
+        margin-bottom: 18px;
       }
 
       .tabs {
         gap: 16px;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 10px;
+        scrollbar-width: none;
+      }
+
+      .tabs::-webkit-scrollbar {
+        display: none;
       }
 
       .tab-button {
@@ -4364,8 +4487,58 @@
         text-align: left;
       }
 
+      .tab-text {
+        font-size: 0.96rem;
+        line-height: 1.72;
+      }
+
       .panel-card {
         min-height: 0;
+      }
+
+      .visual {
+        order: 1;
+        border-top: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .visual-card {
+        grid-template-columns: 92px minmax(0, 1fr);
+        gap: 12px;
+        align-items: start;
+      }
+
+      .visual-card > .eyebrow {
+        grid-column: 1 / -1;
+      }
+
+      .portrait-frame {
+        aspect-ratio: 1;
+        border-radius: 8px;
+      }
+
+      .portrait-frame::after {
+        border-width: 6px;
+      }
+
+      .quote {
+        align-self: center;
+        padding: 0;
+        font-size: 0.88rem;
+        line-height: 1.55;
+      }
+
+      .mail-button,
+      .character-actions {
+        grid-column: 1 / -1;
+      }
+
+      .character-actions.is-visible {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .character-level-progress {
+        grid-column: 1 / -1;
       }
 
       .level-alert-card {
