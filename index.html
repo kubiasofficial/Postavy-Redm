@@ -5079,6 +5079,10 @@
         <span aria-hidden="true">☾</span>
         Night report
       </button>
+      <button class="admin-menu-button" id="openAdminSleepButton" type="button">
+        <span aria-hidden="true">☾</span>
+        Uspat postavy
+      </button>
       <button class="admin-menu-button" id="openBadgeAdminButton" type="button">
         <span aria-hidden="true">✦</span>
         Odznaky
@@ -5101,6 +5105,32 @@
         Broadcast alert
       </button>
     </div>
+  </div>
+
+  <div class="night-report-modal" id="adminSleepModal" aria-hidden="true">
+    <section class="night-report-dialog" aria-labelledby="adminSleepTitle">
+      <header class="night-report-header">
+        <div>
+          <p class="night-report-kicker">West Haven Office</p>
+          <h2 class="night-report-title" id="adminSleepTitle">Uspat postavy</h2>
+        </div>
+        <button class="night-report-close" id="closeAdminSleepButton" type="button" aria-label="Zavřít uspání postav">&times;</button>
+      </header>
+      <div class="night-report-body">
+        <div class="night-report-column">
+          <p class="night-report-label">Admin pojistka pro chvíle, kdy někdo zapomene uspat postavu a vypne PC.</p>
+          <label class="night-report-label">
+            Postava
+            <select class="night-report-input" id="adminSleepCharacter"></select>
+          </label>
+          <div class="night-report-actions">
+            <button class="night-report-button" id="adminSleepSelectedButton" type="button">Uspat vybranou</button>
+            <button class="night-report-button send" id="adminSleepAllButton" type="button">Uspat všechny vzhůru</button>
+          </div>
+          <p class="night-report-status" id="adminSleepStatus" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
   </div>
 
   <div class="sleep-report-modal" id="sleepReportModal" aria-hidden="true">
@@ -6014,12 +6044,19 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       adminButton: document.getElementById("adminButton"),
       adminMenu: document.getElementById("adminMenu"),
       openNightReportButton: document.getElementById("openNightReportButton"),
+      openAdminSleepButton: document.getElementById("openAdminSleepButton"),
       openBadgeAdminButton: document.getElementById("openBadgeAdminButton"),
       openRelationshipAdminButton: document.getElementById("openRelationshipAdminButton"),
       openAdminMailButton: document.getElementById("openAdminMailButton"),
       adminMailCount: document.getElementById("adminMailCount"),
       testCharacterAlertButton: document.getElementById("testCharacterAlertButton"),
       openBroadcastAlertButton: document.getElementById("openBroadcastAlertButton"),
+      adminSleepModal: document.getElementById("adminSleepModal"),
+      closeAdminSleepButton: document.getElementById("closeAdminSleepButton"),
+      adminSleepCharacter: document.getElementById("adminSleepCharacter"),
+      adminSleepSelectedButton: document.getElementById("adminSleepSelectedButton"),
+      adminSleepAllButton: document.getElementById("adminSleepAllButton"),
+      adminSleepStatus: document.getElementById("adminSleepStatus"),
       badgeAdminModal: document.getElementById("badgeAdminModal"),
       closeBadgeAdminButton: document.getElementById("closeBadgeAdminButton"),
       badgeAdminCharacter: document.getElementById("badgeAdminCharacter"),
@@ -9273,8 +9310,144 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         updateCharacterTimer();
       }
 
+      if (refs.adminSleepModal.classList.contains("is-visible")) {
+        renderAdminSleepCharacters();
+      }
+
       await setDoc(doc(characterStatesRef, characterId), { ...state, updatedAt }, { merge: true });
     };
+
+    const setAdminSleepStatus = (message = "") => {
+      refs.adminSleepStatus.textContent = message;
+    };
+
+    const isCharacterAwake = (characterId) => {
+      const state = getCharacterState(characterId);
+      return state.status === "awake" || Boolean(state.wakeStartedAt);
+    };
+
+    const renderAdminSleepCharacters = () => {
+      const selectedId = refs.adminSleepCharacter.value || activeCharacterId || currentPlayerCharacterId || characters[0]?.id;
+      refs.adminSleepCharacter.replaceChildren();
+
+      characters.forEach((character) => {
+        const option = document.createElement("option");
+        const awake = isCharacterAwake(character.id);
+        option.value = character.id;
+        option.textContent = `${character.listName} | ${awake ? "vzhůru" : "spí"}`;
+        refs.adminSleepCharacter.appendChild(option);
+      });
+
+      if (selectedId && characters.some((character) => character.id === selectedId)) {
+        refs.adminSleepCharacter.value = selectedId;
+      }
+    };
+
+    const openAdminSleepModal = () => {
+      refs.adminTools.classList.remove("is-open");
+      renderAdminSleepCharacters();
+      setAdminSleepStatus();
+      refs.adminSleepModal.classList.add("is-visible");
+      refs.adminSleepModal.setAttribute("aria-hidden", "false");
+    };
+
+    const closeAdminSleepModal = () => {
+      refs.adminSleepModal.classList.remove("is-visible");
+      refs.adminSleepModal.setAttribute("aria-hidden", "true");
+      setAdminSleepStatus();
+    };
+
+    const forceSleepCharacter = async (characterId) => {
+      const character = characters.find((item) => item.id === characterId);
+      if (!character) return { status: "missing", name: "Neznámá postava", durationMs: 0 };
+
+      const state = getCharacterState(characterId);
+      if (!isCharacterAwake(characterId)) {
+        return { status: "skipped", name: character.listName, durationMs: 0 };
+      }
+
+      const endedAt = Date.now();
+      const remoteStartedAt = Number(state.wakeStartedAt);
+      const localStartedAt = Number(localStorage.getItem(getWakeTimerKey(characterId)));
+      const startedAt = Number(remoteStartedAt || localStartedAt || endedAt);
+      const durationMs = Math.max(0, endedAt - startedAt);
+      const currentDateKey = getPragueDateKey(endedAt);
+      const previousTotal = Number(state.totalPlayedMs || 0);
+      const previousDaily = state.dailyDate === currentDateKey ? Number(state.dailyPlayedMs || 0) : 0;
+      const previousLevel = getLevelForTotal(previousTotal);
+      const newTotal = previousTotal + durationMs;
+      const newLevel = getLevelForTotal(newTotal);
+      const currentAchievementStats = getAchievementStats(characterId);
+      const achievementStats = updateActiveDateStreak({
+        ...currentAchievementStats,
+        nightPlayedMs: currentAchievementStats.nightPlayedMs + getNightPlayedMsForSegment(startedAt, endedAt)
+      }, currentDateKey);
+
+      localStorage.removeItem(getWakeTimerKey(characterId));
+      await setRemoteCharacterState(characterId, {
+        status: "asleep",
+        wakeStartedAt: null,
+        totalPlayedMs: newTotal,
+        dailyPlayedMs: previousDaily + durationMs,
+        dailyDate: currentDateKey,
+        level: newLevel,
+        lastAwakeAt: endedAt,
+        achievementStats
+      });
+
+      if (newLevel > previousLevel) {
+        await sendLevelAlert(characterId, newLevel, newTotal);
+      }
+
+      return { status: "slept", name: character.listName, durationMs };
+    };
+
+    const withAdminSleepButtonsDisabled = async (callback) => {
+      refs.adminSleepSelectedButton.disabled = true;
+      refs.adminSleepAllButton.disabled = true;
+      try {
+        await callback();
+      } finally {
+        refs.adminSleepSelectedButton.disabled = false;
+        refs.adminSleepAllButton.disabled = false;
+        renderAdminSleepCharacters();
+      }
+    };
+
+    const sleepSelectedAdminCharacter = () => withAdminSleepButtonsDisabled(async () => {
+      if (!isAdminPlayer()) return;
+
+      const result = await forceSleepCharacter(refs.adminSleepCharacter.value);
+      if (result.status === "slept") {
+        setAdminSleepStatus(`${result.name} uspán/a. Započteno: ${formatDuration(result.durationMs)}.`);
+      } else if (result.status === "skipped") {
+        setAdminSleepStatus(`${result.name} už spí.`);
+      } else {
+        setAdminSleepStatus("Postavu se nepodařilo najít.");
+      }
+    });
+
+    const sleepAllAdminCharacters = () => withAdminSleepButtonsDisabled(async () => {
+      if (!isAdminPlayer()) return;
+
+      const awakeCharacterIds = characters
+        .filter((character) => isCharacterAwake(character.id))
+        .map((character) => character.id);
+
+      if (!awakeCharacterIds.length) {
+        setAdminSleepStatus("Všechny postavy už spí.");
+        return;
+      }
+
+      const results = [];
+      for (const characterId of awakeCharacterIds) {
+        results.push(await forceSleepCharacter(characterId));
+      }
+
+      const sleptResults = results.filter((result) => result.status === "slept");
+      const totalDurationMs = sleptResults.reduce((sum, result) => sum + result.durationMs, 0);
+      setAdminSleepStatus(`Uspáno: ${sleptResults.length}. Celkem započteno: ${formatDuration(totalDurationMs)}.`);
+    });
 
     const clearStaleMapLocations = async () => {
       if (hasClearedStaleMapLocations) return;
@@ -10480,6 +10653,20 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       openNightReportModal();
     });
 
+    refs.openAdminSleepButton.addEventListener("click", openAdminSleepModal);
+
+    refs.closeAdminSleepButton.addEventListener("click", closeAdminSleepModal);
+
+    refs.adminSleepSelectedButton.addEventListener("click", sleepSelectedAdminCharacter);
+
+    refs.adminSleepAllButton.addEventListener("click", sleepAllAdminCharacters);
+
+    refs.adminSleepModal.addEventListener("click", (event) => {
+      if (event.target === refs.adminSleepModal) {
+        closeAdminSleepModal();
+      }
+    });
+
     refs.openBadgeAdminButton.addEventListener("click", openBadgeAdminModal);
 
     refs.openRelationshipAdminButton.addEventListener("click", openRelationshipAdminModal);
@@ -10755,6 +10942,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
       if (event.key === "Escape" && refs.nightReportModal.classList.contains("is-visible")) {
         closeNightReportModal();
+      }
+      if (event.key === "Escape" && refs.adminSleepModal.classList.contains("is-visible")) {
+        closeAdminSleepModal();
       }
       if (event.key === "Escape" && refs.badgeAdminModal.classList.contains("is-visible")) {
         closeBadgeAdminModal();
