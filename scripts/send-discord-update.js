@@ -40,29 +40,29 @@ if (!env.DISCORD_BOT_TOKEN) {
 }
 
 const payload = {
-  content: "@everyone",
+  content: "",
   allowed_mentions: {
-    parse: ["everyone"]
+    parse: []
   },
   embeds: [
     {
       title: "West Haven update",
-      description: "Web postav dostal novou vrstvu pro vztahy, osobni deniky a ukladani lokaci. Kazda postava ma ted vic prostoru na vlastni stopu v pribehu.",
+      description: "Profil postav je uklizeny po posledni uprave. Denik a cile jsou ted primo v pravem profilu nad postou a stare taby Denik, Lokace a Stopy zmizely.",
       color: 12028229,
       fields: [
         {
-          name: "Vztahy",
-          value: "Admin muze vztahy rucne upravovat, navrhy z reportu ukazuji jistotu a duvody, a nocni report ma vztahove tagy.",
+          name: "Denik",
+          value: "Denik uz nevypada jako obycejna klikaci polozka. Zobrazuje se jako osobni zapisky ve stylu stranky a hrac sve postavy muze zapisky mazat.",
           inline: false
         },
         {
-          name: "Deniky",
-          value: "Kazda postava ma osobni denik. Hrac sve postavy a admin muzou zapisovat a mazat vlastni zapisky.",
+          name: "Cile",
+          value: "Cile jsou presunute nad tlacitko Posta, aby byly po ruce primo v profilu postavy.",
           inline: false
         },
         {
-          name: "Lokace",
-          value: "Postavy si muzou ukladat aktualni waypoint jako pojmenovanou lokaci s poznamkou. Hodi se pro tabory, stopy, tajna mista a dulezite udalosti.",
+          name: "Uklid",
+          value: "Lokace a Stopy jsou odstranene z hlavniho profilu vcetne starych zbytku v kodu.",
           inline: false
         }
       ],
