@@ -276,10 +276,57 @@ const resolveCharacterId = (interaction) => {
   return getCharacterByDiscordId(interaction.member?.user?.id || interaction.user?.id)?.id;
 };
 
+const mapAspectRatio = 16785 / 21617;
+const sleepMapPlaces = [
+  { name: "Colter", x: 45, y: 14, radius: 3 },
+  { name: "Lake Isabella", x: 35, y: 19, radius: 4 },
+  { name: "Wapiti", x: 59, y: 23, radius: 3.5 },
+  { name: "Cotorra Springs", x: 56, y: 29, radius: 3.5 },
+  { name: "Annesburg", x: 77, y: 27, radius: 4 },
+  { name: "Roanoke Valley", x: 73, y: 30, radius: 5 },
+  { name: "Bacchus Station", x: 62, y: 32, radius: 3 },
+  { name: "O'Creagh's Run", x: 64, y: 34, radius: 4 },
+  { name: "Butcher Creek", x: 75, y: 34, radius: 3.5 },
+  { name: "Valentine", x: 50, y: 38, radius: 4.5 },
+  { name: "Heartland Oil Fields", x: 60, y: 39, radius: 4 },
+  { name: "Van Horn", x: 79, y: 39, radius: 4 },
+  { name: "Wallace Station", x: 43, y: 41, radius: 3 },
+  { name: "Emerald Ranch", x: 62, y: 45, radius: 4 },
+  { name: "Strawberry", x: 41, y: 49, radius: 4.5 },
+  { name: "Riggs Station", x: 45, y: 51, radius: 3 },
+  { name: "Lagras", x: 71, y: 54, radius: 4 },
+  { name: "Flatneck Station", x: 51, y: 55, radius: 3 },
+  { name: "Thieves' Landing", x: 38, y: 56, radius: 4 },
+  { name: "Manzanita Post", x: 35, y: 59, radius: 3.5 },
+  { name: "Rhodes", x: 59, y: 61, radius: 4.5 },
+  { name: "Blackwater", x: 41, y: 63, radius: 5 },
+  { name: "Saint Denis", x: 76, y: 62, radius: 5.5 },
+  { name: "Shady Belle", x: 70, y: 64, radius: 4 },
+  { name: "Tall Trees", x: 35, y: 65, radius: 5 },
+  { name: "Armadillo", x: 26, y: 69, radius: 4.5 },
+  { name: "Braithwaite Manor", x: 62, y: 69, radius: 4 },
+  { name: "Tumbleweed", x: 18, y: 72, radius: 4.5 }
+];
+
+const getSleepPlaceDistance = (location, place) => {
+  const dx = (Number(location.x || 0) - place.x) * mapAspectRatio;
+  const dy = Number(location.y || 0) - place.y;
+  return Math.sqrt((dx * dx) + (dy * dy));
+};
+
+const getSleepPlaceName = (location) => {
+  if (!location) return "";
+
+  const nearest = sleepMapPlaces
+    .map((place) => ({ ...place, distance: getSleepPlaceDistance(location, place) }))
+    .sort((a, b) => a.distance - b.distance)[0];
+
+  if (!nearest) return "";
+  return nearest.distance <= nearest.radius ? nearest.name : `pobliz ${nearest.name}`;
+};
+
 const formatMapLocation = (location) => (
-  location
-    ? `X ${Math.round(Number(location.x || 0) * 10) / 10}%, Y ${Math.round(Number(location.y || 0) * 10) / 10}%`
-    : "misto neni ulozene"
+  location ? getSleepPlaceName(location) || "misto spanku je vybrane" : "misto neni ulozene"
 );
 
 const formatDateTime = (timestamp) => {
@@ -618,7 +665,7 @@ const handleWhere = async (interaction) => {
           }
         ],
         footer: {
-          text: location ? "Waypoint je v procentech mapy na webu." : "Postava jeste nema ulozene misto spanku."
+          text: location ? "Misto je odhadnute podle mapy na webu." : "Postava jeste nema ulozene misto spanku."
         },
         timestamp: new Date().toISOString()
       }

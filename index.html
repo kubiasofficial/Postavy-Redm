@@ -5219,7 +5219,7 @@
             </div>
           </div>
         </div>
-        <p class="sleep-report-location" id="sleepReportLocationStatus">Waypoint není vybraný.</p>
+        <p class="sleep-report-location" id="sleepReportLocationStatus">Místo spánku není vybrané.</p>
       </div>
       <div class="sleep-report-actions">
         <button class="sleep-report-button cancel" id="sleepReportCancel" type="button">Zrušit</button>
@@ -6597,6 +6597,36 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     const mapZoomWheelStep = 0.25;
     const mapAspectRatio = 16785 / 21617;
     const currentMapVersion = "newmap-2026-06";
+    const sleepMapPlaces = [
+      { name: "Colter", x: 45, y: 14, radius: 3 },
+      { name: "Lake Isabella", x: 35, y: 19, radius: 4 },
+      { name: "Wapiti", x: 59, y: 23, radius: 3.5 },
+      { name: "Cotorra Springs", x: 56, y: 29, radius: 3.5 },
+      { name: "Annesburg", x: 77, y: 27, radius: 4 },
+      { name: "Roanoke Valley", x: 73, y: 30, radius: 5 },
+      { name: "Bacchus Station", x: 62, y: 32, radius: 3 },
+      { name: "O'Creagh's Run", x: 64, y: 34, radius: 4 },
+      { name: "Butcher Creek", x: 75, y: 34, radius: 3.5 },
+      { name: "Valentine", x: 50, y: 38, radius: 4.5 },
+      { name: "Heartland Oil Fields", x: 60, y: 39, radius: 4 },
+      { name: "Van Horn", x: 79, y: 39, radius: 4 },
+      { name: "Wallace Station", x: 43, y: 41, radius: 3 },
+      { name: "Emerald Ranch", x: 62, y: 45, radius: 4 },
+      { name: "Strawberry", x: 41, y: 49, radius: 4.5 },
+      { name: "Riggs Station", x: 45, y: 51, radius: 3 },
+      { name: "Lagras", x: 71, y: 54, radius: 4 },
+      { name: "Flatneck Station", x: 51, y: 55, radius: 3 },
+      { name: "Thieves' Landing", x: 38, y: 56, radius: 4 },
+      { name: "Manzanita Post", x: 35, y: 59, radius: 3.5 },
+      { name: "Rhodes", x: 59, y: 61, radius: 4.5 },
+      { name: "Blackwater", x: 41, y: 63, radius: 5 },
+      { name: "Saint Denis", x: 76, y: 62, radius: 5.5 },
+      { name: "Shady Belle", x: 70, y: 64, radius: 4 },
+      { name: "Tall Trees", x: 35, y: 65, radius: 5 },
+      { name: "Armadillo", x: 26, y: 69, radius: 4.5 },
+      { name: "Braithwaite Manor", x: 62, y: 69, radius: 4 },
+      { name: "Tumbleweed", x: 18, y: 72, radius: 4.5 }
+    ];
     const hour = 60 * 60 * 1000;
     const maxLevel = 100;
     const getLevelThresholdHours = (level) => {
@@ -6998,10 +7028,25 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }).format(new Date(value));
     };
 
+    const getSleepPlaceDistance = (location, place) => {
+      const dx = (Number(location.x || 0) - place.x) * mapAspectRatio;
+      const dy = Number(location.y || 0) - place.y;
+      return Math.sqrt((dx * dx) + (dy * dy));
+    };
+
+    const getSleepPlaceName = (location) => {
+      if (!location) return "";
+
+      const nearest = sleepMapPlaces
+        .map((place) => ({ ...place, distance: getSleepPlaceDistance(location, place) }))
+        .sort((a, b) => a.distance - b.distance)[0];
+
+      if (!nearest) return "";
+      return nearest.distance <= nearest.radius ? nearest.name : `poblíž ${nearest.name}`;
+    };
+
     const formatMapLocation = (location) => (
-      location
-        ? `Waypoint X ${Math.round(location.x * 10) / 10}%, Y ${Math.round(location.y * 10) / 10}%`
-        : "Waypoint není vybraný."
+      location ? getSleepPlaceName(location) || "Místo spánku je vybrané." : "Místo spánku není vybrané."
     );
 
     const getSleepLocationKey = (location) => {
@@ -8970,7 +9015,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     const positionDraftSleepMarker = () => {
       if (!sleepLocationDraft) {
         refs.sleepMapMarker.style.display = "none";
-        refs.sleepReportLocationStatus.textContent = "Waypoint není vybraný.";
+        refs.sleepReportLocationStatus.textContent = "Místo spánku není vybrané.";
         refs.sleepReportLocationStatus.classList.remove("is-missing");
         return;
       }
