@@ -1594,8 +1594,34 @@
       gap: 12px;
     }
 
+    .character-relation-summary {
+      display: grid;
+      gap: 12px;
+      padding: 15px;
+      border: 1px solid rgba(169, 120, 57, 0.16);
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(255, 232, 184, 0.05), transparent),
+        rgba(9, 8, 7, 0.24);
+    }
+
+    .character-relation-summary-title {
+      margin: 0;
+      color: var(--gold);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .character-relation-list {
+      display: grid;
+      gap: 10px;
+    }
+
     .diary-entry,
-    .private-relation-entry {
+    .private-relation-entry,
+    .character-relation-entry {
       position: relative;
       padding: 16px 17px;
       border: 1px solid rgba(169, 120, 57, 0.14);
@@ -1613,7 +1639,8 @@
     }
 
     .diary-entry-title,
-    .private-relation-title {
+    .private-relation-title,
+    .character-relation-title {
       margin: 0;
       color: #fff0cf;
       font-family: Georgia, "Times New Roman", serif;
@@ -1622,7 +1649,8 @@
     }
 
     .diary-entry-meta,
-    .private-relation-meta {
+    .private-relation-meta,
+    .character-relation-meta {
       margin: 6px 0 0;
       color: var(--gold);
       font-size: 0.66rem;
@@ -1631,20 +1659,23 @@
     }
 
     .diary-entry-text,
-    .private-relation-text {
+    .private-relation-text,
+    .character-relation-text {
       margin: 10px 0 0;
       color: #decbaa;
       line-height: 1.65;
       white-space: pre-line;
     }
 
-    .private-relation-meta {
+    .private-relation-meta,
+    .character-relation-meta {
       display: inline-flex;
       align-items: center;
       gap: 8px;
     }
 
-    .private-relation-line {
+    .private-relation-line,
+    .character-relation-line {
       width: 36px;
       height: 2px;
       background: var(--relation-color, var(--gold));
@@ -5095,7 +5126,7 @@
         <button class="tab-button" type="button" data-tab="appearance" aria-selected="false">Vzhled</button>
         <button class="tab-button" type="button" data-tab="personality" aria-selected="false">Povaha</button>
         <button class="tab-button" type="button" data-tab="diary" aria-selected="false">Deník</button>
-        <button class="tab-button" type="button" data-tab="private-relations" aria-selected="false">WestHaven vztahy</button>
+        <button class="tab-button" type="button" data-tab="private-relations" aria-selected="false">Vztahy</button>
       </nav>
 
       <section class="panel-card">
@@ -5153,9 +5184,13 @@
         <article class="tab-panel" data-panel="private-relations">
           <section class="private-panel">
             <div class="private-panel-head">
-              <h3 class="private-panel-title">WestHaven vztahy</h3>
-              <p class="private-panel-note">Osobní pohled postavy na lidi kolem ní. Zápisy jsou soukromé pro postavu a admina.</p>
+              <h3 class="private-panel-title">Vztahy</h3>
+              <p class="private-panel-note">Oficiální vazby postavy na ostatní a její vlastní soukromé poznámky. Vidí je jen postava a admin.</p>
             </div>
+            <section class="character-relation-summary" aria-label="Vztahy této postavy">
+              <p class="character-relation-summary-title">Vztahy této postavy</p>
+              <div class="character-relation-list" id="characterRelationshipList"></div>
+            </section>
             <form class="private-form" id="privateRelationshipForm">
               <div class="private-form-row">
                 <input class="personal-input" id="privateRelationshipNameInput" type="text" placeholder="Jméno postavy nebo hráče">
@@ -6138,6 +6173,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       privateRelationshipTypeInput: document.getElementById("privateRelationshipTypeInput"),
       privateRelationshipNoteInput: document.getElementById("privateRelationshipNoteInput"),
       privateRelationshipStatus: document.getElementById("privateRelationshipStatus"),
+      characterRelationshipList: document.getElementById("characterRelationshipList"),
       privateRelationshipList: document.getElementById("privateRelationshipList"),
       portrait: document.getElementById("portraitImage"),
       quote: document.getElementById("characterQuote"),
@@ -7367,9 +7403,64 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       });
     };
 
+    const getRelationshipCounterpart = (relationship, characterId) => {
+      const counterpartId = relationship.from === characterId ? relationship.to : relationship.from;
+      return characters.find((character) => character.id === counterpartId);
+    };
+
+    const renderCharacterRelationships = () => {
+      refs.characterRelationshipList.replaceChildren();
+
+      if (!canEditActiveCharacter()) {
+        refs.characterRelationshipList.appendChild(createPersonalEmpty("Vztahy této postavy jsou soukromé. Vidí je jen jejich postava a admin."));
+        return;
+      }
+
+      const activeRelationships = characterRelationships
+        .filter((relationship) => relationship.from === activeCharacterId || relationship.to === activeCharacterId)
+        .sort((first, second) => {
+          const firstName = getRelationshipCounterpart(first, activeCharacterId)?.listName || "";
+          const secondName = getRelationshipCounterpart(second, activeCharacterId)?.listName || "";
+          return firstName.localeCompare(secondName, "cs");
+        });
+
+      if (activeRelationships.length === 0) {
+        refs.characterRelationshipList.appendChild(createPersonalEmpty("Postava zatím nemá žádný schválený vztah s ostatními postavami."));
+        return;
+      }
+
+      activeRelationships.forEach((relationship) => {
+        const type = relationTypes[relationship.type] || relationTypes.secret;
+        const counterpart = getRelationshipCounterpart(relationship, activeCharacterId);
+        const article = document.createElement("article");
+        article.className = "character-relation-entry";
+        article.style.setProperty("--relation-color", type.color);
+
+        const title = document.createElement("h4");
+        title.className = "character-relation-title";
+        title.textContent = counterpart?.listName || "Neznámá postava";
+
+        const meta = document.createElement("p");
+        meta.className = "character-relation-meta";
+        const line = document.createElement("span");
+        line.className = "character-relation-line";
+        const label = document.createElement("span");
+        label.textContent = `${type.label} | ${relationship.label || getRelationshipTitle(relationship.from, relationship.to)}`;
+        meta.append(line, label);
+
+        const text = document.createElement("p");
+        text.className = "character-relation-text";
+        text.textContent = relationship.note || "Vztah zatím nemá podrobnější poznámku.";
+
+        article.append(title, meta, text);
+        refs.characterRelationshipList.appendChild(article);
+      });
+    };
+
     const renderPrivateRelationships = () => {
       refs.privateRelationshipList.replaceChildren();
       updatePrivatePanelsVisibility();
+      renderCharacterRelationships();
 
       if (!canEditActiveCharacter()) {
         refs.privateRelationshipList.appendChild(createPersonalEmpty("Osobní vztahy jsou soukromé. Vidí je jen jejich postava a admin."));
@@ -8202,6 +8293,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         }
         if (refs.relationsModal.classList.contains("is-visible")) {
           renderRelations();
+        }
+        if (activeCharacterId) {
+          renderCharacterRelationships();
         }
       } catch (error) {
         console.warn("Approved relationships could not be loaded:", error);
