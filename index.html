@@ -11072,7 +11072,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       renderChronicle();
     });
 
-    refs.openRelationsButton.addEventListener("click", openRelationsModal);
+    refs.openRelationsButton.addEventListener("click", () => {
+      window.location.href = "relations.html";
+    });
 
     refs.closeRelationsButton.addEventListener("click", closeRelationsModal);
 

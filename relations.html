@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>West Haven Vztahy</title>
+  <style>
+    :root {
+      --bg: #070604;
+      --ink: #1c120b;
+      --paper: #c9aa78;
+      --paper-light: #ead7af;
+      --paper-muted: #a98d61;
+      --gold: #c49547;
+      --red: #8d2f35;
+      --line: rgba(196, 149, 71, 0.28);
+      --shadow: 0 32px 90px rgba(0, 0, 0, 0.58);
+      --ease: 240ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      color: #f7ecd5;
+      font-family: "Trebuchet MS", Georgia, "Times New Roman", serif;
+      background:
+        linear-gradient(90deg, rgba(3, 3, 3, 0.9), rgba(10, 8, 6, 0.5) 48%, rgba(3, 3, 3, 0.94)),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.82)),
+        url("images/west-haven-1899-banner.png") center / cover fixed,
+        #090806;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.38;
+      background:
+        repeating-linear-gradient(0deg, rgba(255, 238, 196, 0.025) 0 1px, transparent 1px 5px),
+        radial-gradient(circle at 50% 18%, rgba(196, 149, 71, 0.15), transparent 28%);
+      mix-blend-mode: screen;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(1440px, calc(100% - 36px));
+      min-height: calc(100vh - 48px);
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 18px;
+      margin: 24px auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 22px;
+      border: 1px solid rgba(196, 149, 71, 0.22);
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(255, 238, 196, 0.07), transparent 52%),
+        rgba(12, 10, 8, 0.74);
+      box-shadow: 0 18px 54px rgba(0, 0, 0, 0.34);
+      backdrop-filter: blur(4px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .seal {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border: 1px solid rgba(196, 149, 71, 0.48);
+      border-radius: 999px;
+      background:
+        radial-gradient(circle, rgba(255, 238, 196, 0.12), rgba(17, 12, 8, 0.78) 62%, #060504),
+        rgba(14, 10, 7, 0.9);
+      box-shadow:
+        inset 0 0 0 5px rgba(0, 0, 0, 0.3),
+        0 16px 34px rgba(0, 0, 0, 0.42);
+    }
+
+    .seal img {
+      width: 68%;
+      height: 68%;
+      display: block;
+      object-fit: contain;
+      filter: sepia(0.12) contrast(1.08);
+    }
+
+    .kicker {
+      margin: 0 0 4px;
+      color: var(--gold);
+      font-size: 0.74rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #fff1d5;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.3rem, 5vw, 4.8rem);
+      line-height: 0.94;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      text-shadow: 0 15px 34px rgba(0, 0, 0, 0.52);
+    }
+
+    .menu-link {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border: 1px solid rgba(196, 149, 71, 0.42);
+      border-radius: 4px;
+      background:
+        linear-gradient(180deg, rgba(95, 61, 30, 0.58), rgba(20, 15, 10, 0.88)),
+        rgba(11, 9, 7, 0.86);
+      color: #f2dfb8;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: transform var(--ease), border-color var(--ease), color var(--ease);
+    }
+
+    .menu-link:hover,
+    .menu-link:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(230, 184, 101, 0.72);
+      color: #fff3d4;
+      outline: none;
+    }
+
+    .case {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 18px;
+      min-height: 720px;
+    }
+
+    .board {
+      position: relative;
+      min-height: 720px;
+      overflow: hidden;
+      border: 1px solid rgba(196, 149, 71, 0.28);
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 50% 40%, rgba(196, 149, 71, 0.13), transparent 42%),
+        radial-gradient(circle at 28% 66%, rgba(141, 47, 53, 0.12), transparent 26%),
+        linear-gradient(145deg, rgba(31, 22, 14, 0.82), rgba(8, 7, 6, 0.96)),
+        repeating-linear-gradient(90deg, rgba(255, 238, 196, 0.035) 0 1px, transparent 1px 12px);
+      box-shadow: var(--shadow);
+      isolation: isolate;
+    }
+
+    .board::before,
+    .board::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .board::before {
+      inset: 26px;
+      border: 1px solid rgba(196, 149, 71, 0.16);
+      border-radius: 6px;
+      box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.38);
+    }
+
+    .board::after {
+      inset: 0;
+      opacity: 0.34;
+      background:
+        linear-gradient(122deg, transparent 0 46%, rgba(196, 149, 71, 0.16) 46.2% 46.45%, transparent 47% 100%),
+        repeating-linear-gradient(0deg, rgba(255, 238, 196, 0.025) 0 1px, transparent 1px 7px);
+    }
+
+    .board-title {
+      position: absolute;
+      left: 38px;
+      top: 32px;
+      z-index: 3;
+      margin: 0;
+      color: rgba(237, 216, 179, 0.78);
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .relations-lines {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    .relation-line {
+      stroke: var(--relation-color);
+      stroke-width: var(--relation-width);
+      stroke-linecap: round;
+      opacity: 0.5;
+      filter: drop-shadow(0 0 8px color-mix(in srgb, var(--relation-color) 30%, transparent));
+      transition: opacity var(--ease), stroke-width var(--ease), filter var(--ease);
+    }
+
+    .relation-line.is-dimmed {
+      opacity: 0.14;
+      filter: none;
+    }
+
+    .relation-line.is-active {
+      opacity: 0.98;
+      stroke-width: calc(var(--relation-width) + 1.6);
+      filter:
+        drop-shadow(0 0 10px color-mix(in srgb, var(--relation-color) 46%, transparent))
+        drop-shadow(0 10px 14px rgba(0, 0, 0, 0.34));
+    }
+
+    .relation-line.is-debt {
+      stroke-dasharray: 8 7;
+    }
+
+    .relation-line.is-secret {
+      stroke-dasharray: 2 8;
+    }
+
+    .nodes {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+    }
+
+    .node {
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      width: 132px;
+      min-height: 154px;
+      display: grid;
+      justify-items: center;
+      gap: 9px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #f2dfbc;
+      cursor: pointer;
+      font: inherit;
+      text-align: center;
+      transform: translate(-50%, -50%);
+    }
+
+    .portrait {
+      position: relative;
+      width: 94px;
+      height: 94px;
+      display: block;
+      padding: 5px;
+      border: 1px solid rgba(236, 212, 166, 0.62);
+      border-radius: 999px;
+      background:
+        radial-gradient(circle, rgba(255, 238, 196, 0.14), rgba(16, 10, 7, 0.88) 64%),
+        #120d09;
+      box-shadow:
+        0 24px 42px rgba(0, 0, 0, 0.5),
+        0 0 28px color-mix(in srgb, var(--node-color) 30%, transparent);
+      transition: transform var(--ease), border-color var(--ease), filter var(--ease);
+    }
+
+    .portrait::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -9px;
+      width: 15px;
+      height: 15px;
+      border: 1px solid rgba(255, 235, 190, 0.74);
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 35% 35%, #fff3ce 0 14%, #b77a36 16% 48%, #2b1a0c 52%);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.34);
+      transform: translateX(-50%);
+    }
+
+    .portrait img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      border-radius: inherit;
+      filter: sepia(0.18) contrast(1.06) brightness(0.92);
+    }
+
+    .node-name {
+      max-width: 132px;
+      display: inline-block;
+      padding: 4px 7px;
+      color: #f0ddb8;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      line-height: 1.2;
+      text-transform: uppercase;
+      text-shadow: 0 8px 18px rgba(0, 0, 0, 0.88);
+    }
+
+    .node.is-active .portrait,
+    .node:hover .portrait,
+    .node:focus-visible .portrait {
+      transform: translateY(-4px) scale(1.05);
+      border-color: color-mix(in srgb, var(--node-color) 70%, #fff2d0);
+      filter: brightness(1.08);
+    }
+
+    .node:focus-visible {
+      outline: none;
+    }
+
+    .dossier {
+      position: relative;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      gap: 14px;
+      min-height: 720px;
+      padding: 20px;
+      border: 1px solid rgba(196, 149, 71, 0.32);
+      border-radius: 8px;
+      background:
+        linear-gradient(90deg, rgba(255, 238, 196, 0.08) 0 1px, transparent 1px 100%),
+        linear-gradient(180deg, rgba(255, 238, 196, 0.16), rgba(83, 53, 29, 0.18) 28%, rgba(11, 8, 6, 0.92)),
+        rgba(20, 14, 9, 0.92);
+      box-shadow: var(--shadow);
+    }
+
+    .dossier::before {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      pointer-events: none;
+      border: 1px solid rgba(255, 238, 196, 0.1);
+      border-radius: 5px;
+    }
+
+    .dossier-head,
+    .dossier-body,
+    .legend {
+      position: relative;
+      z-index: 1;
+    }
+
+    .dossier-title {
+      margin: 0;
+      color: #fff1d3;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.9rem;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .status-strip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      padding: 8px 10px;
+      border: 1px solid color-mix(in srgb, var(--active-color) 54%, rgba(255, 238, 196, 0.2));
+      border-radius: 4px;
+      background: rgba(7, 6, 5, 0.38);
+      color: #f2dfb8;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--active-color);
+      box-shadow: 0 0 12px var(--active-color);
+    }
+
+    .section-label {
+      margin: 0 0 9px;
+      color: var(--gold);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.17em;
+      text-transform: uppercase;
+    }
+
+    .note {
+      margin: 0;
+      color: #e4d1ad;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.03rem;
+      line-height: 1.62;
+    }
+
+    .relationship-list {
+      display: grid;
+      gap: 9px;
+      margin-top: 18px;
+      max-height: 330px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .relationship-list::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .relationship-list::-webkit-scrollbar-thumb {
+      border-radius: 999px;
+      background: rgba(196, 149, 71, 0.44);
+    }
+
+    .file-button {
+      display: grid;
+      grid-template-columns: 10px minmax(0, 1fr);
+      gap: 9px;
+      align-items: center;
+      min-height: 46px;
+      padding: 10px;
+      border: 1px solid rgba(196, 149, 71, 0.18);
+      border-radius: 4px;
+      background: rgba(8, 7, 6, 0.42);
+      color: #ead9bb;
+      cursor: pointer;
+      font: inherit;
+      text-align: left;
+      transition: transform var(--ease), border-color var(--ease), background var(--ease);
+    }
+
+    .file-button::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--file-color);
+      box-shadow: 0 0 10px color-mix(in srgb, var(--file-color) 50%, transparent);
+    }
+
+    .file-button:hover,
+    .file-button:focus-visible,
+    .file-button.is-active {
+      transform: translateX(-3px);
+      border-color: color-mix(in srgb, var(--file-color) 58%, rgba(255, 238, 196, 0.2));
+      background: rgba(39, 26, 15, 0.56);
+      outline: none;
+    }
+
+    .file-title {
+      display: block;
+      color: #fff0cf;
+      font-size: 0.86rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .file-meta {
+      display: block;
+      margin-top: 3px;
+      color: #bca784;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .legend {
+      display: grid;
+      gap: 8px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(196, 149, 71, 0.2);
+    }
+
+    .legend-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px 10px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #cdb995;
+      font-size: 0.78rem;
+    }
+
+    .legend-line {
+      width: 30px;
+      height: 2px;
+      flex: 0 0 auto;
+      background: var(--legend-color);
+      box-shadow: 0 0 10px color-mix(in srgb, var(--legend-color) 45%, transparent);
+    }
+
+    .loading {
+      margin: 0;
+      color: #bca784;
+      font-size: 0.76rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 980px) {
+      .page {
+        width: min(100% - 20px, 760px);
+        margin: 10px auto;
+      }
+
+      .topbar,
+      .case {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        display: grid;
+      }
+
+      .menu-link {
+        justify-self: start;
+      }
+
+      .board,
+      .dossier {
+        min-height: 620px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .page {
+        width: calc(100% - 14px);
+      }
+
+      .topbar,
+      .dossier {
+        padding: 14px;
+      }
+
+      .brand {
+        align-items: flex-start;
+      }
+
+      .seal {
+        width: 48px;
+        height: 48px;
+      }
+
+      h1 {
+        font-size: clamp(2.1rem, 16vw, 3.4rem);
+      }
+
+      .board {
+        min-height: 560px;
+      }
+
+      .board-title {
+        left: 22px;
+        top: 20px;
+      }
+
+      .node {
+        width: 102px;
+        min-height: 130px;
+      }
+
+      .portrait {
+        width: 74px;
+        height: 74px;
+      }
+
+      .node-name {
+        max-width: 104px;
+        font-size: 0.62rem;
+      }
+
+      .legend-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div class="brand">
+        <span class="seal" aria-hidden="true">
+          <img src="images/whrp.png" alt="">
+        </span>
+        <div>
+          <p class="kicker">West Haven Case File</p>
+          <h1>Vztahy</h1>
+        </div>
+      </div>
+      <a class="menu-link" href="index.html">Vrátit se na menu</a>
+    </header>
+
+    <section class="case" aria-label="Mapa vztahů postav">
+      <div class="board">
+        <p class="board-title">Evidence board / 1899</p>
+        <svg class="relations-lines" id="relationsLines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+        <div class="nodes" id="nodes"></div>
+      </div>
+
+      <aside class="dossier" id="dossier" aria-live="polite">
+        <header class="dossier-head">
+          <p class="kicker">Relationship Dossier</p>
+          <h2 class="dossier-title" id="dossierTitle">Načítám spis</h2>
+          <div class="status-strip" id="statusStrip">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span id="statusText">Čeká se</span>
+          </div>
+        </header>
+
+        <div class="dossier-body">
+          <p class="section-label">Poznámka</p>
+          <p class="note" id="dossierNote">Síť vztahů se připravuje.</p>
+          <div class="relationship-list" id="relationshipList"></div>
+        </div>
+
+        <footer class="legend">
+          <p class="section-label">Legenda</p>
+          <div class="legend-grid" id="legendGrid"></div>
+          <p class="loading" id="loadStatus">Lokální spis připraven.</p>
+        </footer>
+      </aside>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+    import {
+      collection,
+      getDocs,
+      getFirestore
+    } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBXUgRu0V3a2xQG1-r-pEXug5Vdj6nIJyE",
+      authDomain: "postavy-redm.firebaseapp.com",
+      projectId: "postavy-redm",
+      storageBucket: "postavy-redm.firebasestorage.app",
+      messagingSenderId: "639963767356",
+      appId: "1:639963767356:web:3d4090b049785150fc1939"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const characterRelationshipsRef = collection(db, "characterRelationships");
+
+    const characters = [
+      {
+        id: "zeke",
+        listName: "Ezekiel Crowe",
+        role: "Psanec / samotářský tulák",
+        portrait: "images/zeke.png",
+        portraitAlt: "Portrét postavy Ezekiel Crowe"
+      },
+      {
+        id: "silas",
+        listName: "Silas Crowe",
+        role: "Vyjednavač / manipulátor",
+        portrait: "images/Silas.png",
+        portraitAlt: "Portrét postavy Silas Crowe"
+      },
+      {
+        id: "violet",
+        listName: "Violet Crowe",
+        role: "Manipulátorka / střelkyně",
+        portrait: "images/Violet.png",
+        portraitAlt: "Portrét postavy Violet Crowe"
+      },
+      {
+        id: "william",
+        listName: "William Hart",
+        role: "Vyjednavač / ochránce",
+        portrait: "images/William.png",
+        portraitAlt: "Portrét postavy William Hart"
+      },
+      {
+        id: "thomas-mercer",
+        listName: "Thomas Mercer",
+        role: "Rančer / koňák",
+        portrait: "images/Thomas.png",
+        portraitAlt: "Portrét postavy Thomas Mercer"
+      }
+    ];
+
+    const relationTypes = {
+      family: { label: "Rodina", color: "#c89b45", width: 3.8 },
+      ally: { label: "Spojenec", color: "#8fbc8f", width: 3.1 },
+      close: { label: "Přítel", color: "#d6c48a", width: 3.2 },
+      trust: { label: "Důvěra", color: "#78b7a4", width: 3 },
+      respect: { label: "Respekt", color: "#9db3c7", width: 2.8 },
+      protection: { label: "Ochrana", color: "#7fb2d0", width: 3 },
+      mentor: { label: "Mentor", color: "#b8a36a", width: 2.8 },
+      debt: { label: "Dluh", color: "#c69a4a", width: 3 },
+      commonGoal: { label: "Společný cíl", color: "#b0a05a", width: 2.8 },
+      secret: { label: "Tajemství", color: "#9f8dca", width: 2.9 },
+      suspicion: { label: "Podezření", color: "#b08a80", width: 2.8 },
+      distrust: { label: "Nedůvěra", color: "#b78183", width: 3 },
+      fear: { label: "Strach", color: "#7f8a93", width: 2.8 },
+      blackmail: { label: "Vydírání", color: "#6f5b78", width: 3.2 },
+      betrayal: { label: "Zrada", color: "#8f2f3d", width: 3.4 },
+      rivalry: { label: "Rivalita", color: "#b84a4a", width: 3.4 },
+      hatred: { label: "Nenávist", color: "#d33f3f", width: 3.8 },
+      romance: { label: "Romantika", color: "#d2789b", width: 3.2 },
+      tension: { label: "Napětí", color: "#c080a0", width: 2.9 },
+      former: { label: "Bývalý vztah", color: "#a88977", width: 2.8 }
+    };
+
+    const relationshipNodes = {
+      zeke: { x: 50, y: 24 },
+      silas: { x: 25, y: 45 },
+      violet: { x: 75, y: 45 },
+      "thomas-mercer": { x: 36, y: 78 },
+      william: { x: 64, y: 78 }
+    };
+
+    const characterColors = {
+      zeke: "#c74d58",
+      silas: "#4ca66f",
+      william: "#d870a8",
+      "thomas-mercer": "#8fa3a8",
+      violet: "#d7a8cf"
+    };
+
+    const defaultRelationships = [
+      {
+        from: "zeke",
+        to: "silas",
+        type: "family",
+        label: "Bratři Croweové",
+        note: "Krev je drží pohromadě, i když Zeke mizí do ticha a Silas se snaží najít pravdu mezi slovy druhých."
+      },
+      {
+        from: "zeke",
+        to: "violet",
+        type: "family",
+        label: "Sourozenci Croweovi",
+        note: "Violet Zeka zná dost na to, aby se ho nebála slepě. Právě proto mezi nimi zůstává opatrnost i nevyřčená loajalita."
+      },
+      {
+        from: "silas",
+        to: "violet",
+        type: "family",
+        label: "Rodinná paměť",
+        note: "Silas a Violet umí číst stejné stíny Croweovy rodiny, jen každý používá jinou zbraň: on řeč, ona pozorování."
+      },
+      {
+        from: "violet",
+        to: "william",
+        type: "ally",
+        label: "Tiché spojenectví",
+        note: "William je pro Violet vzácný typ člověka: nestaví ji do klece a nesnaží se vlastnit její tajemství."
+      },
+      {
+        from: "zeke",
+        to: "thomas-mercer",
+        type: "distrust",
+        label: "Napjatá vzdálenost",
+        note: "Thomas představuje řád a disciplínu. Zeke je všechno, co se takovému řádu špatně zapisuje do knih."
+      },
+      {
+        from: "silas",
+        to: "thomas-mercer",
+        type: "secret",
+        label: "Otázky bez odpovědi",
+        note: "Silas ví, že Thomas může být užitečný zdroj. Thomas zase tuší, že Silas se nikdy neptá jen jednou."
+      },
+      {
+        from: "william",
+        to: "thomas-mercer",
+        type: "debt",
+        label: "Nevyrovnaný účet",
+        note: "Mezi Williamem a Thomasem leží věci, které nejsou nepřátelstvím, ale ani čistým přátelstvím."
+      },
+      {
+        from: "zeke",
+        to: "william",
+        type: "rivalry",
+        label: "Ostražitý respekt",
+        note: "Zeke respektuje lidi, kteří se nerozklepou při prvním pohledu. William mu ale stojí příliš blízko u rodiny."
+      }
+    ];
+
+    let relationships = defaultRelationships.map((relationship) => ({ ...relationship }));
+    let selectedRelationshipId = getRelationshipId(relationships[0].from, relationships[0].to);
+
+    const refs = {
+      lines: document.getElementById("relationsLines"),
+      nodes: document.getElementById("nodes"),
+      dossier: document.getElementById("dossier"),
+      dossierTitle: document.getElementById("dossierTitle"),
+      statusStrip: document.getElementById("statusStrip"),
+      statusText: document.getElementById("statusText"),
+      dossierNote: document.getElementById("dossierNote"),
+      relationshipList: document.getElementById("relationshipList"),
+      legendGrid: document.getElementById("legendGrid"),
+      loadStatus: document.getElementById("loadStatus")
+    };
+
+    function getRelationshipId(from, to) {
+      return [from, to].sort().join("--");
+    }
+
+    function getCharacter(id) {
+      return characters.find((character) => character.id === id);
+    }
+
+    function getRelationshipLabel(relationship) {
+      const from = getCharacter(relationship.from);
+      const to = getCharacter(relationship.to);
+      return `${from?.listName || relationship.from} ↔ ${to?.listName || relationship.to}`;
+    }
+
+    function getSelectedRelationship() {
+      return relationships.find((relationship) => getRelationshipId(relationship.from, relationship.to) === selectedRelationshipId)
+        || relationships[0];
+    }
+
+    function setSelectedRelationship(id) {
+      selectedRelationshipId = id;
+      render();
+    }
+
+    function renderLines() {
+      refs.lines.replaceChildren();
+      const selected = getSelectedRelationship();
+      const selectedId = selected ? getRelationshipId(selected.from, selected.to) : "";
+
+      relationships.forEach((relationship) => {
+        const fromNode = relationshipNodes[relationship.from];
+        const toNode = relationshipNodes[relationship.to];
+        if (!fromNode || !toNode) return;
+
+        const type = relationTypes[relationship.type] || relationTypes.secret;
+        const id = getRelationshipId(relationship.from, relationship.to);
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", fromNode.x);
+        line.setAttribute("y1", fromNode.y);
+        line.setAttribute("x2", toNode.x);
+        line.setAttribute("y2", toNode.y);
+        line.classList.add("relation-line", `is-${relationship.type}`);
+        line.classList.toggle("is-active", id === selectedId);
+        line.classList.toggle("is-dimmed", Boolean(selectedId) && id !== selectedId);
+        line.style.setProperty("--relation-color", type.color);
+        line.style.setProperty("--relation-width", String(type.width));
+        refs.lines.appendChild(line);
+      });
+    }
+
+    function renderNodes() {
+      refs.nodes.replaceChildren();
+      const selected = getSelectedRelationship();
+      const activeCharacterIds = new Set(selected ? [selected.from, selected.to] : []);
+
+      characters.forEach((character) => {
+        const node = relationshipNodes[character.id];
+        if (!node) return;
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "node";
+        button.classList.toggle("is-active", activeCharacterIds.has(character.id));
+        button.dataset.character = character.id;
+        button.style.setProperty("--x", `${node.x}%`);
+        button.style.setProperty("--y", `${node.y}%`);
+        button.style.setProperty("--node-color", characterColors[character.id] || "#c49547");
+
+        const portrait = document.createElement("span");
+        portrait.className = "portrait";
+        const image = document.createElement("img");
+        image.src = character.portrait;
+        image.alt = character.portraitAlt;
+        portrait.appendChild(image);
+
+        const name = document.createElement("span");
+        name.className = "node-name";
+        name.textContent = character.listName;
+
+        button.append(portrait, name);
+        refs.nodes.appendChild(button);
+      });
+    }
+
+    function renderDossier() {
+      const relationship = getSelectedRelationship();
+      if (!relationship) return;
+
+      const type = relationTypes[relationship.type] || relationTypes.secret;
+      refs.dossier.style.setProperty("--active-color", type.color);
+      refs.dossierTitle.textContent = getRelationshipLabel(relationship);
+      refs.statusText.textContent = `Stav: ${type.label}`;
+      refs.dossierNote.textContent = relationship.note || "Vztah zatím nemá podrobnější poznámku.";
+
+      refs.relationshipList.replaceChildren();
+      relationships.forEach((item) => {
+        const itemType = relationTypes[item.type] || relationTypes.secret;
+        const id = getRelationshipId(item.from, item.to);
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "file-button";
+        button.classList.toggle("is-active", id === selectedRelationshipId);
+        button.dataset.relationship = id;
+        button.style.setProperty("--file-color", itemType.color);
+
+        const text = document.createElement("span");
+        const title = document.createElement("span");
+        title.className = "file-title";
+        title.textContent = item.label;
+        const meta = document.createElement("span");
+        meta.className = "file-meta";
+        meta.textContent = `${getRelationshipLabel(item)} | ${itemType.label}`;
+        text.append(title, meta);
+
+        button.appendChild(text);
+        refs.relationshipList.appendChild(button);
+      });
+    }
+
+    function renderLegend() {
+      refs.legendGrid.replaceChildren();
+      const usedTypes = [...new Set(relationships.map((relationship) => relationship.type))]
+        .map((typeId) => relationTypes[typeId])
+        .filter(Boolean);
+
+      usedTypes.forEach((type) => {
+        const item = document.createElement("div");
+        item.className = "legend-item";
+        const line = document.createElement("span");
+        line.className = "legend-line";
+        line.style.setProperty("--legend-color", type.color);
+        const label = document.createElement("span");
+        label.textContent = type.label;
+        item.append(line, label);
+        refs.legendGrid.appendChild(item);
+      });
+    }
+
+    function render() {
+      renderLines();
+      renderNodes();
+      renderDossier();
+      renderLegend();
+    }
+
+    async function loadApprovedRelationships() {
+      refs.loadStatus.textContent = "Načítám schválené vazby...";
+
+      try {
+        const snapshot = await getDocs(characterRelationshipsRef);
+        const byId = new Map(defaultRelationships.map((relationship) => [
+          getRelationshipId(relationship.from, relationship.to),
+          { ...relationship }
+        ]));
+
+        snapshot.docs.forEach((entryDoc) => {
+          const relationship = entryDoc.data();
+          if (!relationship.from || !relationship.to || !relationship.type) return;
+          byId.set(getRelationshipId(relationship.from, relationship.to), {
+            from: relationship.from,
+            to: relationship.to,
+            type: relationship.type,
+            label: relationship.label || getRelationshipLabel(relationship),
+            note: relationship.note || "Vztah byl schválen adminem.",
+            source: relationship.source || "approved"
+          });
+        });
+
+        relationships = Array.from(byId.values());
+        if (!getSelectedRelationship() && relationships[0]) {
+          selectedRelationshipId = getRelationshipId(relationships[0].from, relationships[0].to);
+        }
+        refs.loadStatus.textContent = "Schválené vazby načteny.";
+      } catch (error) {
+        console.warn("Approved relationships could not be loaded:", error);
+        refs.loadStatus.textContent = "Používám lokální spis vztahů.";
+      }
+
+      render();
+    }
+
+    refs.relationshipList.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-relationship]");
+      if (!button) return;
+      setSelectedRelationship(button.dataset.relationship);
+    });
+
+    refs.nodes.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-character]");
+      if (!button) return;
+      const relationship = relationships.find((item) => (
+        item.from === button.dataset.character || item.to === button.dataset.character
+      ));
+      if (!relationship) return;
+      setSelectedRelationship(getRelationshipId(relationship.from, relationship.to));
+    });
+
+    render();
+    loadApprovedRelationships();
+  </script>
+</body>
+</html>
