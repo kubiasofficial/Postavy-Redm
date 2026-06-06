@@ -98,6 +98,81 @@ const characterRelationships = [
   }
 ];
 
+const characterActionLines = {
+  zeke: {
+    wakeTitle: "Zeke je vzhuru",
+    sleepTitle: "Zeke usnul",
+    wake: [
+      "Zeke otevrel oci. West Haven ztichl.",
+      "Zeke je vzhuru a den se prestal tvarit nevinne.",
+      "Na ulici se nic nestalo. Presto lide uhnuli z cesty driv, nez ho videli."
+    ],
+    sleep: [
+      "Zeke usnul. Mesto si dovolilo dychat.",
+      "Zeke spi. Nikdo tomu neveri dost na to, aby se prestal ohlizet.",
+      "Lampa dohorela. Zeke se nehybe a West Haven si to zapisuje jako vyhru."
+    ]
+  },
+  silas: {
+    wakeTitle: "Silas je vzhuru",
+    sleepTitle: "Silas odpociva",
+    wake: [
+      "Silas je vzhuru. Nekdo uz urcite rekl vic, nez mel.",
+      "Silas otevrel oci a mesto si zkontrolovalo vlastni lzi.",
+      "Pravda se dnes bude schovavat hur nez obvykle."
+    ],
+    sleep: [
+      "Silas odpociva. Tajemstvi zustala sedet u stolu.",
+      "Silas spi a i zavrene dvere vypadaji, jako by neco tajily.",
+      "Mesto ma chvili bez jeho otazek, ale odpovedi zustaly nervozni."
+    ]
+  },
+  william: {
+    wakeTitle: "William je vzhuru",
+    sleepTitle: "William spi",
+    wake: [
+      "William je vzhuru. West Haven ma pevnejsi pudu pod nohama.",
+      "William otevrel oci s klidem cloveka, ktery uz prijal odpovednost za den.",
+      "Je vzhuru. Potize to vi taky."
+    ],
+    sleep: [
+      "William spi. I jeho odpocinek pusobi jako hlidka.",
+      "William odpociva. I tak po nem v mistnosti zustala jistota.",
+      "William spi a West Haven se uci stat rovne bez jeho pohledu."
+    ]
+  },
+  "thomas-mercer": {
+    wakeTitle: "Tom je vzhuru",
+    sleepTitle: "Tom to zalomil",
+    wake: [
+      "Tom je vzhuru. U staji uz nekdo hleda kavu.",
+      "Thomas je vzhuru. Dobre umysly si prave obuly boty.",
+      "Rano sotva zacalo a Tom uz vypada, ze mu chce neco dokazat."
+    ],
+    sleep: [
+      "Tom to zalomil. Staje konecne slysi jen dech koni.",
+      "Tom usnul a staje si to berou jako maly zazrak.",
+      "Nocni klid ma dnes boty od blata a jmeno Thomas Mercer."
+    ]
+  },
+  violet: {
+    wakeTitle: "Violet je vzhuru",
+    sleepTitle: "Violet spi",
+    wake: [
+      "Violet je vzhuru. Ticho v mistnosti se stalo ostrejsim.",
+      "Violet otevrela oci a prestalo se plytvat slovy.",
+      "West Haven ma od rana pocit, ze ho nekdo cte mezi radky."
+    ],
+    sleep: [
+      "Violet spi. Nektere pohledy presto zustaly sklopene.",
+      "Violet odpociva. Nektera tajemstvi se konecne prestala trast.",
+      "Violet spi a mistnost si zachovala jeji ticho jako pravidlo."
+    ]
+  }
+};
+
+const pickRandom = (items) => items[Math.floor(Math.random() * items.length)];
+
 const commands = [
   {
     name: "wh-stav",
@@ -423,14 +498,22 @@ const handleStatus = async (interaction) => {
 const createAlert = async (characterId, type) => {
   const character = getCharacter(characterId);
   const createdAt = Date.now();
+  const profile = characterActionLines[characterId];
+  const title = type === "wake"
+    ? profile?.wakeTitle || `${character.name} je vzhuru`
+    : profile?.sleepTitle || `${character.name} usnul`;
+  const text = profile
+    ? pickRandom(type === "wake" ? profile.wake : profile.sleep)
+    : type === "wake"
+      ? `${character.name} se probudil.`
+      : `${character.name} usnul.`;
+
   await patchFirestoreDocument(`characterAlerts/${createdAt}-${characterId}-${type}`, {
     characterId,
     characterName: character.name,
     type,
-    title: type === "wake" ? `${character.name} je vzhuru` : `${character.name} usnul`,
-    text: type === "wake"
-      ? `${character.name} se probudil.`
-      : `${character.name} usnul.`,
+    title,
+    text,
     color: character.color,
     createdAt
   });

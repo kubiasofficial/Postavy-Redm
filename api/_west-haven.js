@@ -228,9 +228,32 @@ const sendDiscordMessage = async (token, channelId, payload) => {
   return response.json();
 };
 
+const createDiscordDmChannel = async (token, recipientId) => {
+  const response = await fetch(`${DISCORD_API_BASE}/users/@me/channels`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bot ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ recipient_id: recipientId })
+  });
+
+  if (!response.ok) {
+    throw new Error(`Discord DM channel failed: ${await response.text()}`);
+  }
+
+  return response.json();
+};
+
+const sendDiscordDirectMessage = async (token, recipientId, payload) => {
+  const channel = await createDiscordDmChannel(token, recipientId);
+  return sendDiscordMessage(token, channel.id, payload);
+};
+
 module.exports = {
   DISCORD_API_BASE,
   characters,
+  createDiscordDmChannel,
   createFirestoreDocument,
   fetchDiscordMembers,
   fetchFirestoreCollection,
@@ -242,5 +265,6 @@ module.exports = {
   getLevelForTotal,
   getPragueDateKey,
   patchFirestoreDocument,
+  sendDiscordDirectMessage,
   sendDiscordMessage
 };

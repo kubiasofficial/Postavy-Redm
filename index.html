@@ -100,6 +100,26 @@
       animation: mist-drift 22s linear infinite alternate;
     }
 
+    .page-wipe {
+      position: fixed;
+      inset: 0;
+      z-index: 140;
+      pointer-events: none;
+      opacity: 0;
+      background:
+        linear-gradient(90deg, rgba(8, 6, 4, 0.98), rgba(61, 39, 19, 0.96) 48%, rgba(8, 6, 4, 0.98)),
+        repeating-linear-gradient(90deg, rgba(255, 238, 196, 0.05) 0 1px, transparent 1px 12px);
+      transform: translateY(105%);
+    }
+
+    body.is-page-entering .page-wipe {
+      animation: page-wipe-in 560ms var(--ease) both;
+    }
+
+    body.is-page-leaving .page-wipe {
+      animation: page-wipe-out 360ms var(--ease) both;
+    }
+
     .app {
       position: relative;
       z-index: 1;
@@ -115,6 +135,21 @@
         linear-gradient(145deg, rgba(43, 33, 24, 0.72), rgba(9, 9, 8, 0.92));
       box-shadow: 0 28px 80px rgba(0, 0, 0, 0.46);
       animation: view-rise 520ms var(--ease) both;
+    }
+
+    .app,
+    .home {
+      transition:
+        opacity 220ms var(--ease),
+        transform 260ms var(--ease),
+        filter 260ms var(--ease);
+    }
+
+    body.is-view-switching .app,
+    body.is-view-switching .home {
+      opacity: 0.32;
+      filter: blur(2px) brightness(0.86);
+      transform: translateY(8px);
     }
 
     .app.is-hidden,
@@ -2510,6 +2545,7 @@
 
     .badge-modal.is-visible {
       display: grid;
+      animation: modal-backdrop-in 220ms var(--ease) both;
     }
 
     .badge-card {
@@ -2525,6 +2561,13 @@
         linear-gradient(145deg, rgba(34, 29, 24, 0.98), rgba(10, 10, 9, 0.99));
       box-shadow: 0 34px 110px rgba(0, 0, 0, 0.72), 0 0 80px rgba(169, 120, 57, 0.16);
       animation: view-rise 320ms var(--ease) both;
+    }
+
+    .badge-modal.is-visible .badge-card,
+    .auth-modal.is-visible .auth-card,
+    .sleep-report-modal.is-visible .sleep-report-dialog,
+    .night-report-modal.is-visible .night-report-dialog {
+      animation: modal-card-in 340ms var(--ease) both;
     }
 
     .badge-modal-x {
@@ -3722,6 +3765,7 @@
 
     .auth-modal.is-visible {
       display: grid;
+      animation: modal-backdrop-in 220ms var(--ease) both;
     }
 
     .auth-card {
@@ -3866,6 +3910,7 @@
 
     .sleep-report-modal.is-visible {
       display: grid;
+      animation: modal-backdrop-in 220ms var(--ease) both;
     }
 
     .sleep-report-dialog {
@@ -4038,6 +4083,7 @@
 
     .night-report-modal.is-visible {
       display: flex;
+      animation: modal-backdrop-in 220ms var(--ease) both;
     }
 
     .night-report-dialog {
@@ -4199,6 +4245,50 @@
       }
       to {
         opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes page-wipe-in {
+      0% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-105%);
+      }
+    }
+
+    @keyframes page-wipe-out {
+      0% {
+        opacity: 0;
+        transform: translateY(105%);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes modal-backdrop-in {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes modal-card-in {
+      from {
+        opacity: 0;
+        filter: blur(4px) brightness(0.84);
+        transform: translateY(22px) scale(0.975);
+      }
+      to {
+        opacity: 1;
+        filter: blur(0) brightness(1);
         transform: translateY(0) scale(1);
       }
     }
@@ -4926,6 +5016,7 @@
 </head>
 <body>
   <div class="mist" aria-hidden="true"></div>
+  <div class="page-wipe" aria-hidden="true"></div>
 
   <section class="home" id="homeView" aria-label="Výběr postavy">
     <div class="trail-lines" aria-hidden="true"></div>
@@ -6258,7 +6349,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           "Na parapetu se chvěl prach. Zeke otevřel oči.",
           "Doktor zapsal probuzení a vynechal všechny věci, které se těžko vysvětlují.",
           "Zeke vstal bez hluku. Přesto to znělo jako začátek potíží.",
-          "West Haven má další jméno na jazyku a nikdo ho nechce vyslovit první."
+          "West Haven má další jméno na jazyku a nikdo ho nechce vyslovit první.",
+          "Zeke se probral a ve vzduchu zůstalo něco těžšího než prach.",
+          "Na ulici se nic nestalo. Přesto lidé uhnuli z cesty dřív, než ho viděli.",
+          "Zeke je vzhůru a den se okamžitě přestal tvářit nevinně.",
+          "Ordinace ztichla tak hluboko, že bylo slyšet vlastní svědomí.",
+          "Zeke otevřel oči a staré hříchy ve West Havenu si připomněly své jméno."
         ],
         sleepMessages: [
           "Zeke konečně spí. West Haven si dovolil vydechnout, ale jen potichu.",
@@ -6280,7 +6376,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           "Lampa nad stolem dohořívá. Zeke se nehnul.",
           "Doktor poznamenal spánek a zbytek nechal radši bez komentáře.",
           "Zeke spí. I tohle ve West Havenu působí jako zpráva.",
-          "Ticho po Zekem je těžké, ale aspoň není vzhůru."
+          "Ticho po Zekem je těžké, ale aspoň není vzhůru.",
+          "Zeke usnul a dveře v okolí zůstaly zavřené o něco klidněji.",
+          "Noční záznam mlčí tam, kde by normální člověk psal vysvětlení.",
+          "Zeke spí. Nikdo tomu nevěří dost na to, aby se přestal ohlížet.",
+          "Město se stáhlo do ticha a ticho tentokrát přežilo.",
+          "Lampa dohořela. Zeke se nehýbe a West Haven si to zapisuje jako výhru."
         ]
       },
       silas: {
@@ -6313,7 +6414,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           "Zápis říká, že Silas je vzhůru. Nikdo se nepodepsal čitelně.",
           "Silas vstal bez spěchu. Přesto se zdálo, že už je pozdě.",
           "Ticho kolem Silase neznamená prázdno. Znamená výpočet.",
-          "West Haven má o jeden úsměv víc a o jednu jistotu méně."
+          "West Haven má o jeden úsměv víc a o jednu jistotu méně.",
+          "Silas se probudil a každý rozhovor v okolí najednou dostal cenu.",
+          "Na stole neležela žádná karta, přesto měl Silas výraz vítěze.",
+          "Silas je vzhůru. Pravda se dnes bude schovávat hůř než obvykle.",
+          "Jeho první pohled ráno působil jako otázka, na kterou nikdo nechce odpovědět.",
+          "Silas otevřel oči a město si instinktivně zkontrolovalo vlastní lži."
         ],
         sleepMessages: [
           "Silas spí. West Haven si oddechl, ale nikdo si není jistý, jestli to nebylo součástí plánu.",
@@ -6335,7 +6441,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           "West Haven má chvíli bez jeho pohledu. To je vzácnější než klid.",
           "Silas odpočívá a lidé zase mluví o něco hlasitěji, než by měli.",
           "Ticho u Silase zůstalo zdvořilé. Až příliš zdvořilé.",
-          "Noční hlášení končí větou, které nikdo úplně nevěří: Silas spí."
+          "Noční hlášení končí větou, které nikdo úplně nevěří: Silas spí.",
+          "Silas spí a i zavřené dveře vypadají, jako by něco tajily.",
+          "Město má chvíli bez jeho otázek, ale odpovědi zůstaly nervózní.",
+          "Silas odpočívá. Některé plány se zatím tváří, že vznikly samy.",
+          "Noční klid kolem Silase je až příliš uhlazený.",
+          "Silas zavřel oči a West Haven si dovolil zapomenout jen na pár minut."
         ]
       },
       william: {
@@ -6368,7 +6479,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           "William nespí. Někteří lidé díky tomu mluví odvážněji.",
           "Záznam uvádí probuzení bez incidentu. To je u Williama skoro pravidlo.",
           "William je na nohou a dnešní den má menší šanci skončit hloupě.",
-          "Když William vstal, ruch ve stájích se srovnal do pořádku."
+          "Když William vstal, ruch ve stájích se srovnal do pořádku.",
+          "William se probudil a někdo v okolí si konečně dovolil pustit ramena dolů.",
+          "Je vzhůru. To samo o sobě neřeší potíže, ale potíže to ví taky.",
+          "William otevřel oči s klidem člověka, který už přijal odpovědnost za den.",
+          "Na prahu se objevil jeho stín a spěch ve městě ztratil ostré hrany.",
+          "William je na nohou. West Haven má znovu komu věřit, i když jen potichu."
         ],
         sleepMessages: [
           "William spí a město má na chvíli jednoho ochránce méně na nohou.",
@@ -6390,7 +6506,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           "West Haven ztratil jeho bdělý pohled, ale ne pocit, že je nablízku.",
           "William odpočívá beze slov, stejně jako většinu věcí řeší.",
           "Noční klid kolem Williama působí pevněji než zamčené dveře.",
-          "William spí. Zítřek bude mít komu předložit účet."
+          "William spí. Zítřek bude mít komu předložit účet.",
+          "William zavřel oči až potom, co svět kolem něj nepůsobil úplně ztraceně.",
+          "Stáje ztichly a noční vzduch si sedl níž k zemi.",
+          "William odpočívá. I tak po něm v místnosti zůstala jistota.",
+          "Noční hlídka si poznamenala klid a nepřipsala, kolik mu dluží.",
+          "William spí a West Haven se učí stát rovně bez jeho pohledu."
         ]
       },
       "thomas-mercer": {
@@ -6423,7 +6544,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           "Tom je na nohou a dobré úmysly se začínají nebezpečně podobat problémům.",
           "Někdo u ohně se zasmál. Tom je vzhůru a den má hned víc života.",
           "Tom otevřel oči a pravděpodobnost hospodské hádky mírně vzrostla.",
-          "U koní se zvedly uši. Tom Mercer je vzhůru."
+          "U koní se zvedly uši. Tom Mercer je vzhůru.",
+          "Tom otevřel oči a ticho u stájí se okamžitě vzdalo.",
+          "Thomas je vzhůru. Dobré úmysly si právě obuly boty.",
+          "Tom se zvedl tak rychle, jako by už někdo potřeboval zachránit před vlastním rozumem.",
+          "Ráno sotva začalo a Tom už vypadá, že mu chce něco dokázat.",
+          "U ohně se pohnul hrnek s kávou. Tom Mercer nespí."
         ],
         sleepMessages: [
           "Tom to zalomil. Stáje konečně slyší jen dech koní.",
@@ -6445,7 +6571,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           "Stájník zavřel dveře a poprvé se nebál, že Tom hned vyjde zpátky.",
           "Thomas Mercer odpočívá. Koně to berou jako zasloužené vítězství.",
           "Tom to zalomil a město si užívá podezřele pohodlné ticho.",
-          "Noční klid má dnes boty od bláta a jméno Thomas Mercer."
+          "Noční klid má dnes boty od bláta a jméno Thomas Mercer.",
+          "Tom usnul a stáje si to berou osobně jako malý zázrak.",
+          "Thomas odpočívá. Dnešní den konečně přestal dupat po prknech.",
+          "Tom spí tak pevně, že by ho z postele musel dostat až opravdu špatný nápad.",
+          "Noční ticho kolem něj působí unaveně, ale vděčně.",
+          "Tom to zalomil a jeho tvrdohlavost si poprvé za den sedla vedle něj."
         ]
       },
       violet: {
@@ -6478,7 +6609,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           "Violet otevřela oči a někdo poblíž se rozhodl nelhat zbytečně nahlas.",
           "Ticho kolem ní nebylo prázdné. Bylo přesné.",
           "Violet je vzhůru a město najednou vypadá jako špatně zahraná partie.",
-          "Na stole zůstal stín její ruky. West Haven má další důvod být zdvořilý."
+          "Na stole zůstal stín její ruky. West Haven má další důvod být zdvořilý.",
+          "Violet otevřela oči a v místnosti se přestalo plýtvat slovy.",
+          "Je vzhůru. Každé tajemství v okolí si upravilo límec.",
+          "Violet se probrala tiše, ale den se jí přesto uklonil z cesty.",
+          "West Haven má od rána pocit, že ho někdo čte mezi řádky.",
+          "Violet nespí a pravda si dnes raději sedne rovně."
         ],
         sleepMessages: [
           "Violet spí a West Haven se tváří, že to nic neznamená.",
@@ -6500,7 +6636,12 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           "Noční služba zapsala odpočinek a radši nepřidala vlastní názor.",
           "Violet odpočívá tak tiše, že to působí skoro jako varování.",
           "Město se tváří klidně. U Violet se ale klid nikdy nečte snadno.",
-          "Dnešní noc má měkký hlas. Violet spí."
+          "Dnešní noc má měkký hlas. Violet spí.",
+          "Violet spí a místnost si zachovala její ticho jako pravidlo.",
+          "Noční služba zavřela zápis dřív, než by musela napsat příliš mnoho.",
+          "Violet odpočívá. Některá tajemství se konečně přestala třást.",
+          "Lampa zhasla a stíny kolem ní zůstaly překvapivě poslušné.",
+          "Violet spí. West Haven si na chvíli může myslet, že mu něco neuniká."
         ]
       }
     };
@@ -6840,6 +6981,27 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     ];
 
     const pickRandom = (items) => items[Math.floor(Math.random() * items.length)];
+
+    const startPageEnter = () => {
+      document.body.classList.add("is-page-entering");
+      window.setTimeout(() => {
+        document.body.classList.remove("is-page-entering");
+      }, 620);
+    };
+
+    const navigateWithWipe = (url) => {
+      document.body.classList.add("is-page-leaving");
+      window.setTimeout(() => {
+        window.location.href = url;
+      }, 300);
+    };
+
+    const pulseViewTransition = () => {
+      document.body.classList.add("is-view-switching");
+      window.setTimeout(() => {
+        document.body.classList.remove("is-view-switching");
+      }, 180);
+    };
 
     const syncDiscordPlayersToCharacters = () => {
       Object.keys(characterDiscordPlayers).forEach((key) => {
@@ -8323,6 +8485,24 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           readAt: null
         });
       }));
+
+      sendRelationshipDiscordNotification(suggestion).catch((error) => {
+        console.warn("Discord relationship DM failed:", error);
+      });
+    };
+
+    const sendRelationshipDiscordNotification = async (relationship) => {
+      const response = await fetch("/api/relationship-notify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-West-Haven-Admin": currentPlayerCharacterId || ""
+        },
+        body: JSON.stringify({ relationship })
+      });
+
+      if (!response.ok) throw new Error(await response.text());
+      return response.json();
     };
 
     const getUnreadCharacterMail = (characterId = currentPlayerCharacterId) => (
@@ -10496,6 +10676,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     };
 
     const showHome = () => {
+      pulseViewTransition();
       activeCharacterId = null;
       homeView.classList.remove("is-hidden");
       detailView.classList.add("is-hidden");
@@ -10512,6 +10693,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
 
       activeCharacterId = characterId;
       renderCharacter();
+      pulseViewTransition();
       homeView.classList.add("is-hidden");
       detailView.classList.remove("is-hidden");
       setActiveTab("overview");
@@ -11073,7 +11255,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     });
 
     refs.openRelationsButton.addEventListener("click", () => {
-      window.location.href = "relations.html";
+      navigateWithWipe("relations.html");
     });
 
     refs.closeRelationsButton.addEventListener("click", closeRelationsModal);
@@ -11389,6 +11571,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     });
 
     applyMonthlyBackground();
+    startPageEnter();
     renderRoster();
     renderDust();
     applyAlertVolume();
