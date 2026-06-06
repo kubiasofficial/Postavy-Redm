@@ -46,47 +46,39 @@ const payload = {
   },
   embeds: [
     {
-      title: "Blizime se k verzi 2.0, ktera by mela byt zatim finalova verze",
+      title: "West Haven update: Vztahy primo u postav",
       description: [
-        "West Haven se posunul o dalsi velky kus dopredu. System postav uz neni jen prehled jmen a casu, ale plnohodnotne RP zazemi pro pribehy, vztahy, mapu, aktivitu a administraci.",
+        "Na webu pribyla nova cast pro vztahy v detailu kazde postavy. Po otevreni postavy ted najdes zalozku **Vztahy**, kde uvidis jen vazby dane postavy na ostatni postavy z webu.",
+        "",
+        "Vztahy navic dostaly novy vzhled, aby pusobily vic jako cisty osobni spis a bylo hned jasne, kdo je pro postavu spojenec, rodina, rival, dluh, tajemstvi nebo neco mnohem horsiho.",
         "",
         "**Web:** https://postavy-redm.vercel.app"
       ].join("\n"),
-      color: 12551208,
+      color: 12155449,
       fields: [
         {
-          name: "Profil postav",
-          value: "Detail postav je odlehceny, prehlednejsi a pripraveny pro dlouhodobe RP. Misto preplacanych panelu ted vic pusobi jako osobni spis postavy.",
+          name: "Co je nove",
+          value: "Kazda postava ma u sebe vlastni prehled vztahu. Kdyz si ji rozkliknes, uvidis vztahy prave teto postavy s ostatnimi postavami, ne celou sit najednou.",
           inline: false
         },
         {
-          name: "Soukromy denik",
-          value: "Postavy maji vlastni osobni denik. Videt do nej muze jen dana postava a admin, takze slouzi jako misto pro myslenky, plany a tiche veci mezi radky.",
+          name: "Novy vzhled vztahu",
+          value: "Vztahy maji novy prehlednejsi vzhled primo v profilu postavy: jmeno druhe postavy, typ vazby a kratka poznamka jsou pohromade v jednom cistym bloku.",
           inline: false
         },
         {
-          name: "WestHaven vztahy",
-          value: "Vztahy jsou rozsirene o nove typy vazeb: rodina, pritel, spojenec, duvera, respekt, ochrana, mentor, dluh, tajemstvi, podezreni, vydirani, zrada, rivalita, nenavist, romantika a dalsi.",
+          name: "Soukromi zustava",
+          value: "Vztahy a osobni poznamky vidi jen dana postava a admin. Cizi postava tedy neuvidi veci, ktere patri do tveho spisu.",
           inline: false
         },
         {
-          name: "Mapa, lokality a odznaky",
-          value: "Mapa je prijemnejsi pri zoomu a vznikl novy automaticky odznak **Znama puda** za opakovany spanek ve stejne lokalite.",
-          inline: false
-        },
-        {
-          name: "Admin nastroje",
-          value: "Admini maji novou pojistku pro uspani vybrane postavy nebo vsech postav najednou, kdyz nekdo zapomene uspat postavu a vypne PC. Cas se pritom korektne dopocita.",
-          inline: false
-        },
-        {
-          name: "Mobilni rozlozeni",
-          value: "Rozlozeni pro telefony je cistejsi a pouzitelnejsi, aby slo s postavami pracovat i mimo velky monitor.",
+          name: "Kam kliknout",
+          value: "Otevri web, vyber svoji postavu a prejdi na zalozku **Vztahy**.",
           inline: false
         }
       ],
       footer: {
-        text: "West Haven Office | cesta k verzi 2.0"
+        text: "West Haven Office | vztahy maji novy kabat"
       },
       timestamp: new Date().toISOString()
     }
