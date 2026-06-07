@@ -3538,7 +3538,8 @@
       border: 1px solid rgba(169, 120, 57, 0.18);
       border-radius: var(--radius-lg);
       background:
-        radial-gradient(circle at 50% 48%, rgba(169, 120, 57, 0.13), transparent 42%),
+        radial-gradient(ellipse at 50% 50%, rgba(169, 120, 57, 0.13), transparent 48%),
+        radial-gradient(circle at 28% 66%, rgba(143, 31, 45, 0.08), transparent 24%),
         linear-gradient(145deg, rgba(16, 14, 12, 0.86), rgba(7, 7, 6, 0.96));
     }
 
@@ -3554,7 +3555,7 @@
       stroke: var(--relation-color, #a97839);
       stroke-width: var(--relation-width, 2);
       stroke-linecap: round;
-      opacity: 0.78;
+      opacity: 0.48;
       filter: drop-shadow(0 0 8px rgba(169, 120, 57, 0.18));
     }
 
@@ -3570,8 +3571,8 @@
       position: absolute;
       left: var(--node-x);
       top: var(--node-y);
-      width: 112px;
-      min-height: 144px;
+      width: 118px;
+      min-height: 128px;
       display: grid;
       justify-items: center;
       gap: 8px;
@@ -3586,8 +3587,8 @@
     }
 
     .relations-node-portrait {
-      width: 86px;
-      height: 86px;
+      width: 78px;
+      height: 78px;
       overflow: hidden;
       border: 2px solid color-mix(in srgb, var(--node-color, #a97839) 72%, #fff0cf);
       border-radius: 999px;
@@ -3612,14 +3613,21 @@
     }
 
     .relations-node-name {
-      max-width: 120px;
+      max-width: 118px;
+      padding: 6px 9px 5px;
+      border: 1px solid color-mix(in srgb, var(--node-color, #a97839) 54%, rgba(255, 238, 196, 0.18));
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(28, 20, 13, 0.94), rgba(8, 7, 5, 0.94));
       color: #ead9bb;
-      font-size: 0.72rem;
-      font-weight: 700;
+      font-size: 0.62rem;
+      font-weight: 800;
       letter-spacing: 0.08em;
-      line-height: 1.25;
+      line-height: 1.15;
       text-transform: uppercase;
       text-shadow: 0 8px 18px rgba(0, 0, 0, 0.78);
+      box-shadow:
+        0 10px 18px rgba(0, 0, 0, 0.3),
+        0 0 18px color-mix(in srgb, var(--node-color, #a97839) 16%, transparent);
     }
 
     .relations-side {
@@ -6341,13 +6349,13 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
     };
 
     const relationshipNodes = {
-      zeke: { x: 48, y: 22 },
-      silas: { x: 25, y: 43 },
-      violet: { x: 72, y: 43 },
-      william: { x: 61, y: 74 },
-      "thomas-mercer": { x: 36, y: 74 },
-      "tom-halbrook": { x: 30, y: 62 },
-      "ellie-whitmore": { x: 69, y: 62 }
+      zeke: { x: 50, y: 20 },
+      silas: { x: 24, y: 42 },
+      violet: { x: 76, y: 40 },
+      william: { x: 64, y: 74 },
+      "thomas-mercer": { x: 38, y: 76 },
+      "tom-halbrook": { x: 31, y: 59 },
+      "ellie-whitmore": { x: 70, y: 57 }
     };
 
     let characterRelationships = [
