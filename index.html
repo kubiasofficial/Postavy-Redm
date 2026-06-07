@@ -281,30 +281,36 @@
     }
 
     .home-mark {
-      width: min(230px, 28vw);
+      position: absolute;
+      inset: -18px 0 auto;
+      width: 100%;
       height: 1px;
-      order: -1;
-      flex: 0 1 230px;
-      margin-bottom: 18px;
+      flex: none;
+      margin: 0;
+      pointer-events: none;
       background:
         linear-gradient(90deg, transparent, rgba(169, 120, 57, 0.82), transparent);
       box-shadow: 0 0 22px rgba(169, 120, 57, 0.22);
     }
 
     .home-actions {
+      position: relative;
       display: flex;
       align-items: center;
-      gap: 14px;
+      flex-wrap: nowrap;
+      gap: 7px;
       justify-content: flex-end;
+      max-width: min(740px, 60vw);
       margin: 0 0 10px auto;
     }
 
     .home-badges-button {
-      min-height: 42px;
+      min-height: 40px;
+      flex: 0 1 auto;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 9px 13px;
+      gap: 7px;
+      padding: 8px 9px;
       border: 1px solid rgba(177, 130, 70, 0.28);
       border-radius: 4px;
       background:
@@ -313,9 +319,9 @@
       color: #ead6b1;
       cursor: pointer;
       font: inherit;
-      font-size: 0.72rem;
+      font-size: 0.62rem;
       font-weight: 700;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       box-shadow:
         inset 0 1px 0 rgba(255, 232, 184, 0.08),
@@ -329,8 +335,9 @@
 
     .home-badges-button::before {
       content: "";
-      width: 20px;
-      height: 20px;
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
       display: grid;
       place-items: center;
       border: 0;
@@ -377,6 +384,29 @@
         radial-gradient(circle at 22% 50%, rgba(255, 238, 196, 0.9) 0 12%, transparent 13%),
         radial-gradient(circle at 78% 50%, rgba(255, 238, 196, 0.84) 0 12%, transparent 13%),
         linear-gradient(90deg, transparent 0 24%, rgba(169, 120, 57, 0.86) 24% 76%, transparent 76%),
+        rgba(20, 15, 11, 0.84);
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 238, 196, 0.16);
+    }
+
+    .home-gallery-button::before {
+      border-radius: 2px;
+      background:
+        linear-gradient(180deg, rgba(255, 238, 196, 0.18), transparent 42%),
+        radial-gradient(circle at 72% 28%, rgba(255, 238, 196, 0.9) 0 10%, transparent 11%),
+        linear-gradient(135deg, transparent 0 42%, rgba(169, 120, 57, 0.86) 43% 70%, transparent 71%),
+        linear-gradient(45deg, rgba(104, 67, 38, 0.82) 0 42%, transparent 43%),
+        rgba(20, 15, 11, 0.84);
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 238, 196, 0.16);
+    }
+
+    .home-contest-button::before {
+      border-radius: 2px;
+      background:
+        radial-gradient(circle at 50% 22%, rgba(255, 238, 196, 0.94) 0 12%, transparent 13%),
+        linear-gradient(90deg, transparent 0 18%, rgba(169, 120, 57, 0.82) 18% 34%, transparent 34% 66%, rgba(169, 120, 57, 0.82) 66% 82%, transparent 82%),
+        linear-gradient(180deg, rgba(232, 203, 145, 0.92) 0 45%, transparent 46% 60%, rgba(169, 120, 57, 0.9) 60% 76%, transparent 77%),
         rgba(20, 15, 11, 0.84);
       box-shadow:
         inset 0 0 0 1px rgba(255, 238, 196, 0.16);
@@ -788,6 +818,154 @@
       object-fit: contain;
       border-radius: var(--radius-md);
       background: rgba(0, 0, 0, 0.28);
+    }
+
+    .photo-contest-card {
+      width: min(1180px, 100%);
+      max-height: calc(100dvh - 44px);
+      overflow: hidden auto;
+    }
+
+    .photo-contest-head {
+      margin: 0 46px 20px 0;
+    }
+
+    .photo-contest-meta,
+    .photo-contest-status {
+      margin: 8px 0 0;
+      color: #bda98a;
+      line-height: 1.55;
+    }
+
+    .photo-contest-status {
+      min-height: 1.4em;
+      color: #d7a45a;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .photo-contest-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin: -6px 0 16px;
+    }
+
+    .photo-contest-finish {
+      min-height: 34px;
+      padding: 8px 12px;
+      border: 1px solid rgba(169, 120, 57, 0.36);
+      border-radius: 5px;
+      background:
+        linear-gradient(180deg, rgba(91, 62, 35, 0.42), rgba(22, 17, 13, 0.78)),
+        rgba(14, 12, 10, 0.78);
+      color: #fff0cf;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .photo-contest-finish.is-hidden {
+      display: none;
+    }
+
+    .photo-contest-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .photo-contest-item {
+      position: relative;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      overflow: hidden;
+      min-height: 100%;
+      border: 1px solid rgba(169, 120, 57, 0.2);
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(255, 238, 196, 0.055), transparent 46%),
+        rgba(12, 10, 8, 0.48);
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.24);
+    }
+
+    .photo-contest-item.is-leading {
+      border-color: rgba(255, 220, 143, 0.56);
+      box-shadow:
+        0 24px 62px rgba(0, 0, 0, 0.32),
+        0 0 0 1px rgba(255, 238, 196, 0.1);
+    }
+
+    .photo-contest-rank {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 2;
+      padding: 5px 8px;
+      border: 1px solid rgba(255, 238, 196, 0.28);
+      border-radius: 4px;
+      background: rgba(16, 12, 8, 0.82);
+      color: #fff0cf;
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .photo-contest-image {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      background: rgba(5, 4, 3, 0.6);
+    }
+
+    .photo-contest-copy {
+      display: grid;
+      align-content: start;
+      gap: 10px;
+      padding: 13px;
+    }
+
+    .photo-contest-caption {
+      margin: 0;
+      color: #f0dfbf;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .photo-contest-author,
+    .photo-contest-votes {
+      margin: 0;
+      color: #a97839;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .photo-contest-vote {
+      min-height: 34px;
+      margin-top: 2px;
+      border: 1px solid rgba(143, 31, 45, 0.36);
+      border-radius: 5px;
+      background: linear-gradient(145deg, rgba(143, 31, 45, 0.94), rgba(93, 22, 28, 0.94));
+      color: #fff8e8;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .photo-contest-vote:disabled {
+      cursor: default;
+      opacity: 0.52;
+      filter: grayscale(0.28);
     }
 
     .gallery-viewer-caption {
@@ -4893,6 +5071,7 @@
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 8px;
+        width: 100%;
         margin-top: 16px;
       }
 
@@ -4911,6 +5090,8 @@
       }
 
       .home-mark {
+        position: static;
+        inset: auto;
         grid-column: 1 / -1;
         width: 100%;
         margin: 0;
@@ -4981,6 +5162,18 @@
 
       .gallery-archive-grid {
         grid-template-columns: 1fr;
+      }
+
+      .photo-contest-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .photo-contest-actions {
+        justify-content: stretch;
+      }
+
+      .photo-contest-finish {
+        width: 100%;
       }
 
       .activity-rail {
@@ -5416,7 +5609,9 @@
         <h1 class="home-title">Postavy</h1>
       </div>
       <div class="home-actions">
+        <button class="home-badges-button home-gallery-button" id="openGalleryButton" type="button">Galerie</button>
         <button class="home-badges-button" id="openBadgesButton" type="button">Odznaky</button>
+        <button class="home-badges-button home-contest-button" id="openPhotoContestButton" type="button">Soutěž</button>
         <button class="home-badges-button home-chronicle-button" id="openChronicleButton" type="button">Kronika</button>
         <button class="home-badges-button home-relations-button" id="openRelationsButton" type="button">Vztahy</button>
         <button class="home-badges-button home-players-button" id="openPlayerProfilesButton" type="button">Hráči</button>
@@ -5454,7 +5649,6 @@
         <aside class="gallery-rail" aria-label="Fotky z Discordu">
           <div class="gallery-head">
             <p class="gallery-title">Fotky</p>
-            <button class="gallery-open-button" id="openGalleryButton" type="button">Galerie</button>
           </div>
           <figure class="gallery-frame" id="discordGalleryFrame">
             <img id="discordGalleryImage" src="" alt="">
@@ -5497,6 +5691,22 @@
         <p class="gallery-viewer-author" id="galleryViewerAuthor"></p>
       </div>
       <div class="gallery-archive-grid" id="galleryArchiveGrid"></div>
+    </section>
+  </div>
+
+  <div class="badge-modal" id="photoContestModal" aria-hidden="true">
+    <section class="badge-card photo-contest-card" aria-labelledby="photoContestTitle">
+      <button class="badge-modal-x" id="closePhotoContestButton" type="button" aria-label="Zavřít soutěž">&times;</button>
+      <header class="photo-contest-head">
+        <p class="eyebrow">West Haven Photo Vote</p>
+        <h2 class="badge-title" id="photoContestTitle">Soutěž</h2>
+        <p class="photo-contest-meta" id="photoContestMeta">Každé pondělí se vybere posledních šest fotek. Hlasovat můžeš jednou denně.</p>
+        <p class="photo-contest-status" id="photoContestStatus" aria-live="polite"></p>
+      </header>
+      <div class="photo-contest-actions">
+        <button class="photo-contest-finish is-hidden" id="finishPhotoContestButton" type="button">Vyhlásit vítěze</button>
+      </div>
+      <div class="photo-contest-grid" id="photoContestGrid"></div>
     </section>
   </div>
 
@@ -6119,12 +6329,14 @@
       deleteDoc,
       doc,
       getFirestore,
+      getDoc,
       getDocs,
       limit,
       onSnapshot,
       orderBy,
       query,
-      setDoc
+      setDoc,
+      where
     } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -6148,6 +6360,8 @@
     const relationshipAcknowledgementsRef = collection(db, "relationshipAcknowledgements");
     const characterDiaryEntriesRef = collection(db, "characterDiaryEntries");
     const characterPrivateRelationshipsRef = collection(db, "characterPrivateRelationships");
+    const photoContestsRef = collection(db, "photoContests");
+    const photoContestVotesRef = collection(db, "photoContestVotes");
 
     const characters = [
       {
@@ -6661,6 +6875,13 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       galleryViewerImage: document.getElementById("galleryViewerImage"),
       galleryViewerCaption: document.getElementById("galleryViewerCaption"),
       galleryViewerAuthor: document.getElementById("galleryViewerAuthor"),
+      openPhotoContestButton: document.getElementById("openPhotoContestButton"),
+      photoContestModal: document.getElementById("photoContestModal"),
+      closePhotoContestButton: document.getElementById("closePhotoContestButton"),
+      photoContestMeta: document.getElementById("photoContestMeta"),
+      photoContestStatus: document.getElementById("photoContestStatus"),
+      photoContestGrid: document.getElementById("photoContestGrid"),
+      finishPhotoContestButton: document.getElementById("finishPhotoContestButton"),
       name: document.getElementById("characterName"),
       role: document.getElementById("characterRole"),
       meta: document.getElementById("characterMeta"),
@@ -7256,6 +7477,10 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
     let galleryIntervalId = null;
     let galleryPhotos = [];
     let galleryIndex = 0;
+    let activePhotoContest = null;
+    let photoContestVotes = [];
+    let photoContestVoteCounts = {};
+    let photoContestVotedToday = false;
     let isActivityShowingTime = false;
     let characterAlertTimeoutId = null;
     let levelAlertTimeoutId = null;
@@ -7764,6 +7989,295 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       } catch (error) {
         console.warn("Discord gallery could not be loaded:", error);
         setGalleryEmpty("Fotky se nepodařilo načíst.");
+      }
+    };
+
+    const setPhotoContestStatus = (message = "") => {
+      if (refs.photoContestStatus) {
+        refs.photoContestStatus.textContent = message;
+      }
+    };
+
+    const getPragueDayInfo = (date = new Date()) => {
+      const parts = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Europe/Prague",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        weekday: "short"
+      }).formatToParts(date);
+      const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+      const dateKey = `${values.year}-${values.month}-${values.day}`;
+      const weekdayIndex = { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 7 }[values.weekday] || 1;
+
+      return {
+        dateKey,
+        weekdayIndex,
+        utcNoon: new Date(Date.UTC(Number(values.year), Number(values.month) - 1, Number(values.day), 12))
+      };
+    };
+
+    const shiftDateKey = (utcNoonDate, offsetDays) => {
+      const shifted = new Date(utcNoonDate.getTime() + (offsetDays * 24 * 60 * 60 * 1000));
+      return shifted.toISOString().slice(0, 10);
+    };
+
+    const getPhotoContestWeekInfo = (date = new Date()) => {
+      const dayInfo = getPragueDayInfo(date);
+      const startsAt = shiftDateKey(dayInfo.utcNoon, 1 - dayInfo.weekdayIndex);
+      const endsAt = shiftDateKey(dayInfo.utcNoon, 7 - dayInfo.weekdayIndex);
+
+      return {
+        weekId: startsAt,
+        startsAt,
+        endsAt,
+        dateKey: dayInfo.dateKey,
+        isFinishDay: dayInfo.weekdayIndex === 7
+      };
+    };
+
+    const getContestPhotoId = (photo, fallbackIndex = 0) => (
+      String(photo?.id || photo?.attachmentId || photo?.url || photo?.proxyUrl || `photo-${fallbackIndex}`)
+    );
+
+    const normalizeContestPhoto = (photo, index) => ({
+      id: getContestPhotoId(photo, index),
+      url: photo.url || photo.proxyUrl || "",
+      proxyUrl: photo.proxyUrl || photo.url || "",
+      caption: getGalleryCaption(photo),
+      authorName: photo.authorName || "",
+      authorId: photo.authorId || "",
+      filename: photo.filename || "",
+      messageId: photo.messageId || "",
+      createdAt: photo.createdAt || ""
+    });
+
+    const getPhotoContestVoteDocId = (weekId, characterId, dateKey) => (
+      `${weekId}_${characterId}_${dateKey}`
+    );
+
+    const ensureCurrentPhotoContest = async () => {
+      const weekInfo = getPhotoContestWeekInfo();
+      const contestDocumentRef = doc(photoContestsRef, weekInfo.weekId);
+      const contestDocument = await getDoc(contestDocumentRef);
+
+      if (contestDocument.exists()) {
+        activePhotoContest = {
+          id: contestDocument.id,
+          ...contestDocument.data()
+        };
+        return activePhotoContest;
+      }
+
+      if (galleryPhotos.length === 0) {
+        await loadDiscordGallery();
+      }
+
+      if (galleryPhotos.length === 0) {
+        throw new Error("No gallery photos available for contest");
+      }
+
+      const photos = galleryPhotos.slice(0, 6).map(normalizeContestPhoto);
+      activePhotoContest = {
+        id: weekInfo.weekId,
+        weekId: weekInfo.weekId,
+        startsAt: weekInfo.startsAt,
+        endsAt: weekInfo.endsAt,
+        status: "active",
+        photos,
+        createdAt: Date.now()
+      };
+      await setDoc(contestDocumentRef, activePhotoContest);
+
+      return activePhotoContest;
+    };
+
+    const loadPhotoContestVotes = async () => {
+      if (!activePhotoContest?.weekId) return;
+
+      const weekInfo = getPhotoContestWeekInfo();
+      const votesSnapshot = await getDocs(query(
+        photoContestVotesRef,
+        where("weekId", "==", activePhotoContest.weekId)
+      ));
+      photoContestVotes = votesSnapshot.docs.map((voteDocument) => ({
+        id: voteDocument.id,
+        ...voteDocument.data()
+      }));
+      photoContestVoteCounts = photoContestVotes.reduce((counts, vote) => {
+        counts[vote.photoId] = (counts[vote.photoId] || 0) + 1;
+        return counts;
+      }, {});
+      photoContestVotedToday = Boolean(
+        currentPlayerCharacterId &&
+        photoContestVotes.some((vote) => (
+          vote.characterId === currentPlayerCharacterId &&
+          vote.dateKey === weekInfo.dateKey
+        ))
+      );
+    };
+
+    const getSortedContestPhotos = () => {
+      const photos = Array.isArray(activePhotoContest?.photos) ? activePhotoContest.photos : [];
+      return photos
+        .map((photo, index) => ({
+          ...photo,
+          originalIndex: index,
+          votes: photoContestVoteCounts[photo.id] || 0
+        }))
+        .sort((first, second) => (
+          second.votes - first.votes || first.originalIndex - second.originalIndex
+        ));
+    };
+
+    const renderPhotoContest = async () => {
+      if (!refs.photoContestGrid || !refs.photoContestMeta) return;
+
+      refs.photoContestGrid.replaceChildren();
+      refs.finishPhotoContestButton?.classList.toggle("is-hidden", !isAdminPlayer());
+      setPhotoContestStatus("Načítám soutěž.");
+
+      try {
+        await ensureCurrentPhotoContest();
+        await loadPhotoContestVotes();
+      } catch (error) {
+        console.warn("Photo contest could not be loaded:", error);
+        refs.photoContestMeta.textContent = "Soutěž se nepodařilo načíst.";
+        setPhotoContestStatus("Zkus to prosím za chvíli.");
+        return;
+      }
+
+      const weekInfo = getPhotoContestWeekInfo();
+      const photos = getSortedContestPhotos();
+      refs.photoContestMeta.textContent = `Týden ${activePhotoContest.startsAt} až ${activePhotoContest.endsAt}. Hlasovat můžeš jednou denně.`;
+
+      if (photos.length === 0) {
+        setPhotoContestStatus("V galerii zatím není dost fotek pro soutěž.");
+        return;
+      }
+
+      setPhotoContestStatus(photoContestVotedToday
+        ? "Dnešní hlas už je zapsaný."
+        : "Vyber fotku, která si dnes zaslouží hlas.");
+
+      photos.forEach((photo, index) => {
+        const card = document.createElement("article");
+        card.className = `photo-contest-item${index === 0 && photo.votes > 0 ? " is-leading" : ""}`;
+
+        const rank = document.createElement("span");
+        rank.className = "photo-contest-rank";
+        rank.textContent = `${index + 1}. místo`;
+
+        const image = document.createElement("img");
+        image.className = "photo-contest-image";
+        image.loading = "lazy";
+        image.src = photo.proxyUrl || photo.url;
+        image.alt = photo.caption || "Soutěžní fotka";
+
+        const copy = document.createElement("div");
+        copy.className = "photo-contest-copy";
+
+        const caption = document.createElement("p");
+        caption.className = "photo-contest-caption";
+        caption.textContent = photo.caption || "Fotka bez popisku.";
+
+        const author = document.createElement("p");
+        author.className = "photo-contest-author";
+        author.textContent = photo.authorName ? `Autor: ${photo.authorName}` : "Autor neznámý";
+
+        const votes = document.createElement("p");
+        votes.className = "photo-contest-votes";
+        votes.textContent = `${photo.votes} hlasů`;
+
+        const voteButton = document.createElement("button");
+        voteButton.type = "button";
+        voteButton.className = "photo-contest-vote";
+        voteButton.dataset.contestVote = photo.id;
+        voteButton.textContent = photoContestVotedToday ? "Dnes odhlasováno" : "Hlasovat";
+        voteButton.disabled = Boolean(!currentPlayerCharacterId || photoContestVotedToday);
+
+        copy.append(caption, author, votes, voteButton);
+        card.append(rank, image, copy);
+        refs.photoContestGrid.appendChild(card);
+      });
+
+      if (weekInfo.isFinishDay && isAdminPlayer()) {
+        setPhotoContestStatus("Je neděle. Admin může vyhlásit vítěze do Discordu.");
+      }
+    };
+
+    const openPhotoContestModal = async () => {
+      refs.photoContestModal.classList.add("is-visible");
+      refs.photoContestModal.setAttribute("aria-hidden", "false");
+      await renderPhotoContest();
+    };
+
+    const closePhotoContestModal = () => {
+      refs.photoContestModal.classList.remove("is-visible");
+      refs.photoContestModal.setAttribute("aria-hidden", "true");
+    };
+
+    const votePhotoContest = async (photoId) => {
+      if (!currentPlayerCharacterId) {
+        setPhotoContestStatus("Nejdřív se přihlaš za postavu.");
+        return;
+      }
+
+      try {
+        await ensureCurrentPhotoContest();
+        await loadPhotoContestVotes();
+
+        if (photoContestVotedToday) {
+          setPhotoContestStatus("Dnes už máš hlas zapsaný.");
+          return;
+        }
+
+        const weekInfo = getPhotoContestWeekInfo();
+        const character = characters.find((item) => item.id === currentPlayerCharacterId);
+        await setDoc(doc(photoContestVotesRef, getPhotoContestVoteDocId(activePhotoContest.weekId, currentPlayerCharacterId, weekInfo.dateKey)), {
+          weekId: activePhotoContest.weekId,
+          photoId,
+          characterId: currentPlayerCharacterId,
+          characterName: character?.listName || currentPlayerCharacterId,
+          dateKey: weekInfo.dateKey,
+          createdAt: Date.now()
+        });
+
+        setPhotoContestStatus("Hlas je zapsaný.");
+        await renderPhotoContest();
+      } catch (error) {
+        console.warn("Photo contest vote failed:", error);
+        setPhotoContestStatus("Hlas se nepodařilo uložit.");
+      }
+    };
+
+    const finishPhotoContest = async () => {
+      if (!isAdminPlayer()) {
+        setPhotoContestStatus("Vyhlášení může poslat jen admin.");
+        return;
+      }
+
+      try {
+        await ensureCurrentPhotoContest();
+        setPhotoContestStatus("Posílám vyhlášení do Discordu.");
+        const response = await fetch("/api/photo-contest-finish", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-West-Haven-Admin": currentPlayerCharacterId || ""
+          },
+          body: JSON.stringify({ weekId: activePhotoContest.weekId, force: true })
+        });
+
+        if (!response.ok) {
+          throw new Error(await response.text());
+        }
+
+        setPhotoContestStatus("Vyhlášení je poslané.");
+        await renderPhotoContest();
+      } catch (error) {
+        console.warn("Photo contest finish failed:", error);
+        setPhotoContestStatus("Vyhlášení se nepodařilo poslat.");
       }
     };
 
@@ -12004,6 +12518,24 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       showGalleryViewer(Number(button.dataset.galleryIndex));
     });
 
+    refs.openPhotoContestButton.addEventListener("click", openPhotoContestModal);
+
+    refs.closePhotoContestButton.addEventListener("click", closePhotoContestModal);
+
+    refs.photoContestModal.addEventListener("click", (event) => {
+      if (event.target === refs.photoContestModal) {
+        closePhotoContestModal();
+      }
+    });
+
+    refs.photoContestGrid.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-contest-vote]");
+      if (!button) return;
+      votePhotoContest(button.dataset.contestVote);
+    });
+
+    refs.finishPhotoContestButton.addEventListener("click", finishPhotoContest);
+
     refs.openBadgesButton.addEventListener("click", openBadgeModal);
 
     refs.closeBadgesButton.addEventListener("click", closeBadgeModal);
@@ -12152,6 +12684,9 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       }
       if (event.key === "Escape" && refs.galleryModal.classList.contains("is-visible")) {
         closeGalleryModal();
+      }
+      if (event.key === "Escape" && refs.photoContestModal.classList.contains("is-visible")) {
+        closePhotoContestModal();
       }
       if (event.key === "Escape" && refs.badgeModal.classList.contains("is-visible")) {
         closeBadgeModal();

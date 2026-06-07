@@ -81,6 +81,9 @@ const parseFirestoreValue = (value) => {
   if ("doubleValue" in value) return Number(value.doubleValue);
   if ("booleanValue" in value) return Boolean(value.booleanValue);
   if ("nullValue" in value) return null;
+  if ("arrayValue" in value) {
+    return (value.arrayValue.values || []).map(parseFirestoreValue);
+  }
   if ("mapValue" in value) {
     return Object.fromEntries(
       Object.entries(value.mapValue.fields || {}).map(([key, nested]) => [key, parseFirestoreValue(nested)])
@@ -102,6 +105,9 @@ const toFirestoreValue = (value) => {
     return Number.isInteger(value) ? { integerValue: String(value) } : { doubleValue: value };
   }
   if (typeof value === "boolean") return { booleanValue: value };
+  if (Array.isArray(value)) {
+    return { arrayValue: { values: value.map(toFirestoreValue) } };
+  }
   if (typeof value === "object") {
     return {
       mapValue: {

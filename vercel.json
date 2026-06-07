@@ -7,6 +7,14 @@
     {
       "path": "/api/daily-report",
       "schedule": "0 23 * * *"
+    },
+    {
+      "path": "/api/photo-contest-start",
+      "schedule": "0 5 * * 1"
+    },
+    {
+      "path": "/api/photo-contest-finish",
+      "schedule": "0 20 * * 0"
     }
   ]
 }
