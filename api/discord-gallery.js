@@ -18,6 +18,13 @@ const cleanCaption = (content = "") => (
     .slice(0, 220)
 );
 
+const getAuthorName = (message) => (
+  message.member?.nick ||
+  message.author?.global_name ||
+  message.author?.username ||
+  "Neznámý autor"
+);
+
 module.exports = async (req, res) => {
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
@@ -30,20 +37,35 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const response = await fetch(`${DISCORD_API_BASE}/channels/${GALLERY_CHANNEL_ID}/messages?limit=50`, {
-      headers: {
-        Authorization: `Bot ${token}`
-      }
-    });
+    const messages = [];
+    let before = "";
 
-    if (!response.ok) {
-      return res.status(response.status).json({
-        error: "Discord gallery request failed",
-        details: await response.text()
+    while (true) {
+      const search = new URLSearchParams({ limit: "100" });
+      if (before) search.set("before", before);
+
+      const response = await fetch(`${DISCORD_API_BASE}/channels/${GALLERY_CHANNEL_ID}/messages?${search}`, {
+        headers: {
+          Authorization: `Bot ${token}`
+        }
       });
+
+      if (!response.ok) {
+        return res.status(response.status).json({
+          error: "Discord gallery request failed",
+          details: await response.text()
+        });
+      }
+
+      const page = await response.json();
+      if (!Array.isArray(page) || page.length === 0) break;
+
+      messages.push(...page);
+      before = page[page.length - 1].id;
+
+      if (page.length < 100) break;
     }
 
-    const messages = await response.json();
     const photos = messages
       .flatMap((message) => (
         Array.isArray(message.attachments)
@@ -55,13 +77,14 @@ module.exports = async (req, res) => {
                 proxyUrl: attachment.proxy_url || attachment.url,
                 filename: attachment.filename || "photo",
                 caption: cleanCaption(message.content),
+                authorId: message.author?.id || null,
+                authorName: getAuthorName(message),
                 width: attachment.width || null,
                 height: attachment.height || null,
                 uploadedAt: message.timestamp || null
               }))
           : []
-      ))
-      .slice(0, 24);
+      ));
 
     res.setHeader("Cache-Control", "s-maxage=120, stale-while-revalidate=600");
     return res.status(200).json({ photos });

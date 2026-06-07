@@ -561,13 +561,51 @@
       animation: lore-enter 700ms var(--ease) 480ms both;
     }
 
-    .gallery-title {
+    .gallery-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
       margin: 0 0 14px 4px;
+    }
+
+    .gallery-title {
+      margin: 0;
       color: #e8d8ba;
       font-family: Georgia, "Times New Roman", serif;
       font-size: 1rem;
       line-height: 1.15;
       text-shadow: 0 8px 26px rgba(0, 0, 0, 0.58);
+    }
+
+    .gallery-open-button {
+      min-height: 34px;
+      padding: 7px 11px;
+      border: 1px solid rgba(169, 120, 57, 0.34);
+      border-radius: var(--radius-md);
+      background:
+        linear-gradient(180deg, rgba(82, 55, 30, 0.38), rgba(12, 10, 8, 0.76)),
+        rgba(10, 8, 7, 0.62);
+      color: #ead9bb;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition:
+        transform var(--ease),
+        border-color var(--ease),
+        color var(--ease),
+        background var(--ease);
+    }
+
+    .gallery-open-button:hover,
+    .gallery-open-button:focus-visible {
+      transform: translateY(-1px);
+      border-color: rgba(212, 164, 89, 0.58);
+      color: #fff0cf;
+      outline: none;
     }
 
     .gallery-frame {
@@ -647,6 +685,124 @@
 
     .gallery-frame.is-ready .gallery-empty {
       display: none;
+    }
+
+    .gallery-modal-card {
+      width: min(1120px, 100%);
+    }
+
+    .gallery-modal-head {
+      margin-right: 42px;
+    }
+
+    .gallery-modal-meta {
+      margin: 10px 0 0;
+      color: #a99472;
+      font-size: 0.76rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .gallery-archive-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .gallery-archive-item {
+      display: grid;
+      grid-template-rows: 180px auto;
+      overflow: hidden;
+      border: 1px solid rgba(169, 120, 57, 0.2);
+      border-radius: var(--radius-lg);
+      background:
+        linear-gradient(180deg, rgba(255, 238, 196, 0.05), transparent 34%),
+        rgba(10, 8, 7, 0.62);
+      color: #ead9bb;
+      cursor: pointer;
+      font: inherit;
+      text-align: left;
+      transition:
+        transform var(--ease),
+        border-color var(--ease),
+        filter var(--ease);
+    }
+
+    .gallery-archive-item:hover,
+    .gallery-archive-item:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(212, 164, 89, 0.58);
+      filter: brightness(1.08);
+      outline: none;
+    }
+
+    .gallery-archive-image {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      background: rgba(0, 0, 0, 0.22);
+    }
+
+    .gallery-archive-copy {
+      display: grid;
+      gap: 7px;
+      padding: 11px;
+    }
+
+    .gallery-archive-caption {
+      margin: 0;
+      color: #ead9bb;
+      font-size: 0.82rem;
+      line-height: 1.38;
+    }
+
+    .gallery-archive-author {
+      margin: 0;
+      color: var(--gold);
+      font-size: 0.66rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .gallery-viewer {
+      display: none;
+      gap: 14px;
+      margin-top: 20px;
+      padding: 14px;
+      border: 1px solid rgba(169, 120, 57, 0.22);
+      border-radius: var(--radius-lg);
+      background: rgba(8, 8, 7, 0.42);
+    }
+
+    .gallery-viewer.is-visible {
+      display: grid;
+    }
+
+    .gallery-viewer img {
+      width: 100%;
+      max-height: min(62vh, 620px);
+      display: block;
+      object-fit: contain;
+      border-radius: var(--radius-md);
+      background: rgba(0, 0, 0, 0.28);
+    }
+
+    .gallery-viewer-caption {
+      margin: 0;
+      color: #ead9bb;
+      line-height: 1.5;
+    }
+
+    .gallery-viewer-author {
+      margin: 0;
+      color: var(--gold);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
     }
 
     .roster-grid {
@@ -4809,9 +4965,22 @@
         order: 2;
       }
 
+      .gallery-head {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .gallery-open-button {
+        width: 100%;
+      }
+
       .gallery-frame img {
         min-height: 190px;
         height: 190px;
+      }
+
+      .gallery-archive-grid {
+        grid-template-columns: 1fr;
       }
 
       .activity-rail {
@@ -5283,7 +5452,10 @@
           </span>
         </button>
         <aside class="gallery-rail" aria-label="Fotky z Discordu">
-          <p class="gallery-title">Fotky</p>
+          <div class="gallery-head">
+            <p class="gallery-title">Fotky</p>
+            <button class="gallery-open-button" id="openGalleryButton" type="button">Galerie</button>
+          </div>
           <figure class="gallery-frame" id="discordGalleryFrame">
             <img id="discordGalleryImage" src="" alt="">
             <figcaption class="gallery-caption" id="discordGalleryCaption"></figcaption>
@@ -5308,6 +5480,23 @@
       <div class="roster-main">
         <div class="roster-grid" id="rosterGrid"></div>
       </div>
+    </section>
+  </div>
+
+  <div class="badge-modal" id="galleryModal" aria-hidden="true">
+    <section class="badge-card gallery-modal-card" aria-labelledby="galleryModalTitle">
+      <button class="badge-modal-x" id="closeGalleryButton" type="button" aria-label="Zavřít galerii">&times;</button>
+      <header class="gallery-modal-head">
+        <p class="eyebrow">West Haven Gallery</p>
+        <h2 class="badge-title" id="galleryModalTitle">Galerie</h2>
+        <p class="gallery-modal-meta" id="galleryModalMeta">Načítám archiv fotek.</p>
+      </header>
+      <div class="gallery-viewer" id="galleryViewer">
+        <img id="galleryViewerImage" src="" alt="">
+        <p class="gallery-viewer-caption" id="galleryViewerCaption"></p>
+        <p class="gallery-viewer-author" id="galleryViewerAuthor"></p>
+      </div>
+      <div class="gallery-archive-grid" id="galleryArchiveGrid"></div>
     </section>
   </div>
 
@@ -6463,6 +6652,15 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       discordGalleryImage: document.getElementById("discordGalleryImage"),
       discordGalleryCaption: document.getElementById("discordGalleryCaption"),
       discordGalleryEmpty: document.getElementById("discordGalleryEmpty"),
+      openGalleryButton: document.getElementById("openGalleryButton"),
+      galleryModal: document.getElementById("galleryModal"),
+      closeGalleryButton: document.getElementById("closeGalleryButton"),
+      galleryModalMeta: document.getElementById("galleryModalMeta"),
+      galleryArchiveGrid: document.getElementById("galleryArchiveGrid"),
+      galleryViewer: document.getElementById("galleryViewer"),
+      galleryViewerImage: document.getElementById("galleryViewerImage"),
+      galleryViewerCaption: document.getElementById("galleryViewerCaption"),
+      galleryViewerAuthor: document.getElementById("galleryViewerAuthor"),
       name: document.getElementById("characterName"),
       role: document.getElementById("characterRole"),
       meta: document.getElementById("characterMeta"),
@@ -7446,12 +7644,89 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       refs.discordGalleryFrame.classList.remove("is-ready");
       refs.discordGalleryImage.alt = "Fotka z Discord galerie West Havenu";
       if (refs.discordGalleryCaption) {
-        refs.discordGalleryCaption.textContent = photo.caption || "";
+        refs.discordGalleryCaption.textContent = [
+          photo.caption || "",
+          photo.authorName ? `Autor: ${photo.authorName}` : ""
+        ].filter(Boolean).join(" | ");
       }
       refs.discordGalleryImage.onload = () => {
         refs.discordGalleryFrame.classList.add("is-ready");
       };
       refs.discordGalleryImage.src = photo.proxyUrl || photo.url;
+    };
+
+    const getGalleryAuthorLine = (photo) => (
+      photo?.authorName ? `Autor: ${photo.authorName}` : "Autor neznámý"
+    );
+
+    const getGalleryCaption = (photo) => (
+      photo?.caption || photo?.filename || "Fotka bez popisku."
+    );
+
+    const showGalleryViewer = (index = 0) => {
+      if (!refs.galleryViewer || !refs.galleryViewerImage || galleryPhotos.length === 0) return;
+
+      const safeIndex = ((index % galleryPhotos.length) + galleryPhotos.length) % galleryPhotos.length;
+      const photo = galleryPhotos[safeIndex];
+      refs.galleryViewer.classList.add("is-visible");
+      refs.galleryViewerImage.src = photo.proxyUrl || photo.url;
+      refs.galleryViewerImage.alt = getGalleryCaption(photo);
+      refs.galleryViewerCaption.textContent = getGalleryCaption(photo);
+      refs.galleryViewerAuthor.textContent = getGalleryAuthorLine(photo);
+    };
+
+    const renderGalleryArchive = () => {
+      if (!refs.galleryArchiveGrid || !refs.galleryModalMeta) return;
+
+      refs.galleryArchiveGrid.replaceChildren();
+      refs.galleryViewer?.classList.remove("is-visible");
+
+      if (galleryPhotos.length === 0) {
+        refs.galleryModalMeta.textContent = "V kanálu zatím nejsou fotky.";
+        return;
+      }
+
+      refs.galleryModalMeta.textContent = `Archiv obsahuje ${galleryPhotos.length} fotek z Discordu.`;
+
+      galleryPhotos.forEach((photo, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "gallery-archive-item";
+        button.dataset.galleryIndex = String(index);
+
+        const image = document.createElement("img");
+        image.className = "gallery-archive-image";
+        image.loading = "lazy";
+        image.src = photo.proxyUrl || photo.url;
+        image.alt = getGalleryCaption(photo);
+
+        const copy = document.createElement("span");
+        copy.className = "gallery-archive-copy";
+
+        const caption = document.createElement("p");
+        caption.className = "gallery-archive-caption";
+        caption.textContent = getGalleryCaption(photo);
+
+        const author = document.createElement("p");
+        author.className = "gallery-archive-author";
+        author.textContent = getGalleryAuthorLine(photo);
+
+        copy.append(caption, author);
+        button.append(image, copy);
+        refs.galleryArchiveGrid.appendChild(button);
+      });
+    };
+
+    const openGalleryModal = () => {
+      refs.galleryModal.classList.add("is-visible");
+      refs.galleryModal.setAttribute("aria-hidden", "false");
+      renderGalleryArchive();
+    };
+
+    const closeGalleryModal = () => {
+      refs.galleryModal.classList.remove("is-visible");
+      refs.galleryModal.setAttribute("aria-hidden", "true");
+      refs.galleryViewer?.classList.remove("is-visible");
     };
 
     const startGalleryRotation = () => {
@@ -7484,6 +7759,7 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
         }
 
         showGalleryPhoto(0);
+        renderGalleryArchive();
         startGalleryRotation();
       } catch (error) {
         console.warn("Discord gallery could not be loaded:", error);
@@ -11712,6 +11988,22 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       }
     });
 
+    refs.openGalleryButton.addEventListener("click", openGalleryModal);
+
+    refs.closeGalleryButton.addEventListener("click", closeGalleryModal);
+
+    refs.galleryModal.addEventListener("click", (event) => {
+      if (event.target === refs.galleryModal) {
+        closeGalleryModal();
+      }
+    });
+
+    refs.galleryArchiveGrid.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-gallery-index]");
+      if (!button) return;
+      showGalleryViewer(Number(button.dataset.galleryIndex));
+    });
+
     refs.openBadgesButton.addEventListener("click", openBadgeModal);
 
     refs.closeBadgesButton.addEventListener("click", closeBadgeModal);
@@ -11857,6 +12149,9 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       }
       if (event.key === "Escape" && refs.characterRosterModal.classList.contains("is-visible")) {
         closeCharacterRosterModal();
+      }
+      if (event.key === "Escape" && refs.galleryModal.classList.contains("is-visible")) {
+        closeGalleryModal();
       }
       if (event.key === "Escape" && refs.badgeModal.classList.contains("is-visible")) {
         closeBadgeModal();
