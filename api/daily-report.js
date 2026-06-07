@@ -37,6 +37,8 @@ const characters = [
   { id: "silas", name: "Silas Crowe" },
   { id: "william", name: "William Hart" },
   { id: "thomas-mercer", name: "Thomas Mercer" },
+  { id: "tom-halbrook", name: "Thomas Halbrook" },
+  { id: "ellie-whitmore", name: "Eleanor Whitmore" },
   { id: "violet", name: "Violet Crowe" }
 ];
 

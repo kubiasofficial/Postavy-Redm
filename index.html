@@ -399,6 +399,170 @@
       display: block;
     }
 
+    .home-showcase {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      justify-items: center;
+      gap: 26px;
+      width: min(720px, 100%);
+      margin: 18px auto 0;
+    }
+
+    .characters-launch {
+      position: relative;
+      width: min(680px, 100%);
+      min-height: 250px;
+      display: grid;
+      place-items: stretch;
+      overflow: hidden;
+      border: 1px solid rgba(255, 222, 154, 0.46);
+      border-radius: var(--radius-xl);
+      padding: 0;
+      background: #17110c;
+      color: var(--text);
+      cursor: pointer;
+      font: inherit;
+      text-align: left;
+      box-shadow:
+        0 30px 76px rgba(0, 0, 0, 0.46),
+        0 0 0 1px rgba(255, 238, 196, 0.08),
+        0 0 48px rgba(169, 120, 57, 0.14);
+      isolation: isolate;
+      transition:
+        transform var(--ease),
+        border-color var(--ease),
+        box-shadow var(--ease),
+        filter var(--ease);
+    }
+
+    .characters-launch:hover,
+    .characters-launch:focus-visible {
+      transform: translateY(-5px);
+      border-color: rgba(255, 228, 170, 0.82);
+      filter: saturate(1.06) contrast(1.03);
+      box-shadow:
+        0 40px 92px rgba(0, 0, 0, 0.58),
+        0 0 0 1px rgba(255, 238, 196, 0.16),
+        0 0 58px rgba(169, 120, 57, 0.24);
+      outline: none;
+    }
+
+    .characters-launch::before {
+      content: "";
+      position: absolute;
+      inset: -40% -80%;
+      z-index: 3;
+      pointer-events: none;
+      opacity: 0;
+      background: linear-gradient(110deg, transparent 42%, rgba(255, 238, 196, 0.2), transparent 58%);
+      transform: translateX(-45%);
+      transition:
+        opacity var(--ease),
+        transform 760ms ease;
+    }
+
+    .characters-launch:hover::before,
+    .characters-launch:focus-visible::before {
+      opacity: 1;
+      transform: translateX(45%);
+    }
+
+    .characters-launch::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.12) 34%, rgba(0, 0, 0, 0.78)),
+        linear-gradient(90deg, rgba(11, 8, 6, 0.74), transparent 32%, transparent 68%, rgba(11, 8, 6, 0.68)),
+        radial-gradient(ellipse at 50% 64%, rgba(169, 120, 57, 0.24), transparent 54%);
+    }
+
+    .characters-launch-image {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background: url("images/character-button.png") center / cover no-repeat;
+      transform: scale(1.01);
+      transition: transform 900ms ease, filter var(--ease);
+    }
+
+    .characters-launch:hover .characters-launch-image,
+    .characters-launch:focus-visible .characters-launch-image {
+      transform: scale(1.055);
+      filter: brightness(1.06);
+    }
+
+    .characters-launch-copy {
+      position: relative;
+      z-index: 2;
+      align-self: end;
+      display: grid;
+      gap: 8px;
+      padding: 30px;
+      text-shadow: 0 8px 28px rgba(0, 0, 0, 0.86);
+    }
+
+    .characters-launch-kicker,
+    .characters-launch-meta {
+      color: #d7a45a;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .characters-launch-title {
+      color: #fff0cf;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(3rem, 9vw, 5.8rem);
+      line-height: 0.86;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .characters-launch-meta {
+      color: #ead9bb;
+      letter-spacing: 0.1em;
+    }
+
+    .character-roster-modal {
+      z-index: 64;
+    }
+
+    .character-roster-card {
+      width: min(1320px, 100%);
+      padding: 26px;
+      overflow: hidden auto;
+    }
+
+    .character-roster-head {
+      margin: 0 42px 24px 0;
+    }
+
+    .character-roster-card .roster-layout {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr) 178px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .character-roster-card .rumor-strip,
+    .character-roster-card .activity-rail {
+      position: relative;
+      top: auto;
+      right: auto;
+      left: auto;
+      width: auto;
+    }
+
+    .character-roster-card .roster-grid {
+      width: 100%;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+
     .roster-main {
       display: grid;
       justify-items: center;
@@ -4604,6 +4768,34 @@
         margin: 0;
       }
 
+      .home-showcase {
+        width: 100%;
+        gap: 18px;
+      }
+
+      .characters-launch {
+        min-height: 210px;
+      }
+
+      .characters-launch-copy {
+        padding: 22px 18px;
+      }
+
+      .characters-launch-title {
+        font-size: clamp(2.65rem, 16vw, 4.1rem);
+      }
+
+      .character-roster-card {
+        width: 100%;
+        max-height: calc(100dvh - 20px);
+        padding: 22px 16px;
+      }
+
+      .character-roster-card .roster-layout {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+
       .roster-layout {
         display: grid;
         grid-template-columns: 1fr;
@@ -4662,6 +4854,10 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
         width: 100%;
+      }
+
+      .character-roster-card .roster-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .roster-card {
@@ -5001,6 +5197,15 @@
     }
 
     @media (min-width: 681px) and (max-width: 1480px) {
+      .character-roster-card .roster-layout {
+        grid-template-columns: minmax(0, 1fr) 190px;
+        gap: 18px;
+      }
+
+      .character-roster-card .rumor-strip {
+        grid-column: 1 / -1;
+      }
+
       .roster-layout {
         display: grid;
         grid-template-columns: minmax(0, 1fr) 190px;
@@ -5073,40 +5278,60 @@
       </div>
     </header>
 
-    <div class="roster-layout">
-      <section class="rumor-strip" id="rumorStrip" aria-live="polite">
-        <div class="rumor-visual" aria-hidden="true">
-          <span class="rumor-avatar" id="rumorAvatar">
-            <img id="rumorAvatarImage" src="images/zeke.png" alt="">
-          </span>
-          <span class="rumor-character" id="rumorCharacter">
-            <img id="rumorCharacterImage" src="images/zeke.png" alt="">
-          </span>
-        </div>
-        <div class="rumor-copy">
-          <p class="rumor-kicker">West Haven Rumors</p>
-          <h2 class="rumor-title" id="rumorTitle">Městské drby</h2>
-          <p class="rumor-text" id="rumorText">Noční kancelář zatím sbírá zápisy. Jakmile někdo zanechá report, město si z něj udělá vlastní verzi.</p>
-          <p class="rumor-meta" id="rumorMeta">Čeká se na první stopu</p>
-        </div>
-      </section>
-      <div class="roster-main">
-        <div class="roster-grid" id="rosterGrid"></div>
-        <aside class="gallery-rail" aria-label="Fotky z Discordu">
-          <p class="gallery-title">Fotky</p>
-          <figure class="gallery-frame" id="discordGalleryFrame">
-            <img id="discordGalleryImage" src="" alt="">
-            <figcaption class="gallery-caption" id="discordGalleryCaption"></figcaption>
-            <p class="gallery-empty" id="discordGalleryEmpty">Čeká se na fotky z Discordu.</p>
-          </figure>
-        </aside>
-      </div>
-      <aside class="activity-rail" aria-label="Aktivita postav">
-        <p class="activity-title">Aktivita</p>
-        <div class="time-ledger" id="timeLedger"></div>
+    <div class="home-showcase">
+      <button class="characters-launch" id="openCharactersButton" type="button" aria-haspopup="dialog">
+        <span class="characters-launch-image" aria-hidden="true"></span>
+        <span class="characters-launch-copy">
+          <span class="characters-launch-kicker">Character Roster</span>
+          <span class="characters-launch-title">Postavy</span>
+          <span class="characters-launch-meta">Otevřít karty postav</span>
+        </span>
+      </button>
+      <aside class="gallery-rail" aria-label="Fotky z Discordu">
+        <p class="gallery-title">Fotky</p>
+        <figure class="gallery-frame" id="discordGalleryFrame">
+          <img id="discordGalleryImage" src="" alt="">
+          <figcaption class="gallery-caption" id="discordGalleryCaption"></figcaption>
+          <p class="gallery-empty" id="discordGalleryEmpty">Čeká se na fotky z Discordu.</p>
+        </figure>
       </aside>
     </div>
   </section>
+
+  <div class="badge-modal character-roster-modal" id="characterRosterModal" aria-hidden="true">
+    <section class="badge-card character-roster-card" aria-labelledby="characterRosterTitle">
+      <button class="badge-modal-x" id="closeCharactersButton" type="button" aria-label="Zavřít postavy">&times;</button>
+      <header class="character-roster-head">
+        <p class="eyebrow">Character Roster</p>
+        <h2 class="badge-title" id="characterRosterTitle">Postavy</h2>
+      </header>
+      <div class="roster-layout">
+        <section class="rumor-strip" id="rumorStrip" aria-live="polite">
+          <div class="rumor-visual" aria-hidden="true">
+            <span class="rumor-avatar" id="rumorAvatar">
+              <img id="rumorAvatarImage" src="images/zeke.png" alt="">
+            </span>
+            <span class="rumor-character" id="rumorCharacter">
+              <img id="rumorCharacterImage" src="images/zeke.png" alt="">
+            </span>
+          </div>
+          <div class="rumor-copy">
+            <p class="rumor-kicker">West Haven Rumors</p>
+            <h2 class="rumor-title" id="rumorTitle">Městské drby</h2>
+            <p class="rumor-text" id="rumorText">Noční kancelář zatím sbírá zápisy. Jakmile někdo zanechá report, město si z něj udělá vlastní verzi.</p>
+            <p class="rumor-meta" id="rumorMeta">Čeká se na první stopu</p>
+          </div>
+        </section>
+        <div class="roster-main">
+          <div class="roster-grid" id="rosterGrid"></div>
+        </div>
+        <aside class="activity-rail" aria-label="Aktivita postav">
+          <p class="activity-title">Aktivita</p>
+          <div class="time-ledger" id="timeLedger"></div>
+        </aside>
+      </div>
+    </section>
+  </div>
 
   <main class="app is-hidden" id="detailView" aria-label="Character menu">
     <section class="content">
@@ -6023,6 +6248,102 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           "„Lidé říkají mnohem víc, když si myslí, že neposloucháš.“",
         portrait: "images/Violet.png",
         portraitAlt: "Portrét postavy Violet Crowe"
+      },
+      {
+        id: "tom-halbrook",
+        listName: "Thomas Halbrook",
+        name: "Thomas \"Tom\" Halbrook",
+        role: "Farmář / pracant / ochránce",
+        age: "27 let",
+        origin: "Independence, Missouri",
+        year: "1899",
+        status: "Nový začátek",
+        overview:
+          "Thomas Halbrook je obyčejný muž z malé farmy v Missouri, který do West Havenu nepřijel za slávou ani mocí. Přijel s Eleanor, s tvrdýma rukama, věrností v srdci a nadějí, že si konečně vybudují domov.",
+        overviewBlocks: [
+          {
+            title: "Základní informace",
+            text: "Narodil se roku 1872 poblíž Independence ve státě Missouri. V roce 1899 je mu 27 let a většinu života strávil prací na farmě, u koní a u rozbitých nástrojů."
+          },
+          {
+            title: "Společný cíl",
+            text: "S Eleanor nepřijeli do West Havenu utíkat před zákonem, dluhy ani minulostí. Chtějí začít nový život a najít místo, které budou moci nazývat domovem."
+          }
+        ],
+        lore:
+          `Thomas Halbrook se narodil roku 1872 na malé farmě poblíž Independence ve státě Missouri. Jeho rodiče nebyli bohatí. Otec vlastnil několik akrů půdy a matka se starala o domácnost. Život nebyl jednoduchý, ale rodina nikdy netrpěla hladem.
+
+Od malička byl Thomas veden k práci. Už jako chlapec pomáhal na polích, staral se o koně a opravoval rozbité nástroje. Naučil se, že nic nepřijde samo a že člověk musí makat, pokud chce něco získat.
+
+Na rozdíl od ostatních kluků nebyl rváč. Když už se dostal do konfliktu, většinou šlo o obranu někoho slabšího. Měl silný smysl pro spravedlnost, ale zároveň výbušnou povahu. Když ho někdo naštval, dokázal být tvrdohlavý jako mezek.
+
+Když bylo Thomasovi sedmnáct let, zemřel jeho otec při nehodě během práce na farmě. Od té chvíle musel převzít část odpovědnosti za rodinu. Pracoval od rána do večera, aby pomohl matce a mladším sourozencům. Během těch let si vybudoval silnou pracovní morálku, ale také pocit, že mu život protéká mezi prsty.
+
+Zatímco ostatní cestovali a poznávali svět, on zůstával na jednom místě. V hlavě mu začala růst touha po změně.
+
+Ve svých třiadvaceti letech poznal Eleanor Whitmore. Poprvé ji spatřil na trhu v sousedním městečku. Zatímco ostatní muži se snažili působit důležitě, Eleanor zaujala jeho tím, že se nebála říct svůj názor.
+
+Jejich první rozhovor skončil hádkou. Druhý skončil smíchem. A třetí začátkem vztahu. Thomas si rychle uvědomil, že našel člověka, kterému může věřit.
+
+Roky plynuly. Farma přestávala vydělávat a budoucnost nevypadala dobře. Thomas začal přemýšlet, zda má smysl celý život strávit na stejném místě. Nakonec se s Eleanor rozhodli odejít.
+
+Neutíkali před zákonem. Neutíkali před dluhy. Neutíkali před minulostí. Jednoduše chtěli začít nový život.
+
+V roce 1899 dorazil Thomas společně s Eleanor do West Havenu. Přijel jako obyčejný muž. Bez bohatství. Bez významného jména. Bez velkých plánů. Jen s nadějí, že si vybuduje domov.`,
+        appearance:
+          "Pracovitý muž z farmy, který na sobě nese roky práce venku. Působí pevně, unaveně a spolehlivě; ne jako člověk, který se snaží vypadat důležitě, ale jako někdo, kdo už mnohokrát udělal práci, do které se jiným nechtělo.",
+        personality:
+          "Věrný, pracovitý, čestný a ochranitelský. Thomas drží při blízkých a dá se na něj spolehnout. Zároveň je tvrdohlavý, výbušný, nerad přiznává chyby a někdy jedná dřív, než přemýšlí.",
+        quote:
+          "„Nepřijel jsem sem být někdo. Přijel jsem sem postavit domov.“",
+        portrait: "images/tom.png",
+        portraitAlt: "Portrét postavy Thomas Tom Halbrook"
+      },
+      {
+        id: "ellie-whitmore",
+        listName: "Eleanor Whitmore",
+        name: "Eleanor \"Ellie\" Whitmore",
+        role: "Empatická vypravěčka / opora / nový začátek",
+        age: "24 let",
+        origin: "Springfield",
+        year: "1899",
+        status: "Ve West Havenu",
+        overview:
+          "Eleanor Whitmore, které blízcí říkají Ellie, je vzdělaná, klidná a empatická žena ze Springfieldu. Do West Havenu přijela s Thomasem, protože věří, že člověk musí někdy riskovat, aby našel štěstí.",
+        overviewBlocks: [
+          {
+            title: "Základní informace",
+            text: "Narodila se roku 1875 ve Springfieldu. V roce 1899 je jí 24 let. Díky otci obchodníkovi a matce učitelce měla lepší vzdělání než většina žen své doby."
+          },
+          {
+            title: "Společný cíl",
+            text: "S Thomasem nehledají slávu, moc ani problémy. Chtějí najít místo, kde budoucnost může být lepší než minulost."
+          }
+        ],
+        lore:
+          `Eleanor Whitmore se narodila roku 1875 ve městě Springfield. Její rodina patřila mezi slušně zajištěné obyvatele města. Otec byl obchodník a matka učitelka. Díky tomu měla Eleanor lepší vzdělání než většina žen své doby.
+
+Naučila se číst, psát a zajímala se o svět kolem sebe. Přesto nikdy netoužila po luxusu. Více než drahé šaty ji zajímali lidé.
+
+Jako mladá dívka byla Eleanor známá svou laskavostí. Pomáhala nemocným sousedům, starala se o děti a často působila jako prostředník při hádkách. Nebyla naivní. Jen věřila, že většina problémů se dá vyřešit rozumným rozhovorem.
+
+Když poprvé poznala Thomase Halbrooka, myslela si, že jde o dalšího tvrdohlavého farmáře. Thomas si o ní zase myslel, že je příliš chytrá na obyčejný život. Oba se mýlili.
+
+Postupně zjistili, že se navzájem doplňují. Tam, kde Thomas jednal silou, Eleanor hledala rozum. Tam, kde Eleanor váhala, Thomas jednal.
+
+Eleanor nikdy nechtěla zůstat celý život ve stejném městě. Chtěla poznat svět a zažít něco nového. Když Thomas přišel s myšlenkou odchodu, souhlasila téměř okamžitě. Věřila, že člověk musí někdy riskovat, aby našel štěstí.
+
+Do West Havenu přijela s nadšením i obavami. Nové místo znamenalo nové příležitosti, ale také nové nebezpečí. Přesto byla odhodlaná vytvořit si zde domov, ať už budoucnost přinese cokoliv.
+
+Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli získat moc. Nepřijeli hledat problémy. Přijeli najít místo, které budou moci nazývat domovem, a společně zjistit, jestli může být budoucnost lepší než minulost.`,
+        appearance:
+          "Působí klidně, pozorně a upraveně bez zbytečného luxusu. Její vzhled stojí spíš na čistotě, jemnosti a soustředěném pohledu než na okázalosti. V lidech často vyvolává pocit, že je opravdu poslouchá.",
+        personality:
+          "Klidná, empatická, chytrá, trpělivá a věrná. Eleanor věří v rozhovor a snaží se vidět v lidech to lepší. Někdy je příliš důvěřivá, nerada ubližuje druhým, často upřednostňuje ostatní před sebou a špatně snáší ztrátu blízkých.",
+        quote:
+          "„Někdy musí člověk riskovat, aby zjistil, jestli na něj někde čeká domov.“",
+        portrait: "images/elie.png",
+        portraitAlt: "Portrét postavy Eleanor Ellie Whitmore"
       }
     ];
 
@@ -6140,6 +6461,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
     const dustField = document.getElementById("dustField");
     const backButton = document.getElementById("backButton");
     const refs = {
+      openCharactersButton: document.getElementById("openCharactersButton"),
+      characterRosterModal: document.getElementById("characterRosterModal"),
+      closeCharactersButton: document.getElementById("closeCharactersButton"),
       rumorStrip: document.getElementById("rumorStrip"),
       rumorAvatar: document.getElementById("rumorAvatar"),
       rumorAvatarImage: document.getElementById("rumorAvatarImage"),
@@ -6615,6 +6939,48 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
           "Tom to zalomil a jeho tvrdohlavost si poprvé za den sedla vedle něj."
         ]
       },
+      "tom-halbrook": {
+        displayName: "Thomas \"Tom\" Halbrook",
+        breathingVerb: "dýchal",
+        reportPlaceholder: "Co Tom dnes vybudoval, koho chránil a kde s Eleanor našli trochu klidu?",
+        alertWake: "Tom Halbrook je vzhůru. Práce si našla další pár rukou.",
+        alertSleep: "Tom Halbrook usnul. Den konečně pustil jeho ruce z práce.",
+        wakeTitle: "Tom Halbrook je vzhůru",
+        sleepTitle: "Tom Halbrook usnul",
+        color: 10047773,
+        footer: "Farmářský zápis • West Haven",
+        wakeMessages: [
+          "Tom Halbrook se probudil a první pohled měl výraz člověka, který už hledá, co je potřeba opravit.",
+          "U West Havenu přibyl další pár pracovitých rukou. Tom nespí.",
+          "Tom otevřel oči a den dostal obyčejnou, tvrdohlavou sílu."
+        ],
+        sleepMessages: [
+          "Tom Halbrook usnul a práce si konečně musela počkat do rána.",
+          "Den z něj stáhl únavu až pozdě večer. Tom spí.",
+          "Tom odpočívá. I ticho kolem něj působí poctivě odpracovaně."
+        ]
+      },
+      "ellie-whitmore": {
+        displayName: "Eleanor \"Ellie\" Whitmore",
+        breathingVerb: "dýchala",
+        reportPlaceholder: "Komu Ellie dnes pomohla, co si nechala pro sebe a kde našla bezpečí?",
+        alertWake: "Ellie je vzhůru. West Haven má o trochu víc klidu.",
+        alertSleep: "Ellie usnula. Některé starosti dnes konečně ztichly.",
+        wakeTitle: "Ellie je vzhůru",
+        sleepTitle: "Ellie usnula",
+        color: 12624984,
+        footer: "Tichý zápis • West Haven",
+        wakeMessages: [
+          "Ellie otevřela oči a místnost působila o něco méně tvrdě.",
+          "Eleanor Whitmore je vzhůru. Někdo ve West Havenu dnes možná dostane trpělivější odpověď.",
+          "Ellie se probudila s klidem člověka, který i nový den zkusí nejdřív pochopit."
+        ],
+        sleepMessages: [
+          "Ellie usnula a West Haven si na chvíli nechal své obavy pro sebe.",
+          "Eleanor odpočívá. Ticho kolem ní je měkké, ale ne slabé.",
+          "Ellie spí a dnešní rozhovory konečně ztratily ostří."
+        ]
+      },
       violet: {
         displayName: "Violet Crowe",
         breathingVerb: "dýchala",
@@ -6766,7 +7132,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       silas: "#4ca66f",
       william: "#d870a8",
       "thomas-mercer": "#8fa3a8",
-      violet: "#d7a8cf"
+      violet: "#d7a8cf",
+      "tom-halbrook": "#b48a54",
+      "ellie-whitmore": "#c09298"
     };
     const mapZoomMin = 1;
     const mapZoomMax = 8;
@@ -10223,6 +10591,18 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         shortName: "Thomas",
         closing: "Ráno může působit prakticky a tiše, jako někdo, kdo raději začne pracovat dřív, než se ho někdo začne ptát."
       },
+      "tom-halbrook": {
+        icon: "🤠",
+        title: "Thomas \"Tom\" Halbrook",
+        shortName: "Tom",
+        closing: "Ráno může působit unaveně, poctivě a připraveně znovu vzít práci do vlastních rukou."
+      },
+      "ellie-whitmore": {
+        icon: "🌿",
+        title: "Eleanor \"Ellie\" Whitmore",
+        shortName: "Ellie",
+        closing: "Ráno může působit klidně, vnímavě a trochu opatrně, jako někdo, kdo si nové místo teprve učí číst."
+      },
       violet: {
         icon: "🥀",
         title: "Violet Crowe",
@@ -10778,6 +11158,17 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       updateMailBadges();
     };
 
+    const openCharacterRosterModal = () => {
+      refs.characterRosterModal.classList.add("is-visible");
+      refs.characterRosterModal.setAttribute("aria-hidden", "false");
+      updateRosterStates();
+    };
+
+    const closeCharacterRosterModal = () => {
+      refs.characterRosterModal.classList.remove("is-visible");
+      refs.characterRosterModal.setAttribute("aria-hidden", "true");
+    };
+
     const showDetail = (characterId) => {
       const character = characters.find((item) => item.id === characterId);
       if (!character) {
@@ -10788,6 +11179,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       activeCharacterId = characterId;
       renderCharacter();
       pulseViewTransition();
+      closeCharacterRosterModal();
       homeView.classList.add("is-hidden");
       detailView.classList.remove("is-hidden");
       setActiveTab("overview");
@@ -11321,6 +11713,16 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
     });
 
+    refs.openCharactersButton.addEventListener("click", openCharacterRosterModal);
+
+    refs.closeCharactersButton.addEventListener("click", closeCharacterRosterModal);
+
+    refs.characterRosterModal.addEventListener("click", (event) => {
+      if (event.target === refs.characterRosterModal) {
+        closeCharacterRosterModal();
+      }
+    });
+
     refs.openBadgesButton.addEventListener("click", openBadgeModal);
 
     refs.closeBadgesButton.addEventListener("click", closeBadgeModal);
@@ -11463,6 +11865,9 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
       }
       if (event.key === "Escape" && refs.levelAlert.classList.contains("is-visible")) {
         hideLevelAlert();
+      }
+      if (event.key === "Escape" && refs.characterRosterModal.classList.contains("is-visible")) {
+        closeCharacterRosterModal();
       }
       if (event.key === "Escape" && refs.badgeModal.classList.contains("is-visible")) {
         closeBadgeModal();

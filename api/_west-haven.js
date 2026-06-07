@@ -13,6 +13,8 @@ const characters = [
   { id: "silas", name: "Silas Crowe", discordId: "702917011235143800", color: 0x6161a1 },
   { id: "william", name: "William Hart", discordId: "550294660090691594", color: 0xd870a8 },
   { id: "thomas-mercer", name: "Thomas Mercer", discordId: "381058621644996608", color: 0x8fa3a8 },
+  { id: "tom-halbrook", name: "Thomas Halbrook", discordId: "", color: 0x995d3d },
+  { id: "ellie-whitmore", name: "Eleanor Whitmore", discordId: "", color: 0xc09298 },
   { id: "violet", name: "Violet Crowe", discordId: "795365012494483486", color: 0xd7a8cf }
 ];
 

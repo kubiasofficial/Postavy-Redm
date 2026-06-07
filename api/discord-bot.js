@@ -155,6 +155,34 @@ const characterActionLines = {
       "Nocni klid ma dnes boty od blata a jmeno Thomas Mercer."
     ]
   },
+  "tom-halbrook": {
+    wakeTitle: "Tom Halbrook je vzhuru",
+    sleepTitle: "Tom Halbrook usnul",
+    wake: [
+      "Tom Halbrook je vzhuru. Prace si nasla dalsi par rukou.",
+      "Tom otevrel oci a den dostal obycejnou, tvrdohlavou silu.",
+      "U West Havenu pribyl dalsi pracovity clovek na nohou."
+    ],
+    sleep: [
+      "Tom Halbrook usnul. Den konecne pustil jeho ruce z prace.",
+      "Tom odpociva. Ticho kolem nej pusobi poctive odpracovane.",
+      "Prace si musi pockat do rana. Tom spi."
+    ]
+  },
+  "ellie-whitmore": {
+    wakeTitle: "Ellie je vzhuru",
+    sleepTitle: "Ellie usnula",
+    wake: [
+      "Ellie je vzhuru. West Haven ma o trochu vic klidu.",
+      "Eleanor Whitmore je vzhuru a den zni o neco mene tvrde.",
+      "Ellie se probudila s klidem cloveka, ktery se nejdriv snazi porozumet."
+    ],
+    sleep: [
+      "Ellie usnula. Nektere starosti dnes konecne ztichly.",
+      "Eleanor odpociva. Ticho kolem ni je mekke, ale ne slabe.",
+      "Ellie spi a dnesni rozhovory konecne ztratily ostri."
+    ]
+  },
   violet: {
     wakeTitle: "Violet je vzhuru",
     sleepTitle: "Violet spi",
