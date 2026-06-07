@@ -6345,7 +6345,9 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       silas: { x: 25, y: 43 },
       violet: { x: 72, y: 43 },
       william: { x: 61, y: 74 },
-      "thomas-mercer": { x: 36, y: 74 }
+      "thomas-mercer": { x: 36, y: 74 },
+      "tom-halbrook": { x: 32, y: 92 },
+      "ellie-whitmore": { x: 68, y: 92 }
     };
 
     let characterRelationships = [
@@ -6404,6 +6406,13 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
         type: "rivalry",
         label: "Ostražitý respekt",
         note: "Zeke respektuje lidi, kteří se nerozklepou při prvním pohledu. William mu ale stojí příliš blízko u rodiny."
+      },
+      {
+        from: "tom-halbrook",
+        to: "ellie-whitmore",
+        type: "romance",
+        label: "Nový domov",
+        note: "Thomas a Eleanor nepřijeli do West Havenu hledat slávu ani moc. Drží se jeden druhého a společně zkouší, jestli se tu dá začít znovu."
       }
     ];
     const defaultCharacterRelationships = characterRelationships.map((relationship) => ({ ...relationship }));

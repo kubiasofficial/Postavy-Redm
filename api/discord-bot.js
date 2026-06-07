@@ -36,6 +36,7 @@ const relationTypes = {
   debt: { label: "Dluh", color: 0xc69a4a },
   distrust: { label: "Neduvera", color: 0x9a6f73 },
   rivalry: { label: "Rivalita", color: 0xb84a4a },
+  romance: { label: "Romantika", color: 0xd2789b },
   secret: { label: "Tajemstvi", color: 0x9f8dca }
 };
 
@@ -95,6 +96,13 @@ const characterRelationships = [
     type: "rivalry",
     label: "Ostrazity respekt",
     note: "Zeke respektuje lidi, kteri se nerozklepou pri prvnim pohledu. William mu ale stoji prilis blizko u rodiny."
+  },
+  {
+    from: "tom-halbrook",
+    to: "ellie-whitmore",
+    type: "romance",
+    label: "Novy domov",
+    note: "Thomas a Eleanor neprijeli do West Havenu hledat slavu ani moc. Drzi se jeden druheho a spolecne zkousi, jestli se tu da zacit znovu."
   }
 ];
 
