@@ -1,5 +1,6 @@
 const { webcrypto } = require("crypto");
 const {
+  DISCORD_API_BASE,
   characters,
   createFirestoreDocument,
   fetchDiscordMembers,
@@ -14,6 +15,9 @@ const {
   patchFirestoreDocument,
   sendDiscordMessage
 } = require("./_west-haven");
+
+const WEBSITE_URL = "https://postavy-redm.vercel.app";
+const GALLERY_CHANNEL_ID = "1505429527021621278";
 
 const interactionType = {
   ping: 1,
@@ -39,6 +43,8 @@ const relationTypes = {
   romance: { label: "Romantika", color: 0xd2789b },
   secret: { label: "Tajemstvi", color: 0x9f8dca }
 };
+
+const allowedImageTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 const characterRelationships = [
   {
@@ -313,6 +319,16 @@ const commands = [
         choices: characterChoices
       }
     ]
+  },
+  {
+    name: "wh-galerie",
+    description: "Ukaze posledni fotky z Discord galerie a odkaz na web.",
+    type: 1
+  },
+  {
+    name: "wh-soutez",
+    description: "Ukaze aktualni tydenni foto soutez a prubezne poradi.",
+    type: 1
   }
 ];
 
@@ -466,6 +482,135 @@ const formatChronicleDate = (dateKey) => {
 };
 
 const isValidDateKey = (value) => !value || /^\d{4}-\d{2}-\d{2}$/.test(String(value));
+
+const isPhotoAttachment = (attachment) => {
+  const contentType = String(attachment.content_type || "").toLowerCase();
+  if (allowedImageTypes.has(contentType)) return true;
+
+  const filename = String(attachment.filename || "").toLowerCase();
+  return /\.(jpe?g|png|webp)$/.test(filename);
+};
+
+const cleanCaption = (content = "") => (
+  String(content)
+    .replace(/<a?:[^:>]+:\d+>/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 220)
+);
+
+const getDiscordAuthorName = (message) => (
+  message.member?.nick ||
+  message.author?.global_name ||
+  message.author?.username ||
+  "Neznamy autor"
+);
+
+const getPragueWeekInfo = (date = new Date()) => {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Prague",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    weekday: "short"
+  }).formatToParts(date);
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  const weekdayIndex = { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 7 }[values.weekday] || 1;
+  const utcNoon = new Date(Date.UTC(Number(values.year), Number(values.month) - 1, Number(values.day), 12));
+  const shiftDateKey = (offsetDays) => (
+    new Date(utcNoon.getTime() + (offsetDays * 24 * 60 * 60 * 1000)).toISOString().slice(0, 10)
+  );
+
+  return {
+    weekId: shiftDateKey(1 - weekdayIndex),
+    startsAt: shiftDateKey(1 - weekdayIndex),
+    endsAt: shiftDateKey(7 - weekdayIndex)
+  };
+};
+
+const loadStoredRelationships = async () => {
+  const documents = await fetchFirestoreCollection("characterRelationships");
+  const storedRelationships = documents
+    .map((document) => ({ id: document.id, ...document.data }))
+    .filter((relationship) => relationship.from && relationship.to);
+
+  return storedRelationships.length ? storedRelationships : characterRelationships;
+};
+
+const fetchLatestGalleryPhotos = async (limit = 5) => {
+  const token = process.env.DISCORD_BOT_TOKEN;
+  if (!token) throw new Error("Missing DISCORD_BOT_TOKEN");
+
+  const photos = [];
+  let before = "";
+
+  while (photos.length < limit) {
+    const search = new URLSearchParams({ limit: "100" });
+    if (before) search.set("before", before);
+
+    const response = await fetch(`${DISCORD_API_BASE}/channels/${GALLERY_CHANNEL_ID}/messages?${search}`, {
+      headers: {
+        Authorization: `Bot ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Discord gallery request failed: ${await response.text()}`);
+    }
+
+    const page = await response.json();
+    if (!Array.isArray(page) || page.length === 0) break;
+
+    page.forEach((message) => {
+      if (photos.length >= limit || !Array.isArray(message.attachments)) return;
+
+      message.attachments
+        .filter(isPhotoAttachment)
+        .forEach((attachment) => {
+          if (photos.length >= limit) return;
+          photos.push({
+            id: attachment.id,
+            url: attachment.url,
+            proxyUrl: attachment.proxy_url || attachment.url,
+            caption: cleanCaption(message.content) || "Fotka bez popisku.",
+            authorName: getDiscordAuthorName(message),
+            uploadedAt: message.timestamp || null
+          });
+        });
+    });
+
+    before = page[page.length - 1].id;
+    if (page.length < 100) break;
+  }
+
+  return photos;
+};
+
+const buildContestLeaderboard = async (weekId) => {
+  const contest = await fetchFirestoreDocument(`photoContests/${weekId}`);
+  if (!contest) return null;
+
+  const voteDocuments = await fetchFirestoreCollection("photoContestVotes");
+  const counts = voteDocuments
+    .map((document) => document.data)
+    .filter((vote) => vote.weekId === weekId)
+    .reduce((accumulator, vote) => {
+      accumulator[vote.photoId] = (accumulator[vote.photoId] || 0) + 1;
+      return accumulator;
+    }, {});
+
+  const photos = (Array.isArray(contest.photos) ? contest.photos : [])
+    .map((photo, index) => ({
+      ...photo,
+      originalIndex: index,
+      votes: counts[photo.id] || 0
+    }))
+    .sort((first, second) => (
+      second.votes - first.votes || first.originalIndex - second.originalIndex
+    ));
+
+  return { contest, photos };
+};
 
 const stripReportNoise = (text = "") => (
   String(text)
@@ -719,7 +864,7 @@ const handleRelations = async (interaction) => {
   const character = getCharacter(characterId);
   if (!character) return interactionResponse("Nemuzu urcit postavu. Vyber ji parametrem `postava`.", { ephemeral: true });
 
-  const relationships = characterRelationships.filter((relationship) => (
+  const relationships = (await loadStoredRelationships()).filter((relationship) => (
     relationship.from === characterId || relationship.to === characterId
   ));
 
@@ -785,6 +930,102 @@ const handleWhere = async (interaction) => {
         ],
         footer: {
           text: location ? "Misto je odhadnute podle mapy na webu." : "Postava jeste nema ulozene misto spanku."
+        },
+        timestamp: new Date().toISOString()
+      }
+    ]
+  });
+};
+
+const handleGallery = async () => {
+  const photos = await fetchLatestGalleryPhotos(5);
+
+  if (photos.length === 0) {
+    return interactionResponse("", {
+      embeds: [
+        {
+          title: "West Haven | Galerie",
+          description: `V galerii zatim nejsou zadne fotky. Web: ${WEBSITE_URL}`,
+          color: 0xb88945,
+          timestamp: new Date().toISOString()
+        }
+      ]
+    });
+  }
+
+  return interactionResponse("", {
+    embeds: [
+      {
+        title: "West Haven | Galerie",
+        description: [
+          "Posledni fotky z Discord galerie jsou nactene primo z kanalu.",
+          "Chces mit fotku na webu a v soutezi? Posli ji sem: https://discord.com/channels/1505428362636693595/1505429527021621278",
+          `Na webu najdes cely archiv: ${WEBSITE_URL}`
+        ].join("\n"),
+        color: 0xb88945,
+        image: { url: photos[0].proxyUrl || photos[0].url },
+        fields: photos.map((photo, index) => ({
+          name: `${index + 1}. ${photo.authorName || "Neznamy autor"}`,
+          value: shorten(photo.caption || "Fotka bez popisku.", 160),
+          inline: false
+        })),
+        footer: {
+          text: "West Haven Gallery"
+        },
+        timestamp: new Date().toISOString()
+      }
+    ]
+  });
+};
+
+const handleContest = async () => {
+  const week = getPragueWeekInfo();
+  const leaderboard = await buildContestLeaderboard(week.weekId);
+
+  if (!leaderboard) {
+    return interactionResponse("", {
+      embeds: [
+        {
+          title: "West Haven | Foto soutez",
+          description: [
+            `Aktualni tyden **${week.startsAt} az ${week.endsAt}** jeste nema zalozenou soutez.`,
+            "Soutez se zaklada kazde pondeli z poslednich 6 fotek v galerii.",
+            "Aby se fotka dostala do galerie a mohla byt vybrana do souteze, posli ji sem: https://discord.com/channels/1505428362636693595/1505429527021621278",
+            `Hlasovani najdes na webu: ${WEBSITE_URL}`
+          ].join("\n"),
+          color: 0xb88945,
+          timestamp: new Date().toISOString()
+        }
+      ]
+    });
+  }
+
+  const fields = leaderboard.photos.slice(0, 6).map((photo, index) => ({
+    name: `${index + 1}. misto | ${photo.votes || 0} hlasu`,
+    value: [
+      photo.caption || "Fotka bez popisku.",
+      photo.authorName ? `Autor: ${photo.authorName}` : "Autor neznamy"
+    ].join("\n"),
+    inline: false
+  }));
+
+  return interactionResponse("", {
+    embeds: [
+      {
+        title: "West Haven | Foto soutez",
+        description: [
+          `Tyden **${leaderboard.contest.startsAt || week.startsAt} az ${leaderboard.contest.endsAt || week.endsAt}**.`,
+          "Kazda postava muze hlasovat jednou denne.",
+          "Fotky do dalsich kol posilej sem: https://discord.com/channels/1505428362636693595/1505429527021621278",
+          `Hlasuj na webu: ${WEBSITE_URL}`
+        ].join("\n"),
+        color: 0xb88945,
+        image: leaderboard.photos[0]?.proxyUrl || leaderboard.photos[0]?.url
+          ? { url: leaderboard.photos[0].proxyUrl || leaderboard.photos[0].url }
+          : undefined,
+        fields,
+        footer: {
+          text: "Vyhlaseni probiha v nedeli."
         },
         timestamp: new Date().toISOString()
       }
@@ -869,6 +1110,14 @@ const handleCommandsHelp = async () => (
             value: "Ukaze posledni ulozene misto spanku postavy a jeji aktualni stav."
           },
           {
+            name: "/wh-galerie",
+            value: "Ukaze posledni fotky z Discord galerie a odkaz na webovy archiv."
+          },
+          {
+            name: "/wh-soutez",
+            value: "Ukaze aktualni tydenni foto soutez, prubezne poradi a pravidla hlasovani."
+          },
+          {
             name: "/wh-prikazy",
             value: "Ukaze tenhle prehled prikazu."
           }
@@ -901,6 +1150,10 @@ const handleCommand = async (interaction) => {
       return handleRelations(interaction);
     case "wh-kde":
       return handleWhere(interaction);
+    case "wh-galerie":
+      return handleGallery(interaction);
+    case "wh-soutez":
+      return handleContest(interaction);
     case "wh-report":
       return handleReportPreview(interaction);
     default:

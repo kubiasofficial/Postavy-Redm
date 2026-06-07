@@ -40,45 +40,75 @@ if (!env.DISCORD_BOT_TOKEN) {
 }
 
 const payload = {
-  content: "",
+  content: "@everyone",
   allowed_mentions: {
-    parse: []
+    parse: ["everyone"]
   },
   embeds: [
     {
-      title: "West Haven update: Vztahy primo u postav",
+      title: "🔥 West Haven Update 1.8 | Galerie, Soutěž a nové postavy",
       description: [
-        "Na webu pribyla nova cast pro vztahy v detailu kazde postavy. Po otevreni postavy ted najdes zalozku **Vztahy**, kde uvidis jen vazby dane postavy na ostatni postavy z webu.",
+        "West Haven se zase posunul o velký kus dál. Update **1.8** přidává samostatnou galerii, týdenní foto soutěž, nové postavy a čistší navigaci na webu.",
         "",
-        "Vztahy navic dostaly novy vzhled, aby pusobily vic jako cisty osobni spis a bylo hned jasne, kdo je pro postavu spojenec, rodina, rival, dluh, tajemstvi nebo neco mnohem horsiho.",
+        "Web už není jen seznam postav. Začíná z toho být živá městská kancelář, kronika, nástěnka a archiv příběhů v jednom. 🤠",
         "",
-        "**Web:** https://postavy-redm.vercel.app"
+        "🌐 **Web:** https://postavy-redm.vercel.app",
+        "📸 **Fotky do galerie a soutěže:** https://discord.com/channels/1505428362636693595/1505429527021621278"
       ].join("\n"),
       color: 12155449,
       fields: [
         {
-          name: "Co je nove",
-          value: "Kazda postava ma u sebe vlastni prehled vztahu. Kdyz si ji rozkliknes, uvidis vztahy prave teto postavy s ostatnimi postavami, ne celou sit najednou.",
+          name: "📸 Galerie",
+          value: "V horním menu je nové tlačítko **Galerie**. Najdeš tam archiv fotek z Discordu, popisek a autora. Hlavní stránka si dál nechává rotátor fotek, takže web zůstává živý i bez klikání.",
           inline: false
         },
         {
-          name: "Novy vzhled vztahu",
-          value: "Vztahy maji novy prehlednejsi vzhled primo v profilu postavy: jmeno druhe postavy, typ vazby a kratka poznamka jsou pohromade v jednom cistym bloku.",
+          name: "🏆 Týdenní foto soutěž",
+          value: "Každé pondělí se vybere posledních **6 fotek** z galerie. Hlasovat se dá **jednou denně**. V neděli se vyhodnotí pořadí a výherci se pošlou do soutěžního kanálu.",
           inline: false
         },
         {
-          name: "Soukromi zustava",
-          value: "Vztahy a osobni poznamky vidi jen dana postava a admin. Cizi postava tedy neuvidi veci, ktere patri do tveho spisu.",
+          name: "📌 Jak dostat fotku na web a do soutěže",
+          value: "Nahraj fotku do kanálu: https://discord.com/channels/1505428362636693595/1505429527021621278\nJen fotky z tohohle kanálu se berou do galerie a z nich se potom vybírá soutěžní šestice.",
           inline: false
         },
         {
-          name: "Kam kliknout",
-          value: "Otevri web, vyber svoji postavu a prejdi na zalozku **Vztahy**.",
+          name: "🤠 Nové postavy",
+          value: "Do West Havenu přibyli **Thomas \"Tom\" Halbrook** a **Eleanor \"Ellie\" Whitmore**. Jsou napojení na Discord účty a připravení pro další příběhy.",
+          inline: false
+        },
+        {
+          name: "🧭 Postavy jako samostatné okno",
+          value: "Karty postav jsou nově pod velkým tlačítkem **Postavy**. Hlavní stránka tak zůstává přehlednější, ale rumory, aktivita a rotátor fotek na ní zůstaly.",
+          inline: false
+        },
+        {
+          name: "🕸️ Vztahy",
+          value: "Stránka **Vztahy** dostala nový design a bot teď bere vztahy z aktuálních dat, aby informace nezůstávaly staré.",
+          inline: false
+        },
+        {
+          name: "🤖 Slash příkazy",
+          value: [
+            "`/wh-stav` - stav postav, čas a levely",
+            "`/wh-probudit` / `/wh-uspat` - správa aktivity postavy",
+            "`/wh-kronika` - denní zápisy",
+            "`/wh-vztahy` - vztahy vybrané postavy",
+            "`/wh-kde` - poslední místo spánku",
+            "`/wh-galerie` - poslední fotky",
+            "`/wh-soutez` - aktuální foto soutěž",
+            "`/wh-prikazy` - přehled příkazů"
+          ].join("\n"),
+          inline: false
+        },
+        {
+          name: "✅ Co dělat teď",
+          value: "Otevři web, mrkni na nové menu, nahraj fotku do galerie kanálu a zkus hlasovat v soutěži. Čím víc fotek a zápisů, tím živější West Haven bude. ✨",
           inline: false
         }
       ],
       footer: {
-        text: "West Haven Office | vztahy maji novy kabat"
+        text: "West Haven Office | Update 1.8"
       },
       timestamp: new Date().toISOString()
     }
