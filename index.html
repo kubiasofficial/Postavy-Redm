@@ -542,22 +542,6 @@
       margin: 0 42px 24px 0;
     }
 
-    .character-roster-card .roster-layout {
-      display: grid;
-      grid-template-columns: 280px minmax(0, 1fr) 178px;
-      gap: 24px;
-      align-items: start;
-    }
-
-    .character-roster-card .rumor-strip,
-    .character-roster-card .activity-rail {
-      position: relative;
-      top: auto;
-      right: auto;
-      left: auto;
-      width: auto;
-    }
-
     .character-roster-card .roster-grid {
       width: 100%;
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -4791,11 +4775,6 @@
         padding: 22px 16px;
       }
 
-      .character-roster-card .roster-layout {
-        grid-template-columns: 1fr;
-        gap: 18px;
-      }
-
       .roster-layout {
         display: grid;
         grid-template-columns: 1fr;
@@ -5197,15 +5176,6 @@
     }
 
     @media (min-width: 681px) and (max-width: 1480px) {
-      .character-roster-card .roster-layout {
-        grid-template-columns: minmax(0, 1fr) 190px;
-        gap: 18px;
-      }
-
-      .character-roster-card .rumor-strip {
-        grid-column: 1 / -1;
-      }
-
       .roster-layout {
         display: grid;
         grid-template-columns: minmax(0, 1fr) 190px;
@@ -5278,22 +5248,44 @@
       </div>
     </header>
 
-    <div class="home-showcase">
-      <button class="characters-launch" id="openCharactersButton" type="button" aria-haspopup="dialog">
-        <span class="characters-launch-image" aria-hidden="true"></span>
-        <span class="characters-launch-copy">
-          <span class="characters-launch-kicker">Character Roster</span>
-          <span class="characters-launch-title">Postavy</span>
-          <span class="characters-launch-meta">Otevřít karty postav</span>
-        </span>
-      </button>
-      <aside class="gallery-rail" aria-label="Fotky z Discordu">
-        <p class="gallery-title">Fotky</p>
-        <figure class="gallery-frame" id="discordGalleryFrame">
-          <img id="discordGalleryImage" src="" alt="">
-          <figcaption class="gallery-caption" id="discordGalleryCaption"></figcaption>
-          <p class="gallery-empty" id="discordGalleryEmpty">Čeká se na fotky z Discordu.</p>
-        </figure>
+    <div class="roster-layout">
+      <section class="rumor-strip" id="rumorStrip" aria-live="polite">
+        <div class="rumor-visual" aria-hidden="true">
+          <span class="rumor-avatar" id="rumorAvatar">
+            <img id="rumorAvatarImage" src="images/zeke.png" alt="">
+          </span>
+          <span class="rumor-character" id="rumorCharacter">
+            <img id="rumorCharacterImage" src="images/zeke.png" alt="">
+          </span>
+        </div>
+        <div class="rumor-copy">
+          <p class="rumor-kicker">West Haven Rumors</p>
+          <h2 class="rumor-title" id="rumorTitle">Městské drby</h2>
+          <p class="rumor-text" id="rumorText">Noční kancelář zatím sbírá zápisy. Jakmile někdo zanechá report, město si z něj udělá vlastní verzi.</p>
+          <p class="rumor-meta" id="rumorMeta">Čeká se na první stopu</p>
+        </div>
+      </section>
+      <div class="home-showcase">
+        <button class="characters-launch" id="openCharactersButton" type="button" aria-haspopup="dialog">
+          <span class="characters-launch-image" aria-hidden="true"></span>
+          <span class="characters-launch-copy">
+            <span class="characters-launch-kicker">Character Roster</span>
+            <span class="characters-launch-title">Postavy</span>
+            <span class="characters-launch-meta">Otevřít karty postav</span>
+          </span>
+        </button>
+        <aside class="gallery-rail" aria-label="Fotky z Discordu">
+          <p class="gallery-title">Fotky</p>
+          <figure class="gallery-frame" id="discordGalleryFrame">
+            <img id="discordGalleryImage" src="" alt="">
+            <figcaption class="gallery-caption" id="discordGalleryCaption"></figcaption>
+            <p class="gallery-empty" id="discordGalleryEmpty">Čeká se na fotky z Discordu.</p>
+          </figure>
+        </aside>
+      </div>
+      <aside class="activity-rail" aria-label="Aktivita postav">
+        <p class="activity-title">Aktivita</p>
+        <div class="time-ledger" id="timeLedger"></div>
       </aside>
     </div>
   </section>
@@ -5305,30 +5297,8 @@
         <p class="eyebrow">Character Roster</p>
         <h2 class="badge-title" id="characterRosterTitle">Postavy</h2>
       </header>
-      <div class="roster-layout">
-        <section class="rumor-strip" id="rumorStrip" aria-live="polite">
-          <div class="rumor-visual" aria-hidden="true">
-            <span class="rumor-avatar" id="rumorAvatar">
-              <img id="rumorAvatarImage" src="images/zeke.png" alt="">
-            </span>
-            <span class="rumor-character" id="rumorCharacter">
-              <img id="rumorCharacterImage" src="images/zeke.png" alt="">
-            </span>
-          </div>
-          <div class="rumor-copy">
-            <p class="rumor-kicker">West Haven Rumors</p>
-            <h2 class="rumor-title" id="rumorTitle">Městské drby</h2>
-            <p class="rumor-text" id="rumorText">Noční kancelář zatím sbírá zápisy. Jakmile někdo zanechá report, město si z něj udělá vlastní verzi.</p>
-            <p class="rumor-meta" id="rumorMeta">Čeká se na první stopu</p>
-          </div>
-        </section>
-        <div class="roster-main">
-          <div class="roster-grid" id="rosterGrid"></div>
-        </div>
-        <aside class="activity-rail" aria-label="Aktivita postav">
-          <p class="activity-title">Aktivita</p>
-          <div class="time-ledger" id="timeLedger"></div>
-        </aside>
+      <div class="roster-main">
+        <div class="roster-grid" id="rosterGrid"></div>
       </div>
     </section>
   </div>
