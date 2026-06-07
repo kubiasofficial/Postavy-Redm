@@ -12080,7 +12080,14 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       showHome();
     }
 
-    initializeAuth();
+    const shouldSkipAuthOnce = sessionStorage.getItem("westHavenSkipAuthOnce") === "1";
+    sessionStorage.removeItem("westHavenSkipAuthOnce");
+
+    if (shouldSkipAuthOnce && playerProfile?.characterId) {
+      completeLogin(playerProfile.characterId);
+    } else if (!shouldSkipAuthOnce) {
+      initializeAuth();
+    }
   </script>
 </body>
 </html>

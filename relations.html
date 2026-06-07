@@ -1183,6 +1183,7 @@
 
     document.getElementById("menuLink")?.addEventListener("click", (event) => {
       event.preventDefault();
+      sessionStorage.setItem("westHavenSkipAuthOnce", "1");
       navigateWithWipe("index.html");
     });
 
