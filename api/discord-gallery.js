@@ -1,5 +1,7 @@
 const DISCORD_API_BASE = "https://discord.com/api/v10";
 const GALLERY_CHANNEL_ID = "1505429527021621278";
+const DEFAULT_PHOTO_LIMIT = 48;
+const MAX_DISCORD_PAGES = 5;
 const allowedImageTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 const isPhotoAttachment = (attachment) => {
@@ -19,6 +21,12 @@ const cleanCaption = (content = "") => (
 );
 
 const normalizeUrl = (url = "") => String(url).trim();
+
+const getRequestedLimit = (value) => {
+  const parsed = Number.parseInt(String(value || ""), 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) return DEFAULT_PHOTO_LIMIT;
+  return Math.min(parsed, 100);
+};
 
 const getAuthorName = (message) => (
   message.member?.nick ||
@@ -41,8 +49,9 @@ module.exports = async (req, res) => {
   try {
     const messages = [];
     let before = "";
+    const photoLimit = getRequestedLimit(req.query?.limit);
 
-    while (true) {
+    for (let pageNumber = 0; pageNumber < MAX_DISCORD_PAGES; pageNumber += 1) {
       const search = new URLSearchParams({ limit: "100" });
       if (before) search.set("before", before);
 
@@ -65,7 +74,13 @@ module.exports = async (req, res) => {
       messages.push(...page);
       before = page[page.length - 1].id;
 
-      if (page.length < 100) break;
+      const loadedPhotoCount = messages.reduce((count, message) => (
+        count + (Array.isArray(message.attachments)
+          ? message.attachments.filter(isPhotoAttachment).length
+          : 0)
+      ), 0);
+
+      if (loadedPhotoCount >= photoLimit || page.length < 100) break;
     }
 
     const photos = messages
@@ -81,12 +96,15 @@ module.exports = async (req, res) => {
                 caption: cleanCaption(message.content),
                 authorId: message.author?.id || null,
                 authorName: getAuthorName(message),
+                messageId: message.id || null,
                 width: attachment.width || null,
                 height: attachment.height || null,
-                uploadedAt: message.timestamp || null
+                uploadedAt: message.timestamp || null,
+                createdAt: message.timestamp || null
               }))
           : []
-      ));
+      ))
+      .slice(0, photoLimit);
 
     res.setHeader("Cache-Control", "s-maxage=120, stale-while-revalidate=600");
     return res.status(200).json({ photos });
