@@ -11309,6 +11309,29 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       if (!isAdmin) refs.adminTools.classList.remove("is-open");
     };
 
+    const openPendingAdminAction = () => {
+      const action = sessionStorage.getItem("westHavenAdminAction");
+      if (!action) return;
+      if (!isAdminPlayer()) {
+        sessionStorage.removeItem("westHavenAdminAction");
+        return;
+      }
+
+      sessionStorage.removeItem("westHavenAdminAction");
+      window.setTimeout(() => {
+        const actions = {
+          nightReport: openNightReportModal,
+          sleep: openAdminSleepModal,
+          badges: openBadgeAdminModal,
+          relationships: openRelationshipAdminModal,
+          mail: openAdminMailModal,
+          testAlert: testCharacterAlert,
+          broadcast: openBroadcastAlertModal
+        };
+        actions[action]?.();
+      }, 180);
+    };
+
     const setNightReportStatus = (message = "") => {
       refs.nightReportStatus.textContent = message;
     };
@@ -11885,6 +11908,7 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       hideAuthModal();
       updateRosterStates();
       updateAdminTools();
+      openPendingAdminAction();
       updateMailBadges();
       if (activeCharacterId) {
         renderDiaryEntries();
@@ -12174,7 +12198,8 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
     });
 
     refs.adminButton.addEventListener("click", () => {
-      refs.adminTools.classList.toggle("is-open");
+      sessionStorage.setItem("westHavenSkipAuthOnce", "1");
+      navigateWithWipe("admin.html");
     });
 
     refs.openNightReportButton.addEventListener("click", () => {

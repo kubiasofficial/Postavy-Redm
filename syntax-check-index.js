@@ -2,10 +2,11 @@ const fs = require("fs");
 
 const file = process.argv[2] || "index.html";
 const html = fs.readFileSync(file, "utf8");
-const match = html.match(/<script type="module">([\s\S]*?)<\/script>/);
+const match = html.match(/<script type="module">([\s\S]*?)<\/script>/)
+  || html.match(/<script>([\s\S]*?)<\/script>\s*<\/body>/);
 
 if (!match) {
-  throw new Error("module script not found");
+  throw new Error("script not found");
 }
 
 const body = match[1]
