@@ -823,13 +823,6 @@
         portraitAlt: "Portrét postavy William Hart"
       },
       {
-        id: "thomas-mercer",
-        listName: "Thomas Mercer",
-        role: "Rančer / koňák",
-        portrait: "images/Thomas.png",
-        portraitAlt: "Portrét postavy Thomas Mercer"
-      },
-      {
         id: "tom-halbrook",
         listName: "Thomas Halbrook",
         role: "Farmář / ochránce",
@@ -872,7 +865,6 @@
       zeke: { x: 50, y: 20 },
       silas: { x: 24, y: 42 },
       violet: { x: 76, y: 40 },
-      "thomas-mercer": { x: 38, y: 76 },
       william: { x: 64, y: 74 },
       "tom-halbrook": { x: 31, y: 59 },
       "ellie-whitmore": { x: 70, y: 57 }
@@ -882,7 +874,6 @@
       zeke: "#c74d58",
       silas: "#4ca66f",
       william: "#d870a8",
-      "thomas-mercer": "#8fa3a8",
       violet: "#d7a8cf",
       "tom-halbrook": "#b48a54",
       "ellie-whitmore": "#c09298"
@@ -916,27 +907,6 @@
         type: "ally",
         label: "Tiché spojenectví",
         note: "William je pro Violet vzácný typ člověka: nestaví ji do klece a nesnaží se vlastnit její tajemství."
-      },
-      {
-        from: "zeke",
-        to: "thomas-mercer",
-        type: "distrust",
-        label: "Napjatá vzdálenost",
-        note: "Thomas představuje řád a disciplínu. Zeke je všechno, co se takovému řádu špatně zapisuje do knih."
-      },
-      {
-        from: "silas",
-        to: "thomas-mercer",
-        type: "secret",
-        label: "Otázky bez odpovědi",
-        note: "Silas ví, že Thomas může být užitečný zdroj. Thomas zase tuší, že Silas se nikdy neptá jen jednou."
-      },
-      {
-        from: "william",
-        to: "thomas-mercer",
-        type: "debt",
-        label: "Nevyrovnaný účet",
-        note: "Mezi Williamem a Thomasem leží věci, které nejsou nepřátelstvím, ale ani čistým přátelstvím."
       },
       {
         from: "zeke",
@@ -986,6 +956,14 @@
 
     function getRelationshipId(from, to) {
       return [from, to].sort().join("--");
+    }
+
+    function isKnownCharacterId(characterId) {
+      return characters.some((character) => character.id === characterId);
+    }
+
+    function hasKnownRelationshipCharacters(relationship) {
+      return isKnownCharacterId(relationship.from) && isKnownCharacterId(relationship.to);
     }
 
     function getCharacter(id) {
@@ -1142,6 +1120,7 @@
         snapshot.docs.forEach((entryDoc) => {
           const relationship = entryDoc.data();
           if (!relationship.from || !relationship.to || !relationship.type) return;
+          if (!hasKnownRelationshipCharacters(relationship)) return;
           byId.set(getRelationshipId(relationship.from, relationship.to), {
             from: relationship.from,
             to: relationship.to,

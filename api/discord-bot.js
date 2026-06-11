@@ -77,27 +77,6 @@ const characterRelationships = [
   },
   {
     from: "zeke",
-    to: "thomas-mercer",
-    type: "distrust",
-    label: "Napjata vzdalenost",
-    note: "Thomas predstavuje rad a disciplinu. Zeke je vsechno, co se takovemu radu spatne zapisuje do knih."
-  },
-  {
-    from: "silas",
-    to: "thomas-mercer",
-    type: "secret",
-    label: "Otazky bez odpovedi",
-    note: "Silas vi, ze Thomas muze byt uzitecny zdroj. Thomas zase tusi, ze Silas se nikdy nepta jen jednou."
-  },
-  {
-    from: "william",
-    to: "thomas-mercer",
-    type: "debt",
-    label: "Nevyrovnany ucet",
-    note: "Mezi Williamem a Thomasem lezi veci, ktere nejsou nepratelstvim, ale ani cistym pratelstvim."
-  },
-  {
-    from: "zeke",
     to: "william",
     type: "rivalry",
     label: "Ostrazity respekt",
@@ -153,20 +132,6 @@ const characterActionLines = {
       "William spi. I jeho odpocinek pusobi jako hlidka.",
       "William odpociva. I tak po nem v mistnosti zustala jistota.",
       "William spi a West Haven se uci stat rovne bez jeho pohledu."
-    ]
-  },
-  "thomas-mercer": {
-    wakeTitle: "Tom je vzhuru",
-    sleepTitle: "Tom to zalomil",
-    wake: [
-      "Tom je vzhuru. U staji uz nekdo hleda kavu.",
-      "Thomas je vzhuru. Dobre umysly si prave obuly boty.",
-      "Rano sotva zacalo a Tom uz vypada, ze mu chce neco dokazat."
-    ],
-    sleep: [
-      "Tom to zalomil. Staje konecne slysi jen dech koni.",
-      "Tom usnul a staje si to berou jako maly zazrak.",
-      "Nocni klid ma dnes boty od blata a jmeno Thomas Mercer."
     ]
   },
   "tom-halbrook": {
@@ -528,11 +493,16 @@ const getPragueWeekInfo = (date = new Date()) => {
   };
 };
 
+const isKnownCharacterId = (characterId) => characters.some((character) => character.id === characterId);
+const hasKnownRelationshipCharacters = (relationship) => (
+  isKnownCharacterId(relationship.from) && isKnownCharacterId(relationship.to)
+);
+
 const loadStoredRelationships = async () => {
   const documents = await fetchFirestoreCollection("characterRelationships");
   const storedRelationships = documents
     .map((document) => ({ id: document.id, ...document.data }))
-    .filter((relationship) => relationship.from && relationship.to);
+    .filter((relationship) => relationship.from && relationship.to && hasKnownRelationshipCharacters(relationship));
 
   return storedRelationships.length ? storedRelationships : characterRelationships;
 };
