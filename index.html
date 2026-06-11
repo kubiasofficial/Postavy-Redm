@@ -11557,17 +11557,14 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
         return;
       }
 
-      const reason = refs.timeAdminReason.value.trim();
-      if (!reason) {
-        setTimeAdminStatus("Doplň důvod úpravy.");
-        return;
-      }
+      const reason = refs.timeAdminReason.value.trim() || (direction > 0 ? "Ruční přidání hodin" : "Ruční odečtení hodin");
 
       const currentDateKey = getPragueDateKey();
       const state = getCharacterState(character.id);
-      const deltaMs = Math.round(hours * 60 * 60 * 1000) * direction;
+      const requestedDeltaMs = Math.round(hours * 60 * 60 * 1000) * direction;
       const savedTotalMs = Number(state.totalPlayedMs || 0);
       const savedDailyMs = state.dailyDate === currentDateKey ? Number(state.dailyPlayedMs || 0) : 0;
+      const deltaMs = direction < 0 ? -Math.min(Math.abs(requestedDeltaMs), savedTotalMs) : requestedDeltaMs;
       const nextTotalMs = Math.max(0, savedTotalMs + deltaMs);
       const nextDailyMs = Math.max(0, savedDailyMs + deltaMs);
       const activeDuration = state.status === "awake" ? (getWakeDuration(character.id) || 0) : 0;
@@ -11575,6 +11572,11 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       const formattedDelta = formatLedgerDuration(Math.abs(deltaMs));
       const actionLabel = direction > 0 ? "Přidávám" : "Odečítám";
       const doneLabel = direction > 0 ? "Přidáno" : "Odečteno";
+
+      if (direction < 0 && savedTotalMs <= 0) {
+        setTimeAdminStatus(`${character.listName} nemá žádný uložený čas k odečtení.`);
+        return;
+      }
 
       refs.addTimeAdminButton.disabled = true;
       refs.subtractTimeAdminButton.disabled = true;
