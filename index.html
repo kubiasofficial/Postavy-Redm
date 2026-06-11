@@ -8057,12 +8057,12 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       String(photo?.id || photo?.attachmentId || photo?.url || photo?.proxyUrl || `photo-${fallbackIndex}`)
     );
 
-    const getStableUrl = (url = "") => String(url).split("?")[0];
+    const normalizeUrl = (url = "") => String(url).trim();
 
     const normalizeContestPhoto = (photo, index) => ({
       id: getContestPhotoId(photo, index),
-      url: getStableUrl(photo.url || photo.proxyUrl || ""),
-      proxyUrl: getStableUrl(photo.proxyUrl || photo.url || ""),
+      url: normalizeUrl(photo.url || photo.proxyUrl || ""),
+      proxyUrl: normalizeUrl(photo.proxyUrl || photo.url || ""),
       caption: getGalleryCaption(photo),
       authorName: photo.authorName || "",
       authorId: photo.authorId || "",

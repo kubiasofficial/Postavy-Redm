@@ -24,7 +24,7 @@ const cleanCaption = (content = "") => (
     .slice(0, 220)
 );
 
-const getStableUrl = (url = "") => String(url).split("?")[0];
+const normalizeUrl = (url = "") => String(url).trim();
 
 const getAuthorName = (message) => (
   message.member?.nick ||
@@ -96,8 +96,8 @@ const fetchLatestPhotos = async (token) => {
           if (photos.length >= 6) return;
           photos.push({
             id: attachment.id,
-            url: getStableUrl(attachment.url),
-            proxyUrl: getStableUrl(attachment.proxy_url || attachment.url),
+            url: normalizeUrl(attachment.url),
+            proxyUrl: normalizeUrl(attachment.proxy_url || attachment.url),
             filename: attachment.filename || "photo",
             caption: cleanCaption(message.content) || "Fotka bez popisku.",
             authorId: message.author?.id || null,
