@@ -7874,10 +7874,25 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
           photo.authorName ? `Autor: ${photo.authorName}` : ""
         ].filter(Boolean).join(" | ");
       }
-      refs.discordGalleryImage.onload = () => {
+      if (refs.discordGalleryEmpty) {
+        refs.discordGalleryEmpty.textContent = "";
+      }
+
+      const markReady = () => {
         refs.discordGalleryFrame.classList.add("is-ready");
       };
+
+      refs.discordGalleryImage.onload = markReady;
+      refs.discordGalleryImage.onerror = () => {
+        if (refs.discordGalleryEmpty) {
+          refs.discordGalleryEmpty.textContent = "Fotku se nepodařilo načíst.";
+        }
+      };
       refs.discordGalleryImage.src = photo.proxyUrl || photo.url;
+
+      if (refs.discordGalleryImage.complete && refs.discordGalleryImage.naturalWidth > 0) {
+        markReady();
+      }
     };
 
     const getGalleryAuthorLine = (photo) => (
@@ -7955,7 +7970,9 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
     };
 
     const startGalleryRotation = () => {
-      clearInterval(galleryIntervalId);
+      if (galleryIntervalId) {
+        clearInterval(galleryIntervalId);
+      }
       if (galleryPhotos.length <= 1) return;
 
       galleryIntervalId = setInterval(() => {
