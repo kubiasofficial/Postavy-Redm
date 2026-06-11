@@ -5863,6 +5863,10 @@
         <span aria-hidden="true">☾</span>
         Uspat postavy
       </button>
+      <button class="admin-menu-button" id="openTimeAdminButton" type="button">
+        <span aria-hidden="true">◷</span>
+        Hodiny
+      </button>
       <button class="admin-menu-button" id="openBadgeAdminButton" type="button">
         <span aria-hidden="true">✦</span>
         Odznaky
@@ -5908,6 +5912,42 @@
             <button class="night-report-button send" id="adminSleepAllButton" type="button">Uspat všechny vzhůru</button>
           </div>
           <p class="night-report-status" id="adminSleepStatus" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="night-report-modal" id="timeAdminModal" aria-hidden="true">
+    <section class="night-report-dialog" aria-labelledby="timeAdminTitle">
+      <header class="night-report-header">
+        <div>
+          <p class="night-report-kicker">West Haven Office</p>
+          <h2 class="night-report-title" id="timeAdminTitle">Správa hodin</h2>
+        </div>
+        <button class="night-report-close" id="closeTimeAdminButton" type="button" aria-label="Zavřít správu hodin">&times;</button>
+      </header>
+      <div class="night-report-body">
+        <div class="night-report-column">
+          <label class="night-report-label">
+            Postava
+            <select class="night-report-input" id="timeAdminCharacter"></select>
+          </label>
+          <p class="night-report-status" id="timeAdminCharacterInfo"></p>
+        </div>
+        <div class="night-report-column">
+          <label class="night-report-label">
+            Hodiny
+            <input class="night-report-input" id="timeAdminHours" type="number" min="0.25" step="0.25" value="1">
+          </label>
+          <label class="night-report-label">
+            Důvod úpravy
+            <input class="night-report-input" id="timeAdminReason" type="text" maxlength="140" placeholder="Ruční oprava odehraného času">
+          </label>
+          <div class="night-report-actions">
+            <button class="night-report-button" id="subtractTimeAdminButton" type="button">Odečíst</button>
+            <button class="night-report-button send" id="addTimeAdminButton" type="button">Přidat</button>
+          </div>
+          <p class="night-report-status" id="timeAdminStatus" aria-live="polite"></p>
         </div>
       </div>
     </section>
@@ -6873,6 +6913,7 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       adminMenu: document.getElementById("adminMenu"),
       openNightReportButton: document.getElementById("openNightReportButton"),
       openAdminSleepButton: document.getElementById("openAdminSleepButton"),
+      openTimeAdminButton: document.getElementById("openTimeAdminButton"),
       openBadgeAdminButton: document.getElementById("openBadgeAdminButton"),
       openRelationshipAdminButton: document.getElementById("openRelationshipAdminButton"),
       openAdminMailButton: document.getElementById("openAdminMailButton"),
@@ -6885,6 +6926,15 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       adminSleepSelectedButton: document.getElementById("adminSleepSelectedButton"),
       adminSleepAllButton: document.getElementById("adminSleepAllButton"),
       adminSleepStatus: document.getElementById("adminSleepStatus"),
+      timeAdminModal: document.getElementById("timeAdminModal"),
+      closeTimeAdminButton: document.getElementById("closeTimeAdminButton"),
+      timeAdminCharacter: document.getElementById("timeAdminCharacter"),
+      timeAdminCharacterInfo: document.getElementById("timeAdminCharacterInfo"),
+      timeAdminHours: document.getElementById("timeAdminHours"),
+      timeAdminReason: document.getElementById("timeAdminReason"),
+      subtractTimeAdminButton: document.getElementById("subtractTimeAdminButton"),
+      addTimeAdminButton: document.getElementById("addTimeAdminButton"),
+      timeAdminStatus: document.getElementById("timeAdminStatus"),
       badgeAdminModal: document.getElementById("badgeAdminModal"),
       closeBadgeAdminButton: document.getElementById("closeBadgeAdminButton"),
       badgeAdminCharacter: document.getElementById("badgeAdminCharacter"),
@@ -11322,6 +11372,7 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
         const actions = {
           nightReport: openNightReportModal,
           sleep: openAdminSleepModal,
+          time: openTimeAdminModal,
           badges: openBadgeAdminModal,
           relationships: openRelationshipAdminModal,
           mail: openAdminMailModal,
@@ -11439,6 +11490,123 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       } catch (error) {
         console.error("Badge admin save failed:", error);
         setBadgeAdminStatus("Odznaky se nepodařilo uložit.");
+      }
+    };
+
+    const setTimeAdminStatus = (message = "") => {
+      refs.timeAdminStatus.textContent = message;
+    };
+
+    const getSelectedTimeAdminCharacter = () => (
+      characters.find((character) => character.id === refs.timeAdminCharacter.value) || characters[0]
+    );
+
+    const renderTimeAdminCharacters = () => {
+      refs.timeAdminCharacter.replaceChildren();
+
+      characters.forEach((character) => {
+        const option = document.createElement("option");
+        option.value = character.id;
+        option.textContent = character.listName;
+        refs.timeAdminCharacter.appendChild(option);
+      });
+
+      refs.timeAdminCharacter.value = activeCharacterId || currentPlayerCharacterId || characters[0]?.id || "";
+    };
+
+    const renderTimeAdminSummary = () => {
+      const character = getSelectedTimeAdminCharacter();
+      if (!character) {
+        refs.timeAdminCharacterInfo.textContent = "Není vybraná žádná postava.";
+        return;
+      }
+
+      const level = getLevelForTotal(getTotalPlayedMs(character.id));
+      const totalPlayed = formatLedgerDuration(getTotalPlayedMs(character.id));
+      const dailyPlayed = formatLedgerDuration(getDailyPlayedMs(character.id));
+      refs.timeAdminCharacterInfo.textContent = `${character.listName} | LVL ${level} | celkem ${totalPlayed} | dnes ${dailyPlayed}`;
+    };
+
+    const openTimeAdminModal = () => {
+      refs.adminTools.classList.remove("is-open");
+      renderTimeAdminCharacters();
+      renderTimeAdminSummary();
+      setTimeAdminStatus();
+      refs.timeAdminModal.classList.add("is-visible");
+      refs.timeAdminModal.setAttribute("aria-hidden", "false");
+    };
+
+    const closeTimeAdminModal = () => {
+      refs.timeAdminModal.classList.remove("is-visible");
+      refs.timeAdminModal.setAttribute("aria-hidden", "true");
+      setTimeAdminStatus();
+    };
+
+    const applyTimeAdminAdjustment = async (direction) => {
+      if (!isAdminPlayer()) {
+        setTimeAdminStatus("Tuhle úpravu může provést jen admin.");
+        return;
+      }
+
+      const character = getSelectedTimeAdminCharacter();
+      if (!character) return;
+
+      const hours = Number(refs.timeAdminHours.value);
+      if (!Number.isFinite(hours) || hours <= 0) {
+        setTimeAdminStatus("Zadej kladný počet hodin.");
+        return;
+      }
+
+      const reason = refs.timeAdminReason.value.trim();
+      if (!reason) {
+        setTimeAdminStatus("Doplň důvod úpravy.");
+        return;
+      }
+
+      const currentDateKey = getPragueDateKey();
+      const state = getCharacterState(character.id);
+      const deltaMs = Math.round(hours * 60 * 60 * 1000) * direction;
+      const savedTotalMs = Number(state.totalPlayedMs || 0);
+      const savedDailyMs = state.dailyDate === currentDateKey ? Number(state.dailyPlayedMs || 0) : 0;
+      const nextTotalMs = Math.max(0, savedTotalMs + deltaMs);
+      const nextDailyMs = Math.max(0, savedDailyMs + deltaMs);
+      const activeDuration = state.status === "awake" ? (getWakeDuration(character.id) || 0) : 0;
+      const nextLevel = getLevelForTotal(nextTotalMs + activeDuration);
+      const formattedDelta = formatLedgerDuration(Math.abs(deltaMs));
+      const actionLabel = direction > 0 ? "Přidávám" : "Odečítám";
+      const doneLabel = direction > 0 ? "Přidáno" : "Odečteno";
+
+      refs.addTimeAdminButton.disabled = true;
+      refs.subtractTimeAdminButton.disabled = true;
+      setTimeAdminStatus(`${actionLabel} ${formattedDelta} postavě ${character.listName}...`);
+
+      try {
+        await setRemoteCharacterState(character.id, {
+          totalPlayedMs: nextTotalMs,
+          dailyPlayedMs: nextDailyMs,
+          dailyDate: currentDateKey,
+          level: nextLevel,
+          timeAdjustedAt: Date.now(),
+          timeAdjustedBy: currentPlayerCharacterId,
+          timeAdjustmentReason: reason,
+          timeAdjustmentMs: deltaMs
+        });
+        renderTimeAdminSummary();
+        renderCharacter();
+        updateRosterStates();
+        if (refs.badgeModal.classList.contains("is-visible")) {
+          renderBadgeModal();
+        }
+        if (refs.badgeAdminModal.classList.contains("is-visible")) {
+          renderBadgeAdminList();
+        }
+        setTimeAdminStatus(`${doneLabel} ${formattedDelta} postavě ${character.listName}.`);
+      } catch (error) {
+        console.error("Time admin adjustment failed:", error);
+        setTimeAdminStatus("Hodiny se nepodařilo uložit.");
+      } finally {
+        refs.addTimeAdminButton.disabled = false;
+        refs.subtractTimeAdminButton.disabled = false;
       }
     };
 
@@ -12220,6 +12388,29 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       }
     });
 
+    refs.openTimeAdminButton.addEventListener("click", openTimeAdminModal);
+
+    refs.closeTimeAdminButton.addEventListener("click", closeTimeAdminModal);
+
+    refs.timeAdminModal.addEventListener("click", (event) => {
+      if (event.target === refs.timeAdminModal) {
+        closeTimeAdminModal();
+      }
+    });
+
+    refs.timeAdminCharacter.addEventListener("change", () => {
+      renderTimeAdminSummary();
+      setTimeAdminStatus();
+    });
+
+    refs.addTimeAdminButton.addEventListener("click", () => {
+      applyTimeAdminAdjustment(1);
+    });
+
+    refs.subtractTimeAdminButton.addEventListener("click", () => {
+      applyTimeAdminAdjustment(-1);
+    });
+
     refs.openBadgeAdminButton.addEventListener("click", openBadgeAdminModal);
 
     refs.openRelationshipAdminButton.addEventListener("click", openRelationshipAdminModal);
@@ -12544,6 +12735,9 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       }
       if (event.key === "Escape" && refs.adminSleepModal.classList.contains("is-visible")) {
         closeAdminSleepModal();
+      }
+      if (event.key === "Escape" && refs.timeAdminModal.classList.contains("is-visible")) {
+        closeTimeAdminModal();
       }
       if (event.key === "Escape" && refs.badgeAdminModal.classList.contains("is-visible")) {
         closeBadgeAdminModal();
