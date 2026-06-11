@@ -18,6 +18,8 @@ const cleanCaption = (content = "") => (
     .slice(0, 220)
 );
 
+const getStableUrl = (url = "") => String(url).split("?")[0];
+
 const getAuthorName = (message) => (
   message.member?.nick ||
   message.author?.global_name ||
@@ -73,8 +75,8 @@ module.exports = async (req, res) => {
               .filter(isPhotoAttachment)
               .map((attachment) => ({
                 id: attachment.id,
-                url: attachment.url,
-                proxyUrl: attachment.proxy_url || attachment.url,
+                url: getStableUrl(attachment.url),
+                proxyUrl: getStableUrl(attachment.proxy_url || attachment.url),
                 filename: attachment.filename || "photo",
                 caption: cleanCaption(message.content),
                 authorId: message.author?.id || null,
