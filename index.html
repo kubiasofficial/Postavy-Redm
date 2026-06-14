@@ -8950,25 +8950,29 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       }, 560);
     };
 
-    const startIntroPlayback = async () => {
+    const startIntroPlayback = async (isAutoAttempt = false) => {
       if (!refs.introAudio.paused) return;
       refs.introStartButton.disabled = true;
-      refs.introStatus.textContent = "Napojování na rodinu Crowe...";
+      refs.introStatus.textContent = isAutoAttempt
+        ? "Spouštím hudbu automaticky..."
+        : "Napojování na rodinu Crowe...";
       refs.introAudio.volume = 0;
       stopIntroAnimation();
 
       const canAnalyze = startIntroAudioAnalysis();
       animateIntro();
-      animateIntroProgress();
 
       try {
         await refs.introAudio.play();
+        animateIntroProgress();
         refs.introStatus.textContent = canAnalyze
           ? "Hudba propojena s rytmem West Havenu"
           : "Hudba spuštěna, efekty běží ve filmovém režimu";
         fadeIntroAudio(0.78, 3200);
       } catch (error) {
-        refs.introStatus.textContent = "Prohlížeč čeká na kliknutí kvůli hudbě";
+        refs.introStatus.textContent = isAutoAttempt
+          ? "Prohlížeč zablokoval automatický zvuk. Klikni kamkoliv pro spuštění."
+          : "Prohlížeč čeká na kliknutí kvůli hudbě";
         refs.introStartButton.disabled = false;
       }
     };
@@ -9001,6 +9005,7 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       };
       startIntroCharacterCycle();
       animateIntro();
+      window.setTimeout(() => startIntroPlayback(true), 260);
     });
 
     const adminLogLabels = {
