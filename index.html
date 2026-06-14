@@ -3603,7 +3603,7 @@
 
     .intro-portraits {
       position: relative;
-      width: min(660px, 86vw);
+      width: min(560px, 78vw, 58vh);
       aspect-ratio: 1;
       display: grid;
       place-items: center;
@@ -3632,7 +3632,7 @@
       background: #130d08;
       transform:
         rotate(var(--intro-angle))
-        translateY(clamp(-230px, -27vw, -150px))
+        translateY(clamp(-198px, -22vw, -126px))
         rotate(var(--intro-reverse))
         scale(calc(1 + var(--intro-beat) * 0.08));
       box-shadow: 0 16px 36px rgba(0, 0, 0, 0.48);
@@ -3675,7 +3675,7 @@
       margin: 0;
       color: #fff4d2;
       font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(3rem, 10vw, 7.8rem);
+      font-size: clamp(2.7rem, 8vw, 6.6rem);
       line-height: 0.82;
       text-transform: uppercase;
       text-shadow:
@@ -8938,6 +8938,7 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       refs.introAudio.pause();
       refs.introAudio.currentTime = 0;
       stopIntroAnimation();
+      stopIntroCharacterCycle();
       refs.westHavenIntro.classList.add("is-leaving");
       refs.westHavenIntro.setAttribute("aria-hidden", "true");
       window.setTimeout(() => {
@@ -8998,6 +8999,7 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
         if (event.target.closest("#introSkipButton")) return;
         startIntroPlayback();
       };
+      startIntroCharacterCycle();
       animateIntro();
     });
 
