@@ -670,6 +670,38 @@ const createAlert = async (characterId, type) => {
   });
 };
 
+const writeActivityLog = async ({ action, characterId, timestamp, durationMs = null, actorId = "" }) => {
+  const character = getCharacter(characterId);
+  const createdAt = Number(timestamp || Date.now());
+  const actionLabel = action === "wake" ? "probudila" : "šla spát";
+  const durationPart = action === "sleep" && durationMs !== null
+    ? ` | sezení ${formatDuration(durationMs)}`
+    : "";
+  const log = {
+    type: "activity",
+    title: action === "wake" ? "Postava se probudila" : "Postava šla spát",
+    text: `${character?.name || characterId} se ${actionLabel} v ${formatDateTime(createdAt)}.${durationPart}`,
+    characterId,
+    characterName: character?.name || characterId,
+    adminCharacterId: "",
+    adminName: "",
+    details: {
+      action,
+      timestamp: createdAt,
+      durationMs,
+      source: "discord",
+      actorId
+    },
+    createdAt
+  };
+
+  try {
+    await createFirestoreDocument("adminLogs", `${createdAt}-activity-${characterId}-${action}`, log);
+  } catch (error) {
+    console.warn(`Activity log failed: ${error.message}`);
+  }
+};
+
 const handleWake = async (interaction) => {
   const userId = interaction.member?.user?.id || interaction.user?.id;
   const characterId = resolveCharacterId(interaction);
@@ -686,6 +718,12 @@ const handleWake = async (interaction) => {
     updatedAt: now
   });
   await createAlert(characterId, "wake");
+  await writeActivityLog({
+    action: "wake",
+    characterId,
+    timestamp: now,
+    actorId: userId
+  });
 
   return interactionResponse(`**${character.name}** je vzhuru. Web se aktualizuje pres Firestore.`);
 };
@@ -718,6 +756,13 @@ const handleSleep = async (interaction) => {
   });
 
   await createAlert(characterId, "sleep");
+  await writeActivityLog({
+    action: "sleep",
+    characterId,
+    timestamp: now,
+    durationMs: sessionMs,
+    actorId: userId
+  });
 
   if (reportText) {
     await createFirestoreDocument("nightReports", `${now}-${characterId}`, {

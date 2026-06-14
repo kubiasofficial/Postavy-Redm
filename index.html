@@ -5880,6 +5880,10 @@
         Pošta
         <span class="mail-count" id="adminMailCount">0</span>
       </button>
+      <button class="admin-menu-button" id="openAdminLogsButton" type="button">
+        <span aria-hidden="true">#</span>
+        Logy
+      </button>
       <button class="admin-menu-button" id="testCharacterAlertButton" type="button">
         <span aria-hidden="true">!</span>
         Alert-test
@@ -6160,6 +6164,40 @@
     </section>
   </div>
 
+  <div class="night-report-modal" id="adminLogsModal" aria-hidden="true">
+    <section class="night-report-dialog" aria-labelledby="adminLogsTitle">
+      <header class="night-report-header">
+        <div>
+          <p class="night-report-kicker">West Haven Office</p>
+          <h2 class="night-report-title" id="adminLogsTitle">Admin logy</h2>
+        </div>
+        <button class="night-report-close" id="closeAdminLogsButton" type="button" aria-label="Zavřít admin logy">&times;</button>
+      </header>
+      <div class="night-report-body">
+        <div class="night-report-column">
+          <label class="night-report-label">
+            Filtr
+            <select class="night-report-input" id="adminLogsFilter">
+              <option value="all">Všechny akce</option>
+              <option value="activity">Probuzení a spánek</option>
+              <option value="sleep">Uspávání</option>
+              <option value="time">Hodiny</option>
+              <option value="badges">Odznaky</option>
+              <option value="relationships">Vztahy</option>
+              <option value="nightReport">Night report</option>
+              <option value="broadcast">Broadcast</option>
+            </select>
+          </label>
+          <div class="night-report-actions">
+            <button class="night-report-button" id="reloadAdminLogsButton" type="button">Obnovit</button>
+          </div>
+          <div class="mail-list" id="adminLogsList"></div>
+          <p class="night-report-status" id="adminLogsStatus" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+  </div>
+
   <div class="night-report-modal" id="broadcastAlertModal" aria-hidden="true">
     <section class="night-report-dialog" aria-labelledby="broadcastAlertTitle">
       <header class="night-report-header">
@@ -6402,6 +6440,7 @@
     const characterPrivateRelationshipsRef = collection(db, "characterPrivateRelationships");
     const photoContestsRef = collection(db, "photoContests");
     const photoContestVotesRef = collection(db, "photoContestVotes");
+    const adminLogsRef = collection(db, "adminLogs");
 
     const characters = [
       {
@@ -6918,6 +6957,7 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       openRelationshipAdminButton: document.getElementById("openRelationshipAdminButton"),
       openAdminMailButton: document.getElementById("openAdminMailButton"),
       adminMailCount: document.getElementById("adminMailCount"),
+      openAdminLogsButton: document.getElementById("openAdminLogsButton"),
       testCharacterAlertButton: document.getElementById("testCharacterAlertButton"),
       openBroadcastAlertButton: document.getElementById("openBroadcastAlertButton"),
       adminSleepModal: document.getElementById("adminSleepModal"),
@@ -6963,6 +7003,12 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       closeAdminMailButton: document.getElementById("closeAdminMailButton"),
       adminMailList: document.getElementById("adminMailList"),
       adminMailStatus: document.getElementById("adminMailStatus"),
+      adminLogsModal: document.getElementById("adminLogsModal"),
+      closeAdminLogsButton: document.getElementById("closeAdminLogsButton"),
+      adminLogsFilter: document.getElementById("adminLogsFilter"),
+      reloadAdminLogsButton: document.getElementById("reloadAdminLogsButton"),
+      adminLogsList: document.getElementById("adminLogsList"),
+      adminLogsStatus: document.getElementById("adminLogsStatus"),
       broadcastAlertModal: document.getElementById("broadcastAlertModal"),
       closeBroadcastAlertButton: document.getElementById("closeBroadcastAlertButton"),
       broadcastAlertHeading: document.getElementById("broadcastAlertHeading"),
@@ -7424,6 +7470,7 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
     const reviewedRelationshipSuggestionIds = new Set();
     let relationshipNotifications = [];
     let relationshipAcknowledgements = [];
+    let adminLogs = [];
     const characterDiscordPlayers = {};
     const characterDiscordIds = {
       zeke: "417061947759001600",
@@ -8283,6 +8330,163 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
         hour: "2-digit",
         minute: "2-digit"
       }).format(new Date(value));
+    };
+
+    const adminLogLabels = {
+      activity: "Probuzení a spánek",
+      sleep: "Uspávání",
+      time: "Hodiny",
+      badges: "Odznaky",
+      relationships: "Vztahy",
+      nightReport: "Night report",
+      broadcast: "Broadcast"
+    };
+
+    const getCharacterLabel = (characterId) => (
+      characters.find((character) => character.id === characterId)?.listName || characterId || "West Haven"
+    );
+
+    const writeAdminLog = async ({ type, title, text = "", characterId = "", details = {} }) => {
+      if (!isAdminPlayer()) return;
+
+      const createdAt = Date.now();
+      const log = {
+        type,
+        title,
+        text,
+        characterId,
+        characterName: characterId ? getCharacterLabel(characterId) : "",
+        adminCharacterId: currentPlayerCharacterId || adminCharacterId,
+        adminName: getCharacterLabel(currentPlayerCharacterId || adminCharacterId),
+        details,
+        createdAt
+      };
+
+      adminLogs = [{ id: `${createdAt}-${type}`, ...log }, ...adminLogs].slice(0, 80);
+      if (refs.adminLogsModal?.classList.contains("is-visible")) renderAdminLogs();
+
+      try {
+        await setDoc(doc(adminLogsRef, `${createdAt}-${type}`), log);
+      } catch (error) {
+        console.warn("Admin log save failed:", error);
+      }
+    };
+
+    const writeActivityLog = async ({ action, characterId, timestamp, durationMs = null, sleepLocation = null }) => {
+      const characterName = getCharacterLabel(characterId);
+      const actionLabel = action === "wake" ? "probudila" : "šla spát";
+      const createdAt = Number(timestamp || Date.now());
+      const durationPart = action === "sleep" && durationMs !== null
+        ? ` | sezení ${formatDuration(durationMs)}`
+        : "";
+      const locationPart = action === "sleep" && sleepLocation
+        ? ` | ${formatMapLocation(sleepLocation)}`
+        : "";
+      const log = {
+        type: "activity",
+        title: action === "wake" ? "Postava se probudila" : "Postava šla spát",
+        text: `${characterName} se ${actionLabel} v ${formatDateTime(createdAt)}.${durationPart}${locationPart}`,
+        characterId,
+        characterName,
+        adminCharacterId: "",
+        adminName: "",
+        details: {
+          action,
+          timestamp: createdAt,
+          durationMs,
+          sleepLocation
+        },
+        createdAt
+      };
+
+      adminLogs = [{ id: `${createdAt}-activity-${characterId}-${action}`, ...log }, ...adminLogs].slice(0, 80);
+      if (refs.adminLogsModal?.classList.contains("is-visible")) renderAdminLogs();
+
+      try {
+        await setDoc(doc(adminLogsRef, `${createdAt}-activity-${characterId}-${action}`), log);
+      } catch (error) {
+        console.warn("Activity log save failed:", error);
+      }
+    };
+
+    const setAdminLogsStatus = (message = "") => {
+      refs.adminLogsStatus.textContent = message;
+    };
+
+    const renderAdminLogs = () => {
+      const selectedType = refs.adminLogsFilter.value || "all";
+      const visibleLogs = adminLogs.filter((log) => selectedType === "all" || log.type === selectedType);
+      refs.adminLogsList.replaceChildren();
+
+      if (!visibleLogs.length) {
+        const empty = document.createElement("article");
+        empty.className = "mail-item";
+        const title = document.createElement("p");
+        title.className = "mail-item-title";
+        title.textContent = "Žádné logy";
+        const text = document.createElement("p");
+        text.className = "mail-item-text";
+        text.textContent = "Pro vybraný filtr zatím není uložený žádný záznam.";
+        empty.append(title, text);
+        refs.adminLogsList.appendChild(empty);
+        return;
+      }
+
+      visibleLogs.forEach((log) => {
+        const item = document.createElement("article");
+        item.className = "mail-item";
+
+        const title = document.createElement("p");
+        title.className = "mail-item-title";
+        title.textContent = log.title || adminLogLabels[log.type] || "Admin akce";
+
+        const meta = document.createElement("p");
+        meta.className = "mail-item-meta";
+        meta.textContent = [
+          adminLogLabels[log.type] || log.type || "Log",
+          formatDateTime(log.createdAt),
+          log.characterName || getCharacterLabel(log.characterId)
+        ].filter(Boolean).join(" | ");
+
+        const text = document.createElement("p");
+        text.className = "mail-item-text";
+        text.textContent = log.text || "Bez detailu.";
+
+        item.append(title, meta, text);
+        refs.adminLogsList.appendChild(item);
+      });
+    };
+
+    const loadAdminLogs = async () => {
+      if (!isAdminPlayer()) {
+        setAdminLogsStatus("Logy může číst jen admin.");
+        return;
+      }
+
+      setAdminLogsStatus("Načítám logy...");
+      try {
+        const snapshot = await getDocs(query(adminLogsRef, orderBy("createdAt", "desc"), limit(80)));
+        adminLogs = snapshot.docs.map((entryDoc) => ({ id: entryDoc.id, ...entryDoc.data() }));
+        renderAdminLogs();
+        setAdminLogsStatus(`Načteno záznamů: ${adminLogs.length}.`);
+      } catch (error) {
+        console.error("Admin logs load failed:", error);
+        setAdminLogsStatus("Logy se nepodařilo načíst.");
+      }
+    };
+
+    const openAdminLogsModal = async () => {
+      refs.adminTools.classList.remove("is-open");
+      refs.adminLogsModal.classList.add("is-visible");
+      refs.adminLogsModal.setAttribute("aria-hidden", "false");
+      renderAdminLogs();
+      await loadAdminLogs();
+    };
+
+    const closeAdminLogsModal = () => {
+      refs.adminLogsModal.classList.remove("is-visible");
+      refs.adminLogsModal.setAttribute("aria-hidden", "true");
+      setAdminLogsStatus();
     };
 
     const getSleepPlaceDistance = (location, place) => {
@@ -9511,6 +9715,18 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
         refs.relationshipAdminStatus.textContent = status === "approved"
           ? "Vztah schválený a uložený."
           : "Návrh ignorovaný.";
+        await writeAdminLog({
+          type: "relationships",
+          title: status === "approved" ? "Schválen návrh vztahu" : "Ignorován návrh vztahu",
+          text: `${getCharacterLabel(suggestion.from)} - ${getCharacterLabel(suggestion.to)} | ${suggestion.label || suggestion.type}`,
+          details: {
+            status,
+            relationshipId: suggestion.relationshipId,
+            from: suggestion.from,
+            to: suggestion.to,
+            type: suggestion.type
+          }
+        });
       } catch (error) {
         console.error("Relationship suggestion review failed:", error);
         refs.relationshipAdminStatus.textContent = "Návrh se nepodařilo uložit.";
@@ -9599,6 +9815,19 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
         await createRelationshipNotifications(notification);
         await loadApprovedRelationships();
         refs.relationshipManualStatus.textContent = "Vztah uložený a hráči dostali poštu.";
+        await writeAdminLog({
+          type: "relationships",
+          title: "Ručně upraven vztah",
+          text: `${getCharacterLabel(from)} - ${getCharacterLabel(to)} | ${label}`,
+          details: {
+            relationshipId,
+            from,
+            to,
+            type,
+            label,
+            hasPrivateNote: Boolean(privateNote)
+          }
+        });
       } catch (error) {
         console.error("Manual relationship save failed:", error);
         refs.relationshipManualStatus.textContent = "Ruční vztah se nepodařilo uložit.";
@@ -10942,6 +11171,13 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       const result = await forceSleepCharacter(refs.adminSleepCharacter.value);
       if (result.status === "slept") {
         setAdminSleepStatus(`${result.name} uspán/a. Započteno: ${formatDuration(result.durationMs)}.`);
+        await writeAdminLog({
+          type: "sleep",
+          title: "Admin uspal postavu",
+          text: `${result.name} | započteno ${formatDuration(result.durationMs)}.`,
+          characterId: refs.adminSleepCharacter.value,
+          details: { durationMs: result.durationMs }
+        });
       } else if (result.status === "skipped") {
         setAdminSleepStatus(`${result.name} už spí.`);
       } else {
@@ -10969,6 +11205,15 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       const sleptResults = results.filter((result) => result.status === "slept");
       const totalDurationMs = sleptResults.reduce((sum, result) => sum + result.durationMs, 0);
       setAdminSleepStatus(`Uspáno: ${sleptResults.length}. Celkem započteno: ${formatDuration(totalDurationMs)}.`);
+      await writeAdminLog({
+        type: "sleep",
+        title: "Admin uspal všechny vzhůru",
+        text: `Uspáno ${sleptResults.length} postav. Celkem započteno ${formatDuration(totalDurationMs)}.`,
+        details: {
+          characterIds: awakeCharacterIds,
+          durationMs: totalDurationMs
+        }
+      });
     });
 
     const clearStaleMapLocations = async () => {
@@ -11161,6 +11406,14 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       setBroadcastAlertStatus("Posílám broadcast alert...");
       try {
         await setDoc(doc(characterAlertsRef, `${alert.createdAt}-broadcast`), alert);
+        await writeAdminLog({
+          type: "broadcast",
+          title: "Odeslán broadcast alert",
+          text: `${alert.title} | ${alert.text}`,
+          details: {
+            alertId: `${alert.createdAt}-broadcast`
+          }
+        });
         closeBroadcastAlertModal();
       } catch (error) {
         console.error("Broadcast alert failed:", error);
@@ -11376,6 +11629,7 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
           badges: openBadgeAdminModal,
           relationships: openRelationshipAdminModal,
           mail: openAdminMailModal,
+          logs: openAdminLogsModal,
           testAlert: testCharacterAlert,
           broadcast: openBroadcastAlertModal
         };
@@ -11487,6 +11741,13 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
           renderBadgeModal();
         }
         setBadgeAdminStatus(`Uloženo pro ${character.listName}.`);
+        await writeAdminLog({
+          type: "badges",
+          title: "Upraveny speciální odznaky",
+          text: `${character.listName} | ruční odznaky: ${specialBadges.length}.`,
+          characterId: character.id,
+          details: { specialBadges }
+        });
       } catch (error) {
         console.error("Badge admin save failed:", error);
         setBadgeAdminStatus("Odznaky se nepodařilo uložit.");
@@ -11603,6 +11864,19 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
           renderBadgeAdminList();
         }
         setTimeAdminStatus(`${doneLabel} ${formattedDelta} postavě ${character.listName}.`);
+        await writeAdminLog({
+          type: "time",
+          title: `${doneLabel} čas postavě`,
+          text: `${character.listName} | ${direction > 0 ? "+" : "-"}${formattedDelta} | ${reason}`,
+          characterId: character.id,
+          details: {
+            deltaMs,
+            reason,
+            totalPlayedMs: nextTotalMs,
+            dailyPlayedMs: nextDailyMs,
+            level: nextLevel
+          }
+        });
       } catch (error) {
         console.error("Time admin adjustment failed:", error);
         setTimeAdminStatus("Hodiny se nepodařilo uložit.");
@@ -11736,6 +12010,12 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
 
         if (!response.ok) throw new Error(await response.text());
         setNightReportStatus("Night report odeslán.");
+        await writeAdminLog({
+          type: "nightReport",
+          title: "Odeslán night report",
+          text: `Report odeslán na Discord. Délka: ${content.length} znaků.`,
+          details: { length: content.length }
+        });
       } catch (error) {
         setNightReportStatus("Odeslání se nepodařilo. Zkontroluj deploy a token bota.");
       }
@@ -11829,6 +12109,13 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
           sleepLocation,
           lastAwakeAt: endedAt,
           achievementStats
+        });
+        await writeActivityLog({
+          action: "sleep",
+          characterId: activeCharacterId,
+          timestamp: endedAt,
+          durationMs: sleepDurationMs || 0,
+          sleepLocation
         });
         if (newLevel > previousLevel) {
           await sendLevelAlert(activeCharacterId, newLevel, newTotal);
@@ -12419,11 +12706,25 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
 
     refs.openAdminMailButton.addEventListener("click", openAdminMailModal);
 
+    refs.openAdminLogsButton.addEventListener("click", openAdminLogsModal);
+
+    refs.closeAdminLogsButton.addEventListener("click", closeAdminLogsModal);
+
+    refs.reloadAdminLogsButton.addEventListener("click", loadAdminLogs);
+
+    refs.adminLogsFilter.addEventListener("change", renderAdminLogs);
+
     refs.closeAdminMailButton.addEventListener("click", closeAdminMailModal);
 
     refs.adminMailModal.addEventListener("click", (event) => {
       if (event.target === refs.adminMailModal) {
         closeAdminMailModal();
+      }
+    });
+
+    refs.adminLogsModal.addEventListener("click", (event) => {
+      if (event.target === refs.adminLogsModal) {
+        closeAdminLogsModal();
       }
     });
 
@@ -12753,6 +13054,9 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       if (event.key === "Escape" && refs.adminMailModal.classList.contains("is-visible")) {
         closeAdminMailModal();
       }
+      if (event.key === "Escape" && refs.adminLogsModal.classList.contains("is-visible")) {
+        closeAdminLogsModal();
+      }
       if (event.key === "Escape" && refs.broadcastAlertModal.classList.contains("is-visible")) {
         closeBroadcastAlertModal();
       }
@@ -12828,6 +13132,11 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
             lastAwakeAt: startedAt,
             dailyDate: wakeDateKey,
             achievementStats
+          });
+          await writeActivityLog({
+            action: "wake",
+            characterId: activeCharacterId,
+            timestamp: startedAt
           });
           updateCharacterTimer();
           sendCharacterAlert(activeCharacterId, "wake");
