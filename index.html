@@ -3465,6 +3465,261 @@
       text-transform: uppercase;
     }
 
+    .intro-overlay {
+      --intro-beat: 0;
+      --intro-glow: 0;
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      overflow: hidden;
+      color: #fff0cf;
+      background:
+        linear-gradient(180deg, rgba(4, 3, 2, 0.78), rgba(7, 5, 4, 0.96)),
+        url("images/west-haven-1899-banner.png") center / cover no-repeat,
+        #070504;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 520ms var(--ease), visibility 520ms var(--ease);
+    }
+
+    .intro-overlay.is-visible {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .intro-overlay.is-leaving {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .intro-overlay::before,
+    .intro-overlay::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .intro-overlay::before {
+      background:
+        radial-gradient(circle at 50% 34%, rgba(230, 177, 92, calc(0.14 + var(--intro-glow) * 0.28)), transparent 32%),
+        linear-gradient(115deg, transparent 0 47%, rgba(255, 218, 151, 0.14) 48%, transparent 49% 100%),
+        repeating-linear-gradient(0deg, rgba(255, 238, 196, 0.035) 0 1px, transparent 1px 8px);
+      mix-blend-mode: screen;
+    }
+
+    .intro-overlay::after {
+      background:
+        radial-gradient(circle at 50% 50%, transparent 0 46%, rgba(0, 0, 0, 0.72) 100%),
+        repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.18) 0 2px, transparent 2px 7px);
+      opacity: 0.7;
+    }
+
+    .intro-dust {
+      position: absolute;
+      inset: -10%;
+      pointer-events: none;
+      background:
+        radial-gradient(circle, rgba(245, 209, 147, 0.5) 0 1px, transparent 2px) 4% 14% / 120px 80px,
+        radial-gradient(circle, rgba(245, 209, 147, 0.34) 0 1px, transparent 2px) 78% 64% / 160px 120px,
+        radial-gradient(circle, rgba(245, 209, 147, 0.28) 0 1px, transparent 2px) 42% 82% / 190px 140px;
+      opacity: calc(0.16 + var(--intro-beat) * 0.28);
+      transform: translate3d(calc(var(--intro-beat) * -16px), calc(var(--intro-beat) * 12px), 0);
+      animation: intro-drift 12s linear infinite;
+    }
+
+    .intro-stage {
+      position: relative;
+      z-index: 1;
+      width: min(1040px, 100%);
+      min-height: min(680px, calc(100vh - 44px));
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 22px;
+    }
+
+    .intro-topline,
+    .intro-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .intro-kicker,
+    .intro-status,
+    .intro-track {
+      margin: 0;
+      color: #d6ad67;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .intro-skip,
+    .intro-start {
+      min-height: 40px;
+      padding: 9px 13px;
+      border: 1px solid rgba(230, 177, 92, 0.44);
+      border-radius: 4px;
+      background: rgba(11, 8, 5, 0.72);
+      color: #f6ddb0;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .intro-start {
+      background:
+        linear-gradient(180deg, rgba(143, 31, 45, 0.78), rgba(62, 18, 17, 0.82)),
+        rgba(11, 8, 5, 0.8);
+      color: #fff2d4;
+    }
+
+    .intro-core {
+      display: grid;
+      place-items: center;
+      gap: 18px;
+      text-align: center;
+    }
+
+    .intro-portraits {
+      position: relative;
+      width: min(660px, 86vw);
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      transform: scale(calc(1 + var(--intro-beat) * 0.035));
+      filter: drop-shadow(0 28px 58px rgba(0, 0, 0, 0.58));
+    }
+
+    .intro-ring {
+      position: absolute;
+      inset: 8%;
+      border: 1px solid rgba(230, 177, 92, 0.34);
+      border-radius: 50%;
+      box-shadow:
+        0 0 calc(28px + var(--intro-glow) * 54px) rgba(230, 177, 92, 0.24),
+        inset 0 0 44px rgba(143, 31, 45, 0.16);
+      animation: intro-spin 18s linear infinite;
+    }
+
+    .intro-portrait {
+      position: absolute;
+      width: clamp(78px, 15vw, 132px);
+      aspect-ratio: 1;
+      border: 1px solid rgba(230, 177, 92, 0.42);
+      border-radius: 50%;
+      overflow: hidden;
+      background: #130d08;
+      transform:
+        rotate(var(--intro-angle))
+        translateY(clamp(-230px, -27vw, -150px))
+        rotate(var(--intro-reverse))
+        scale(calc(1 + var(--intro-beat) * 0.08));
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.48);
+      animation: intro-float 4.8s ease-in-out infinite;
+      animation-delay: var(--intro-delay);
+    }
+
+    .intro-portrait img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: sepia(0.18) contrast(1.06) saturate(0.96);
+    }
+
+    .intro-title {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      color: #fff4d2;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(3rem, 10vw, 7.8rem);
+      line-height: 0.82;
+      text-transform: uppercase;
+      text-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.72),
+        0 0 calc(12px + var(--intro-glow) * 32px) rgba(230, 177, 92, 0.34);
+    }
+
+    .intro-subtitle {
+      max-width: 720px;
+      margin: -12px auto 0;
+      color: #d9c19a;
+      font-size: clamp(0.95rem, 2.2vw, 1.18rem);
+      line-height: 1.55;
+    }
+
+    .intro-progress {
+      position: relative;
+      height: 8px;
+      width: min(520px, 76vw);
+      overflow: hidden;
+      border: 1px solid rgba(230, 177, 92, 0.3);
+      border-radius: 999px;
+      background: rgba(7, 5, 4, 0.64);
+    }
+
+    .intro-progress-fill {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 0%;
+      background: linear-gradient(90deg, #8f1f2d, #d5a052, #ffe0a0);
+      box-shadow: 0 0 calc(12px + var(--intro-glow) * 32px) rgba(230, 177, 92, 0.44);
+    }
+
+    .intro-controls {
+      align-items: flex-end;
+    }
+
+    @media (max-width: 680px) {
+      .intro-stage {
+        min-height: calc(100vh - 44px);
+      }
+
+      .intro-topline,
+      .intro-controls {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .intro-skip,
+      .intro-start {
+        width: 100%;
+      }
+    }
+
+    @keyframes intro-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes intro-float {
+      0%, 100% {
+        margin-top: 0;
+      }
+      50% {
+        margin-top: -12px;
+      }
+    }
+
+    @keyframes intro-drift {
+      to {
+        background-position: 22% 16%, 62% 70%, 52% 84%;
+      }
+    }
+
     .player-profile-shell {
       display: grid;
       grid-template-columns: minmax(190px, 0.42fr) minmax(0, 1fr);
@@ -5852,6 +6107,42 @@
     </aside>
   </main>
 
+  <div class="intro-overlay" id="westHavenIntro" aria-hidden="true">
+    <div class="intro-dust" aria-hidden="true"></div>
+    <section class="intro-stage" aria-labelledby="introTitle">
+      <div class="intro-topline">
+        <p class="intro-kicker">West Haven Link</p>
+        <button class="intro-skip" id="introSkipButton" type="button">Přeskočit</button>
+      </div>
+
+      <div class="intro-core">
+        <div class="intro-portraits" aria-hidden="true">
+          <span class="intro-ring"></span>
+          <span class="intro-portrait" style="--intro-angle: 0deg; --intro-reverse: 0deg; --intro-delay: 0ms;"><img src="images/zeke.png" alt=""></span>
+          <span class="intro-portrait" style="--intro-angle: 60deg; --intro-reverse: -60deg; --intro-delay: -300ms;"><img src="images/Silas.png" alt=""></span>
+          <span class="intro-portrait" style="--intro-angle: 120deg; --intro-reverse: -120deg; --intro-delay: -600ms;"><img src="images/William.png" alt=""></span>
+          <span class="intro-portrait" style="--intro-angle: 180deg; --intro-reverse: -180deg; --intro-delay: -900ms;"><img src="images/Violet.png" alt=""></span>
+          <span class="intro-portrait" style="--intro-angle: 240deg; --intro-reverse: -240deg; --intro-delay: -1200ms;"><img src="images/Thomas.png" alt=""></span>
+          <span class="intro-portrait" style="--intro-angle: 300deg; --intro-reverse: -300deg; --intro-delay: -1500ms;"><img src="images/elie.png" alt=""></span>
+        </div>
+        <h2 class="intro-title" id="introTitle">Crowe</h2>
+        <p class="intro-subtitle" id="introSubtitle">Napojování na postavy, kroniku a hlasy West Havenu.</p>
+        <div class="intro-progress" aria-hidden="true">
+          <span class="intro-progress-fill" id="introProgressFill"></span>
+        </div>
+      </div>
+
+      <div class="intro-controls">
+        <div>
+          <p class="intro-status" id="introStatus">Čeká se na vstup do West Havenu</p>
+          <p class="intro-track" id="introTrackLabel">Hudba se střídá každou novou session</p>
+        </div>
+        <button class="intro-start" id="introStartButton" type="button">Vstoupit do West Havenu</button>
+      </div>
+    </section>
+    <audio id="introAudio" preload="auto"></audio>
+  </div>
+
   <div class="admin-tools" id="adminTools" aria-hidden="true">
     <button class="admin-button" id="adminButton" type="button" aria-label="Admin menu">⚙</button>
     <div class="admin-menu" id="adminMenu">
@@ -6841,6 +7132,13 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
     const backButton = document.getElementById("backButton");
     const refs = {
       openCharactersButton: document.getElementById("openCharactersButton"),
+      westHavenIntro: document.getElementById("westHavenIntro"),
+      introAudio: document.getElementById("introAudio"),
+      introStartButton: document.getElementById("introStartButton"),
+      introSkipButton: document.getElementById("introSkipButton"),
+      introStatus: document.getElementById("introStatus"),
+      introTrackLabel: document.getElementById("introTrackLabel"),
+      introProgressFill: document.getElementById("introProgressFill"),
       characterRosterModal: document.getElementById("characterRosterModal"),
       closeCharactersButton: document.getElementById("closeCharactersButton"),
       rumorStrip: document.getElementById("rumorStrip"),
@@ -7437,6 +7735,14 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
     let lastSeenLevelAlertId = localStorage.getItem("westHavenLastLevelAlertId") || "";
     const seenLevelAlertIds = new Set(lastSeenLevelAlertId ? [lastSeenLevelAlertId] : []);
     let alertVolume = Number(localStorage.getItem("westHavenAlertVolume") || 70);
+    let introAudioContext = null;
+    let introAnalyser = null;
+    let introSourceNode = null;
+    let introAnimationId = null;
+    let introProgressId = null;
+    let introFadeId = null;
+    let introFinishResolver = null;
+    let isIntroFinishing = false;
     const characterStates = {};
     const playerProfileKey = "westHavenPlayerProfile";
     const readPlayerProfile = () => {
@@ -8331,6 +8637,199 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
         minute: "2-digit"
       }).format(new Date(value));
     };
+
+    const introTracks = [
+      { title: "Crowe", src: "audio/Crowe.mp3" },
+      { title: "Legendery Family", src: "audio/Legendery%20Family.mp3" }
+    ];
+
+    const getNextIntroTrack = () => {
+      const previousIndex = Number(localStorage.getItem("westHavenIntroTrackIndex") || -1);
+      const nextIndex = Number.isFinite(previousIndex) ? (previousIndex + 1) % introTracks.length : 0;
+      localStorage.setItem("westHavenIntroTrackIndex", String(nextIndex));
+      return introTracks[nextIndex] || introTracks[0];
+    };
+
+    const stopIntroAnimation = () => {
+      if (introAnimationId) cancelAnimationFrame(introAnimationId);
+      if (introProgressId) cancelAnimationFrame(introProgressId);
+      if (introFadeId) cancelAnimationFrame(introFadeId);
+      introAnimationId = null;
+      introProgressId = null;
+      introFadeId = null;
+    };
+
+    const fadeIntroAudio = (targetVolume, duration = 900) => new Promise((resolve) => {
+      const audio = refs.introAudio;
+      if (!audio) {
+        resolve();
+        return;
+      }
+
+      if (audio.paused && targetVolume === 0) {
+        audio.volume = 0;
+        resolve();
+        return;
+      }
+
+      if (introFadeId) cancelAnimationFrame(introFadeId);
+      const startVolume = Number(audio.volume || 0);
+      const startedAt = performance.now();
+      const step = (now) => {
+        const progress = Math.min(1, (now - startedAt) / duration);
+        audio.volume = startVolume + ((targetVolume - startVolume) * progress);
+        if (progress < 1) {
+          introFadeId = requestAnimationFrame(step);
+        } else {
+          introFadeId = null;
+          resolve();
+        }
+      };
+      introFadeId = requestAnimationFrame(step);
+    });
+
+    const updateIntroBeatFallback = (startedAt) => {
+      const elapsed = performance.now() - startedAt;
+      const beat = (Math.sin(elapsed / 180) + 1) / 2;
+      refs.westHavenIntro.style.setProperty("--intro-beat", String(beat * 0.45));
+      refs.westHavenIntro.style.setProperty("--intro-glow", String(beat * 0.55));
+    };
+
+    const startIntroAudioAnalysis = () => {
+      const audio = refs.introAudio;
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!audio || !AudioContextClass) return false;
+
+      try {
+        if (!introAudioContext) introAudioContext = new AudioContextClass();
+        if (!introSourceNode) {
+          introSourceNode = introAudioContext.createMediaElementSource(audio);
+          introAnalyser = introAudioContext.createAnalyser();
+          introAnalyser.fftSize = 128;
+          introSourceNode.connect(introAnalyser);
+          introAnalyser.connect(introAudioContext.destination);
+        }
+        introAudioContext.resume?.();
+        return true;
+      } catch (error) {
+        console.warn("Intro audio analysis unavailable:", error);
+        return false;
+      }
+    };
+
+    const animateIntro = () => {
+      const startedAt = performance.now();
+      const data = introAnalyser ? new Uint8Array(introAnalyser.frequencyBinCount) : null;
+
+      const tick = () => {
+        if (!refs.westHavenIntro.classList.contains("is-visible")) return;
+
+        if (introAnalyser && data) {
+          introAnalyser.getByteFrequencyData(data);
+          const lowEnd = data.slice(0, 12).reduce((sum, value) => sum + value, 0) / (12 * 255);
+          const mids = data.slice(12, 34).reduce((sum, value) => sum + value, 0) / (22 * 255);
+          refs.westHavenIntro.style.setProperty("--intro-beat", String(Math.min(1, lowEnd * 1.8)));
+          refs.westHavenIntro.style.setProperty("--intro-glow", String(Math.min(1, mids * 1.55)));
+        } else {
+          updateIntroBeatFallback(startedAt);
+        }
+
+        introAnimationId = requestAnimationFrame(tick);
+      };
+
+      tick();
+    };
+
+    const animateIntroProgress = () => {
+      const audio = refs.introAudio;
+      const startedAt = performance.now();
+      const fallbackDuration = 18000;
+
+      const tick = () => {
+        if (!refs.westHavenIntro.classList.contains("is-visible")) return;
+
+        const hasDuration = Number.isFinite(audio.duration) && audio.duration > 0;
+        const progress = hasDuration
+          ? Math.min(1, audio.currentTime / audio.duration)
+          : Math.min(1, (performance.now() - startedAt) / fallbackDuration);
+        refs.introProgressFill.style.width = `${Math.round(progress * 100)}%`;
+
+        if (!hasDuration && progress >= 1) {
+          finishIntro();
+          return;
+        }
+
+        introProgressId = requestAnimationFrame(tick);
+      };
+
+      tick();
+    };
+
+    const finishIntro = async () => {
+      if (isIntroFinishing) return;
+      isIntroFinishing = true;
+
+      await fadeIntroAudio(0, 900);
+      refs.introAudio.pause();
+      refs.introAudio.currentTime = 0;
+      stopIntroAnimation();
+      refs.westHavenIntro.classList.add("is-leaving");
+      refs.westHavenIntro.setAttribute("aria-hidden", "true");
+      window.setTimeout(() => {
+        refs.westHavenIntro.classList.remove("is-visible", "is-leaving");
+        refs.westHavenIntro.style.setProperty("--intro-beat", "0");
+        refs.westHavenIntro.style.setProperty("--intro-glow", "0");
+        introFinishResolver?.();
+        introFinishResolver = null;
+      }, 560);
+    };
+
+    const startIntroPlayback = async () => {
+      refs.introStartButton.disabled = true;
+      refs.introStatus.textContent = "Napojování na rodinu Crowe...";
+      refs.introAudio.volume = 0;
+      stopIntroAnimation();
+
+      const canAnalyze = startIntroAudioAnalysis();
+      animateIntro();
+      animateIntroProgress();
+
+      try {
+        await refs.introAudio.play();
+        refs.introStatus.textContent = canAnalyze
+          ? "Hudba propojena s rytmem West Havenu"
+          : "Hudba spuštěna, efekty běží ve filmovém režimu";
+        fadeIntroAudio(0.78, 3200);
+      } catch (error) {
+        refs.introStatus.textContent = "Prohlížeč čeká na kliknutí kvůli hudbě";
+        refs.introStartButton.disabled = false;
+      }
+    };
+
+    const startIntroGate = () => new Promise((resolve) => {
+      if (sessionStorage.getItem("westHavenIntroSeen") === "1") {
+        resolve();
+        return;
+      }
+
+      sessionStorage.setItem("westHavenIntroSeen", "1");
+      isIntroFinishing = false;
+      introFinishResolver = resolve;
+
+      const track = getNextIntroTrack();
+      refs.introAudio.src = track.src;
+      refs.introTrackLabel.textContent = `Dnešní intro: ${track.title}`;
+      refs.introStatus.textContent = "Čeká se na vstup do West Havenu";
+      refs.introProgressFill.style.width = "0%";
+      refs.introStartButton.disabled = false;
+      refs.westHavenIntro.classList.add("is-visible");
+      refs.westHavenIntro.classList.remove("is-leaving");
+      refs.westHavenIntro.setAttribute("aria-hidden", "false");
+      refs.introAudio.onended = finishIntro;
+      refs.introStartButton.onclick = startIntroPlayback;
+      refs.introSkipButton.onclick = finishIntro;
+      animateIntro();
+    });
 
     const adminLogLabels = {
       activity: "Probuzení a spánek",
@@ -13305,11 +13804,13 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
     const shouldSkipAuthOnce = sessionStorage.getItem("westHavenSkipAuthOnce") === "1";
     sessionStorage.removeItem("westHavenSkipAuthOnce");
 
-    if (shouldSkipAuthOnce && playerProfile?.characterId) {
-      completeLogin(playerProfile.characterId);
-    } else if (!shouldSkipAuthOnce) {
-      initializeAuth();
-    }
+    startIntroGate().then(() => {
+      if (shouldSkipAuthOnce && playerProfile?.characterId) {
+        completeLogin(playerProfile.characterId);
+      } else if (!shouldSkipAuthOnce) {
+        initializeAuth();
+      }
+    });
   </script>
 </body>
 </html>
