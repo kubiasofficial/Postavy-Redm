@@ -8707,6 +8707,14 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       }
     );
 
+    const fetchFreshCharacterState = async (characterId) => {
+      const snapshot = await getDoc(doc(characterStatesRef, characterId));
+      if (snapshot.exists()) {
+        characterStates[characterId] = snapshot.data();
+      }
+      return getCharacterState(characterId);
+    };
+
     const formatDuration = (durationMs) => {
       if (!durationMs) return "čas nebyl zaznamenán";
 
@@ -11788,7 +11796,7 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       const character = characters.find((item) => item.id === characterId);
       if (!character) return { status: "missing", name: "Neznámá postava", durationMs: 0 };
 
-      const state = getCharacterState(characterId);
+      const state = await fetchFreshCharacterState(characterId);
       if (!isCharacterAwake(characterId)) {
         return { status: "skipped", name: character.listName, durationMs: 0 };
       }
@@ -12748,10 +12756,12 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       const reportText = typeof reportData === "string" ? reportData : (reportData?.text || "");
       const sleepLocation = typeof reportData === "string" ? null : (reportData?.sleepLocation || null);
       const message = pickRandom(type === "wake" ? profile.wakeMessages : profile.sleepMessages);
-      const sleepDurationMs = type === "sleep" ? stopWakeTimer(activeCharacterId) : null;
-      const durationText = type === "sleep" ? formatDuration(sleepDurationMs) : "";
+      let sleepDurationMs = null;
+      let durationText = "";
       if (type === "sleep") {
-        const state = getCharacterState(activeCharacterId);
+        const state = await fetchFreshCharacterState(activeCharacterId);
+        sleepDurationMs = stopWakeTimer(activeCharacterId);
+        durationText = formatDuration(sleepDurationMs);
         const currentDateKey = getPragueDateKey();
         const previousTotal = Number(state.totalPlayedMs || 0);
         const previousDaily = state.dailyDate === currentDateKey ? Number(state.dailyPlayedMs || 0) : 0;
