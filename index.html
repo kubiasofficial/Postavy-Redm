@@ -7486,7 +7486,7 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
 
     const tabButtons = document.querySelectorAll("[data-tab]");
     const tabPanels = document.querySelectorAll("[data-panel]");
-    const webhookUrl = "https://discord.com/api/webhooks/1509944426976378950/dmQXVCE7IpIPpjV2cf9Ju-JIZ088RV4PKc1J0Xd7_4jPrpdRysEJfh0zPxL83iCs5qPA";
+    const characterActionEndpoint = "/api/character-action";
     const adminCharacterId = "zeke";
     const characterActionProfiles = {
       zeke: {
@@ -12826,24 +12826,28 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
         }
         updateCharacterTimer();
       }
-      const embed = type === "wake"
-        ? buildWakeEmbed(profile, message)
-        : buildSleepEmbed(profile, message, reportText, durationText, sleepLocation);
-      const payload = {
-        username: "West Haven",
-        embeds: [embed]
-      };
-      const body = new FormData();
-      body.append("payload_json", JSON.stringify(payload));
-
       refs.characterActionStatus.textContent = "Odesílám zprávu...";
 
       try {
-        await fetch(webhookUrl, {
+        const response = await fetch(characterActionEndpoint, {
           method: "POST",
-          mode: "no-cors",
-          body
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            type,
+            profile,
+            message,
+            reportText,
+            durationText,
+            sleepLocation
+          })
         });
+
+        if (!response.ok) {
+          throw new Error(await response.text());
+        }
+
         refs.characterActionStatus.textContent = `Odesláno: ${message}`;
       } catch (error) {
         refs.characterActionStatus.textContent = "Zprávu se nepodařilo odeslat.";
