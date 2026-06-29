@@ -7487,7 +7487,6 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
     const tabButtons = document.querySelectorAll("[data-tab]");
     const tabPanels = document.querySelectorAll("[data-panel]");
     const characterActionEndpoint = "/api/character-action";
-    const webhookUrl = "https://discord.com/api/webhooks/1509944426976378950/dmQXVCE7IpIPpjV2cf9Ju-JIZ088RV4PKc1J0Xd7_4jPrpdRysEJfh0zPxL83iCs5qPA";
     const adminCharacterId = "zeke";
     const characterActionProfiles = {
       zeke: {
@@ -12830,16 +12829,12 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
       const embed = type === "wake"
         ? buildWakeEmbed(profile, message)
         : buildSleepEmbed(profile, message, reportText, durationText, sleepLocation);
-      const payload = {
-        username: "West Haven",
-        embeds: [embed]
-      };
-      const body = new FormData();
-      body.append("payload_json", JSON.stringify(payload));
 
       refs.characterActionStatus.textContent = "Odesílám zprávu...";
 
       try {
+        console.log(`[Character Action] Sending ${type} for ${activeCharacterId}`, { type, profile: profile.displayName, message });
+        
         const response = await fetch(characterActionEndpoint, {
           method: "POST",
           headers: {
@@ -12855,22 +12850,18 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
           })
         });
 
+        const responseData = await response.text();
+        console.log(`[Character Action] Response status: ${response.status}`, responseData);
+
         if (!response.ok) {
-          throw new Error(await response.text());
+          throw new Error(`HTTP ${response.status}: ${responseData}`);
         }
 
+        console.log(`[Character Action] Successfully sent to Discord`);
         refs.characterActionStatus.textContent = `Odesláno: ${message}`;
       } catch (error) {
-        try {
-          await fetch(webhookUrl, {
-            method: "POST",
-            mode: "no-cors",
-            body
-          });
-          refs.characterActionStatus.textContent = `Odesláno: ${message}`;
-        } catch (fallbackError) {
-          refs.characterActionStatus.textContent = "Zprávu se nepodařilo odeslat.";
-        }
+        console.error(`[Character Action] Failed to send:`, error);
+        refs.characterActionStatus.textContent = `Chyba odesílání: ${error.message}`;
       }
     };
 

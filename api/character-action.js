@@ -59,6 +59,8 @@ const sendCharacterActionToDiscord = async ({ type, profile, message, reportText
     sleepLocation
   });
 
+  console.log(`[sendCharacterActionToDiscord] Sending to channel ${CHARACTER_ACTION_CHANNEL_ID}`);
+  
   const response = await fetch(`${DISCORD_API_BASE}/channels/${CHARACTER_ACTION_CHANNEL_ID}/messages`, {
     method: 'POST',
     headers: {
@@ -68,9 +70,11 @@ const sendCharacterActionToDiscord = async ({ type, profile, message, reportText
     body: JSON.stringify(payload)
   });
 
+  const responseText = await response.text();
+  console.log(`[sendCharacterActionToDiscord] Discord API response: ${response.status}`, responseText);
+
   if (!response.ok) {
-    const details = await response.text();
-    throw new Error(`Discord API request failed: ${details}`);
+    throw new Error(`Discord API request failed: ${responseText}`);
   }
 
   return true;
@@ -103,6 +107,7 @@ module.exports = async (req, res) => {
   }
 
   try {
+    console.log(`[character-action] Sending ${type} notification: "${message}"`);
     await sendCharacterActionToDiscord({
       type,
       profile,
@@ -111,9 +116,11 @@ module.exports = async (req, res) => {
       durationText,
       sleepLocation
     });
+    console.log(`[character-action] Successfully sent to Discord`);
     return res.status(200).json({ sent: true });
   } catch (error) {
-    return res.status(500).json({ error: error.message || 'Unable to send Discord message' });
+    console.error(`[character-action] Error:`, error.message);
+    return res.status(500).json({ error: error.message || 'Unable to send Discord message', details: String(error) });
   }
 };
 
