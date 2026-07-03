@@ -34,7 +34,7 @@ if (!env.DISCORD_BOT_TOKEN) {
   process.exit(1);
 }
 
-const tomDiscordId = "1506652869770612797";
+const tomDiscordId = "1426478993942515733";
 const ellieDiscordId = "1454130138240520407";
 const webUrl = "https://postavy-redm.vercel.app";
 
@@ -47,7 +47,7 @@ const payload = {
     {
       title: "West Haven update: Nove postavy na webu",
       description: [
-        "Do seznamu postav pribyli **Thomas \"Tom\" Halbrook** a **Eleanor \"Ellie\" Whitmore**.",
+        "Do seznamu postav pribyli **Thomas \"Tom\" Mercer** a **Eleanor \"Ellie\" Whitmore**.",
         "",
         "Na hlavni strance zustavaji drby, aktivita i fotky. Samotne karty postav jsou ted schovane pod velkym tlacitkem **Postavy**."
       ].join("\n"),
@@ -63,7 +63,7 @@ const payload = {
           value: [
             `1. Otevri web: ${webUrl}`,
             "2. Klikni na velke tlacitko **Postavy**.",
-            "3. Vyber svoji kartu: **Thomas Halbrook** nebo **Eleanor Whitmore**.",
+            "3. Vyber svoji kartu: **Thomas Mercer** nebo **Eleanor Whitmore**.",
             "4. Pri prvnim vstupu si potvrdis postavu a vytvoris vlastni 4mistny kod.",
             "5. Pri dalsim vstupu uz se prihlasis timhle kodem."
           ].join("\n"),
@@ -72,7 +72,7 @@ const payload = {
         {
           name: "Napojeni",
           value: [
-            `<@${tomDiscordId}> je napojeny na **Thomas \"Tom\" Halbrook**.`,
+            `<@${tomDiscordId}> je napojeny na **Thomas \"Tom\" Mercer**.`,
             `<@${ellieDiscordId}> je napojena na **Eleanor \"Ellie\" Whitmore**.`
           ].join("\n"),
           inline: false

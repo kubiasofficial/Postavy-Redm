@@ -74,7 +74,7 @@ const payload = {
         },
         {
           name: "🤠 Nové postavy",
-          value: "Do West Havenu přibyli **Thomas \"Tom\" Halbrook** a **Eleanor \"Ellie\" Whitmore**. Jsou napojení na Discord účty a připravení pro další příběhy.",
+          value: "Do West Havenu přibyli **Thomas \"Tom\" Mercer** a **Eleanor \"Ellie\" Whitmore**. Jsou napojení na Discord účty a připravení pro další příběhy.",
           inline: false
         },
         {
