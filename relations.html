@@ -723,6 +723,15 @@
       }
     }
   </style>
+  <style>
+    /* Skrýt položky vztahů a seznamu pro tom-halbrook */
+    [data-character-id="tom-halbrook"],
+    #tom-halbrook,
+    .relation-entry[data-id="tom-halbrook"],
+    .character-list [data-id="tom-halbrook"] {
+      display: none !important;
+    }
+  </style>
 </head>
 <body>
   <div class="page-wipe" aria-hidden="true"></div>
@@ -822,13 +831,7 @@
         portrait: "images/William.png",
         portraitAlt: "Portrét postavy William Hart"
       },
-      {
-        id: "tom-halbrook",
-        listName: "Thomas Halbrook",
-        role: "Farmář / ochránce",
-        portrait: "images/tom.png",
-        portraitAlt: "Portrét postavy Thomas Halbrook"
-      },
+      /* Thomas Halbrook removed from relations list to avoid web mentions */
       {
         id: "ellie-whitmore",
         listName: "Eleanor Whitmore",

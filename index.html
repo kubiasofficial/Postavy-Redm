@@ -5937,6 +5937,17 @@
       }
     }
   </style>
+  <style>
+    /* Dočasně skrýt postavu tom-halbrook na webu (zůstane v kódu) */
+    [data-intro-character="tom-halbrook"],
+    [data-character-id="tom-halbrook"],
+    [data-character="tom-halbrook"],
+    #tom-halbrook,
+    .character-card[data-id="tom-halbrook"],
+    .intro-portrait[data-intro-character="tom-halbrook"] {
+      display: none !important;
+    }
+  </style>
 </head>
 <body>
   <div class="mist" aria-hidden="true"></div>
@@ -6215,7 +6226,7 @@
           <span class="intro-portrait" data-intro-character="silas" style="--intro-angle: 60deg; --intro-reverse: -60deg; --intro-delay: -300ms;"><img src="images/Silas.png" alt=""></span>
           <span class="intro-portrait" data-intro-character="william" style="--intro-angle: 120deg; --intro-reverse: -120deg; --intro-delay: -600ms;"><img src="images/William.png" alt=""></span>
           <span class="intro-portrait" data-intro-character="violet" style="--intro-angle: 180deg; --intro-reverse: -180deg; --intro-delay: -900ms;"><img src="images/Violet.png" alt=""></span>
-          <span class="intro-portrait" data-intro-character="tom-halbrook" style="--intro-angle: 240deg; --intro-reverse: -240deg; --intro-delay: -1200ms;"><img src="images/Thomas.png" alt=""></span>
+          <!-- Thomas Halbrook removed from intro portraits to avoid web mentions -->
           <span class="intro-portrait" data-intro-character="ellie-whitmore" style="--intro-angle: 300deg; --intro-reverse: -300deg; --intro-delay: -1500ms;"><img src="images/elie.png" alt=""></span>
         </div>
         <h2 class="intro-title" id="introTitle">Crowe</h2>
@@ -7029,56 +7040,7 @@ V roce 1899 působí Violet jako žena, která se pohybuje mezi lidmi s opatrnos
         portrait: "images/Violet.png",
         portraitAlt: "Portrét postavy Violet Crowe"
       },
-      {
-        id: "tom-halbrook",
-        listName: "Thomas Halbrook",
-        name: "Thomas \"Tom\" Halbrook",
-        role: "Farmář / pracant / ochránce",
-        age: "27 let",
-        origin: "Independence, Missouri",
-        year: "1899",
-        status: "Nový začátek",
-        overview:
-          "Thomas Halbrook je obyčejný muž z malé farmy v Missouri, který do West Havenu nepřijel za slávou ani mocí. Přijel s Eleanor, s tvrdýma rukama, věrností v srdci a nadějí, že si konečně vybudují domov.",
-        overviewBlocks: [
-          {
-            title: "Základní informace",
-            text: "Narodil se roku 1872 poblíž Independence ve státě Missouri. V roce 1899 je mu 27 let a většinu života strávil prací na farmě, u koní a u rozbitých nástrojů."
-          },
-          {
-            title: "Společný cíl",
-            text: "S Eleanor nepřijeli do West Havenu utíkat před zákonem, dluhy ani minulostí. Chtějí začít nový život a najít místo, které budou moci nazývat domovem."
-          }
-        ],
-        lore:
-          `Thomas Halbrook se narodil roku 1872 na malé farmě poblíž Independence ve státě Missouri. Jeho rodiče nebyli bohatí. Otec vlastnil několik akrů půdy a matka se starala o domácnost. Život nebyl jednoduchý, ale rodina nikdy netrpěla hladem.
-
-Od malička byl Thomas veden k práci. Už jako chlapec pomáhal na polích, staral se o koně a opravoval rozbité nástroje. Naučil se, že nic nepřijde samo a že člověk musí makat, pokud chce něco získat.
-
-Na rozdíl od ostatních kluků nebyl rváč. Když už se dostal do konfliktu, většinou šlo o obranu někoho slabšího. Měl silný smysl pro spravedlnost, ale zároveň výbušnou povahu. Když ho někdo naštval, dokázal být tvrdohlavý jako mezek.
-
-Když bylo Thomasovi sedmnáct let, zemřel jeho otec při nehodě během práce na farmě. Od té chvíle musel převzít část odpovědnosti za rodinu. Pracoval od rána do večera, aby pomohl matce a mladším sourozencům. Během těch let si vybudoval silnou pracovní morálku, ale také pocit, že mu život protéká mezi prsty.
-
-Zatímco ostatní cestovali a poznávali svět, on zůstával na jednom místě. V hlavě mu začala růst touha po změně.
-
-Ve svých třiadvaceti letech poznal Eleanor Whitmore. Poprvé ji spatřil na trhu v sousedním městečku. Zatímco ostatní muži se snažili působit důležitě, Eleanor zaujala jeho tím, že se nebála říct svůj názor.
-
-Jejich první rozhovor skončil hádkou. Druhý skončil smíchem. A třetí začátkem vztahu. Thomas si rychle uvědomil, že našel člověka, kterému může věřit.
-
-Roky plynuly. Farma přestávala vydělávat a budoucnost nevypadala dobře. Thomas začal přemýšlet, zda má smysl celý život strávit na stejném místě. Nakonec se s Eleanor rozhodli odejít.
-
-Neutíkali před zákonem. Neutíkali před dluhy. Neutíkali před minulostí. Jednoduše chtěli začít nový život.
-
-V roce 1899 dorazil Thomas společně s Eleanor do West Havenu. Přijel jako obyčejný muž. Bez bohatství. Bez významného jména. Bez velkých plánů. Jen s nadějí, že si vybuduje domov.`,
-        appearance:
-          "Pracovitý muž z farmy, který na sobě nese roky práce venku. Působí pevně, unaveně a spolehlivě; ne jako člověk, který se snaží vypadat důležitě, ale jako někdo, kdo už mnohokrát udělal práci, do které se jiným nechtělo.",
-        personality:
-          "Věrný, pracovitý, čestný a ochranitelský. Thomas drží při blízkých a dá se na něj spolehnout. Zároveň je tvrdohlavý, výbušný, nerad přiznává chyby a někdy jedná dřív, než přemýšlí.",
-        quote:
-          "„Nepřijel jsem sem být někdo. Přijel jsem sem postavit domov.“",
-        portrait: "images/tom.png",
-        portraitAlt: "Portrét postavy Thomas Tom Halbrook"
-      },
+      /* Thomas Halbrook data removed from client-facing character list to avoid web mentions */
       {
         id: "ellie-whitmore",
         listName: "Eleanor Whitmore",
@@ -8773,11 +8735,7 @@ Thomas a Eleanor nikdy nepřijeli do West Havenu stát se slavnými. Nepřijeli 
         name: "Violet Crowe",
         text: "Nejmladší Crowe, která čte ticho lépe než slova. Klid u ní nikdy neznamená bezpečí."
       },
-      {
-        id: "tom-halbrook",
-        name: "Thomas Halbrook",
-        text: "Pracovitý muž s rukama od hlíny a vůlí začít znovu. Do West Havenu nepřijel pro slávu."
-      },
+      /* Tom Halbrook removed from short list to avoid web mentions */
       {
         id: "ellie-whitmore",
         name: "Eleanor Whitmore",
