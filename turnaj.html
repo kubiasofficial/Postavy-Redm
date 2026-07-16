@@ -13,7 +13,7 @@
   <script>
     const view=document.getElementById('view');let data=null;let sending=false;
     const roundColors=['','#a6ef2f','#ff8b19','#22b8ef','#9b57e5','#ed3d74'];
-    load();setInterval(load,3000);
+    load();setInterval(()=>{if(!document.querySelector('.vote'))load()},3000);
     async function load(){try{const r=await fetch('/api/tournament/state');if(!r.ok)throw Error();data=await r.json();render()}catch{view.innerHTML='<p class="eyebrow">Spojení přerušeno</p><h1 class="mega">Obnovuji přenos…</h1>'}}
     function render(){const t=data.tournament,v=data.viewer;document.getElementById('liveBadge').hidden=t.status==='not_started';
       if(t.status==='not_started')return screen('Turnaj ještě nezačal!','Pořadatelé připravují herní plán. Zůstaň na této stránce — přenos se spustí automaticky.',spectatorNote());
