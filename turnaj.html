@@ -17,6 +17,7 @@
     async function load(){try{const r=await fetch('/api/tournament/state');if(!r.ok)throw Error();data=await r.json();render()}catch{view.innerHTML='<p class="eyebrow">Spojení přerušeno</p><h1 class="mega">Obnovuji přenos…</h1>'}}
     function render(){const t=data.tournament,v=data.viewer;document.getElementById('liveBadge').hidden=t.status==='not_started';
       if(t.status==='not_started')return screen('Turnaj ještě nezačal!','Pořadatelé připravují herní plán. Zůstaň na této stránce — přenos se spustí automaticky.',spectatorNote());
+      if(t.status==='cancelled')return screen('Turnaj byl předčasně ukončen','Pořadatel turnaj zastavil. Další informace budou zveřejněny na Discordu.',spectatorNote());
       if(t.status==='lobby'){const action=v.approved&&!v.ready?'<button class="button primary" onclick="joinLobby()">Vstoupit do turnaje</button>':v.ready?'<p class="message">✓ Jsi připraven. Čekáme na start.</p>':spectatorNote();return screen('Čekárna je otevřená',`${t.readyIds.length} hráčů je připraveno na start.`,action+players(t));}
       if(t.phase==='round_intro')return screen(`${t.currentRound}. ${t.roundName}`,'Nová výzva začíná. Připrav se splynout s okolím.',players(t));
       if(t.phase==='hunter_turns'){const hunter=t.players.find(p=>p.id===t.currentHunterId);return screen('Hunter na tahu',hunter?`${hunter.nickname} právě hledá ukryté hráče.`:'Čekáme na dalšího Huntera.',progress(t)+players(t));}
