@@ -29,6 +29,21 @@
     .nav-links > a { color: #ccd0cc; font-size: .82rem; font-weight: 750; text-decoration: none; }
     .nav-links > a:hover { color: #fff; }
     .nav-login { padding: 10px 14px; border-radius: 11px; background: var(--discord); color: #fff !important; }
+    .nav-account { position: relative; display: flex; align-items: center; }
+    .profile-trigger { display: none; align-items: center; gap: 10px; padding: 5px 9px 5px 5px; border: 1px solid rgba(255,255,255,.13); border-radius: 13px; background: rgba(255,255,255,.055); color: #fff; cursor: pointer; }
+    .profile-trigger.visible { display: flex; }
+    .profile-trigger img { width: 34px; height: 34px; border: 2px solid var(--lime); border-radius: 10px; background: #111; object-fit: cover; }
+    .profile-trigger span { max-width: 130px; overflow: hidden; font-size: .78rem; font-weight: 850; text-overflow: ellipsis; white-space: nowrap; }
+    .profile-menu { position: absolute; top: calc(100% + 12px); right: 0; display: none; width: 260px; padding: 12px; border: 1px solid rgba(255,255,255,.13); border-radius: 18px; background: rgba(10,12,11,.96); box-shadow: 0 25px 70px rgba(0,0,0,.55); backdrop-filter: blur(22px); }
+    .profile-menu.open { display: block; animation: menu-in .2s ease-out; }
+    .profile-card { display: flex; gap: 11px; align-items: center; padding: 7px 7px 14px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .profile-card img { width: 45px; height: 45px; border-radius: 13px; object-fit: cover; }
+    .profile-card strong, .profile-card small { display: block; }
+    .profile-card small { margin-top: 3px; color: #9ba29c; }
+    .profile-card small.registered { color: var(--lime); font-weight: 900; text-shadow: 0 0 15px rgba(166,239,47,.35); }
+    .profile-action { width: 100%; margin-top: 8px; padding: 11px 12px; border: 0; border-radius: 11px; background: rgba(255,255,255,.055); color: #e7eae7; font: inherit; font-size: .8rem; font-weight: 750; text-align: left; cursor: pointer; }
+    .profile-action:hover { background: rgba(255,255,255,.1); }
+    .profile-action.admin { color: #151a13; background: var(--lime); }
 
     .hero { position: relative; min-height: 100svh; display: grid; place-items: center; isolation: isolate; overflow: hidden; text-align: center; }
     .hero::before { content: ""; position: absolute; z-index: -2; inset: 0; background: url('/Obrazky/uvodni-pozadi.png') center/cover no-repeat; scale: 1.02; animation: hero-in 1.4s ease-out both; }
@@ -59,6 +74,7 @@
     .user strong, .user small { display: block; text-align: left; }
     .user small { margin-top: 4px; color: #bdc4be; }
     .logout { margin-top: 4px; padding: 0; border: 0; background: transparent; color: #d5d9d5; cursor: pointer; text-decoration: underline; }
+    .application-button[disabled] { opacity: .72; cursor: default; transform: none; }
 
     section { position: relative; padding: 110px 0; }
     .section-label { margin: 0 0 12px; color: var(--lime); font-size: .72rem; font-weight: 900; letter-spacing: .24em; text-transform: uppercase; }
@@ -95,6 +111,8 @@
     .prize-copy { max-width: 600px; color: #c3b8aa; font-size: 1.08rem; line-height: 1.75; }
     .prize-note { display: flex; gap: 13px; margin-top: 28px; padding: 18px; border-left: 3px solid #d8ad68; background: rgba(255,255,255,.035); color: #eee2d2; line-height: 1.55; }
     .prize-art { aspect-ratio: 16/10; display: grid; place-items: center; border: 1px solid rgba(216,173,104,.35); border-radius: 28px; background: radial-gradient(circle at 50% 15%, rgba(222,154,69,.28), transparent 26%), linear-gradient(145deg, #32160c, #0d0806 60%); box-shadow: 0 40px 100px #000; overflow: hidden; }
+    .prize-art img { width: 100%; height: 100%; object-fit: cover; transition: scale .7s ease; }
+    .prize-art:hover img { scale: 1.045; }
     .prize-art-inner { text-align: center; padding: 30px; }
     .prize-art small { display: block; color: #b8864c; font-size: .68rem; font-weight: 800; letter-spacing: .28em; text-transform: uppercase; }
     .prize-art strong { display: block; margin-top: 10px; font-family: Georgia, serif; font-size: clamp(2.2rem, 5vw, 4rem); font-weight: 500; line-height: .9; text-transform: uppercase; }
@@ -114,7 +132,59 @@
     footer { padding: 26px 0 35px; border-top: 1px solid rgba(255,255,255,.08); color: #7e867f; font-size: .78rem; }
     .footer-row { display: flex; justify-content: space-between; gap: 20px; }
 
+    .modal { position: fixed; z-index: 80; inset: 0; display: none; place-items: center; padding: 24px; background: rgba(2,4,3,.78); backdrop-filter: blur(16px); }
+    .modal.open { display: grid; animation: veil-in .25s ease-out; }
+    .modal-panel { position: relative; width: min(720px, 100%); max-height: min(860px, calc(100vh - 40px)); overflow: auto; padding: 30px; border: 1px solid rgba(255,255,255,.13); border-radius: 27px; background: linear-gradient(145deg, #111512, #090b0a); box-shadow: 0 40px 120px #000; }
+    .modal-panel.wide { width: min(1120px, 100%); }
+    .modal-close { position: absolute; top: 16px; right: 16px; width: 38px; height: 38px; border: 1px solid rgba(255,255,255,.12); border-radius: 11px; background: rgba(255,255,255,.06); color: #fff; cursor: pointer; }
+    .modal-kicker { margin: 0 0 9px; color: var(--lime); font-size: .68rem; font-weight: 900; letter-spacing: .2em; text-transform: uppercase; }
+    .modal h2 { margin-bottom: 10px; font-size: clamp(2rem, 5vw, 3.5rem); line-height: .95; letter-spacing: -.05em; text-transform: uppercase; }
+    .modal-lead { margin: 0 0 25px; color: #9ca39d; line-height: 1.6; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .field { display: grid; gap: 8px; }
+    .field.full { grid-column: 1 / -1; }
+    .field label { color: #d8dcd8; font-size: .78rem; font-weight: 800; }
+    .field input, .field select, .field textarea { width: 100%; padding: 14px 15px; border: 1px solid rgba(255,255,255,.13); border-radius: 13px; outline: none; background: rgba(255,255,255,.045); color: #fff; font: inherit; }
+    .field select option { color: #111; }
+    .field textarea { min-height: 100px; resize: vertical; }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--lime); box-shadow: 0 0 0 3px rgba(166,239,47,.1); }
+    .checks { display: grid; gap: 10px; margin: 20px 0; }
+    .check { display: flex; align-items: flex-start; gap: 10px; color: #b6bcb7; font-size: .84rem; line-height: 1.45; }
+    .check input { margin-top: 3px; accent-color: var(--lime); }
+    .form-message { min-height: 22px; margin: 12px 0 0; color: #ffc84b; font-size: .84rem; font-weight: 750; }
+    .dashboard-head { display: flex; justify-content: space-between; gap: 20px; align-items: end; }
+    .dashboard-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 25px 0; }
+    .dash-stat { padding: 18px; border: 1px solid rgba(255,255,255,.1); border-radius: 16px; background: rgba(255,255,255,.035); }
+    .dash-stat strong { display: block; font-size: 2rem; }
+    .dash-stat span { color: #929a93; font-size: .75rem; text-transform: uppercase; }
+    .dashboard-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 17px; }
+    .filter-button { padding: 9px 13px; border: 1px solid rgba(255,255,255,.11); border-radius: 999px; background: transparent; color: #aeb4af; cursor: pointer; }
+    .filter-button.active { border-color: var(--lime); color: var(--lime); background: rgba(166,239,47,.08); }
+    .application-list { display: grid; gap: 12px; }
+    .application-card { display: grid; grid-template-columns: 1fr auto; gap: 18px; padding: 20px; border: 1px solid rgba(255,255,255,.1); border-radius: 18px; background: rgba(255,255,255,.025); }
+    .app-person { display: flex; align-items: center; gap: 12px; }
+    .app-person img { width: 45px; height: 45px; border-radius: 13px; object-fit: cover; background: #111; }
+    .app-person strong, .app-person small { display: block; }
+    .app-person small { color: #909791; margin-top: 3px; }
+    .app-details { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 14px; color: #a7aea8; font-size: .82rem; }
+    .app-details a { color: var(--cyan); }
+    .app-note { margin: 13px 0 0; color: #c8cdc9; font-size: .86rem; line-height: 1.5; }
+    .app-actions { display: flex; gap: 8px; align-items: center; }
+    .decision { padding: 10px 13px; border: 0; border-radius: 11px; color: #fff; font-weight: 850; cursor: pointer; }
+    .decision.approve { background: #2d9d55; } .decision.reject { background: #a93d4b; }
+    .status-pill { display: inline-flex; padding: 7px 10px; border-radius: 999px; font-size: .7rem; font-weight: 900; text-transform: uppercase; }
+    .status-pill.pending { color: #ffc84b; background: rgba(255,200,75,.1); }
+    .status-pill.approved { color: var(--lime); background: rgba(166,239,47,.1); }
+    .status-pill.rejected { color: #ff7788; background: rgba(255,75,100,.1); }
+    .toast { position: fixed; z-index: 100; right: 24px; bottom: 24px; translate: 0 130%; max-width: 360px; padding: 15px 18px; border: 1px solid rgba(255,255,255,.13); border-radius: 15px; background: #141815; box-shadow: 0 25px 70px #000; color: #fff; font-size: .88rem; font-weight: 750; transition: translate .3s ease; }
+    .toast.show { translate: 0; }
+    .cursor-glow { position: fixed; z-index: 19; width: 340px; aspect-ratio: 1; border-radius: 50%; pointer-events: none; translate: -50% -50%; background: radial-gradient(circle, rgba(34,184,239,.08), transparent 65%); filter: blur(10px); }
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .75s ease, transform .75s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
     @keyframes hero-in { from { opacity: 0; scale: 1.08; } to { opacity: 1; scale: 1.02; } }
+    @keyframes menu-in { from { opacity: 0; transform: translateY(-8px) scale(.97); } }
+    @keyframes veil-in { from { opacity: 0; } }
     @media (max-width: 900px) {
       .about-grid, .prize-grid, .rules-grid { grid-template-columns: 1fr; }
       .prize-art { order: -1; }
@@ -133,17 +203,33 @@
       .round::before { font-size: 1.5rem; }
       .button { width: 100%; }
       .footer-row { flex-direction: column; }
+      .form-grid, .dashboard-stats { grid-template-columns: 1fr; }
+      .modal { padding: 10px; }
+      .modal-panel { padding: 25px 18px; max-height: calc(100vh - 20px); }
+      .application-card { grid-template-columns: 1fr; }
+      .app-actions { justify-content: flex-start; }
+      .profile-trigger span { display: none; }
     }
-    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .hero::before { animation: none; } * { transition: none !important; } }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .hero::before { animation: none; } * { transition: none !important; } .cursor-glow { display: none; } .reveal { opacity: 1; transform: none; } }
   </style>
 </head>
 <body>
   <div class="noise"></div>
+  <div class="cursor-glow" id="cursorGlow"></div>
   <nav class="nav" aria-label="Hlavní navigace">
     <a class="brand" href="#nahoru">Mecha<i>Turnaj</i></a>
     <div class="nav-links">
       <a href="#turnaj">O turnaji</a><a href="#kola">Průběh</a><a href="#vyhra">Výhra</a><a href="#pravidla">Pravidla</a>
-      <a class="nav-login" href="/api/auth/discord">Přihlásit se</a>
+      <div class="nav-account">
+        <a class="nav-login" data-login href="/api/auth/discord">Přihlásit se</a>
+        <button class="profile-trigger" id="profileTrigger" type="button" aria-expanded="false"><img id="profileAvatar" src="" alt=""><span id="profileName"></span>⌄</button>
+        <div class="profile-menu" id="profileMenu">
+          <div class="profile-card"><img id="menuAvatar" src="" alt=""><div><strong id="menuName"></strong><small id="profileStatus">Člen turnajového serveru</small></div></div>
+          <button class="profile-action admin" id="adminButton" type="button" hidden>⚙ Správa přihlášek</button>
+          <button class="profile-action" id="profileApplicationButton" type="button">Podat přihlášku</button>
+          <button class="profile-action" id="logoutButton" type="button">Odhlásit se</button>
+        </div>
+      </div>
     </div>
   </nav>
 
@@ -153,13 +239,13 @@
       <h1><span class="paint-word"><span>M</span><span>e</span><span>c</span><span>h</span><span>a</span></span><small>Turnaj</small></h1>
       <p class="hero-lead">Pět kol. Jeden Hunter. Nekonečno možností, jak splynout s okolím. Přihlas se a ukaž, že tě nikdo nenajde.</p>
       <div class="actions" id="login">
-        <a class="button button-primary" href="/api/auth/discord">
+        <a class="button button-primary" data-login href="/api/auth/discord">
           <svg viewBox="0 0 127.14 96.36" aria-hidden="true"><path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-9.39 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2.05a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2.05a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 9.39 105.25 105.25 0 0 0 32.17-16.15c2.64-27.38-4.51-51.11-18.88-72.14ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.7 11.45-12.7S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.7 11.44-12.7S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"/></svg>
           Připojit se přes Discord
         </a>
+        <button class="button button-primary application-button" id="heroApplicationButton" type="button" hidden>Podat přihlášku</button>
         <a class="button button-secondary" href="#kola">Jak turnaj probíhá ↓</a>
       </div>
-      <div id="user" class="user"></div>
       <p id="status" class="status" role="status"></p>
     </div>
   </header>
@@ -205,9 +291,7 @@
           <p class="prize-copy">Vítěz turnaje nezíská jen respekt ostatních hráčů. Na konci celé soutěže na něj čeká hlavní cena — hra <strong>Mafia: Domovina</strong>. Každé maskování, každý risk a každý bod tě posune o krok blíž k vítězství.</p>
           <div class="prize-note"><span>◆</span><span>Výhru získá hráč s nejvyšším celkovým počtem bodů po dokončení všech pěti soutěžních kol.</span></div>
         </div>
-        <div class="prize-art" aria-label="Hlavní výhra Mafia: Domovina">
-          <div class="prize-art-inner"><small>Cena pro vítěze</small><strong>Mafia</strong><em>Domovina</em></div>
-        </div>
+        <div class="prize-art"><img src="/Obrazky/mafi.png" alt="Mafia: Domovina — hlavní výhra turnaje"></div>
       </div>
     </section>
 
@@ -232,14 +316,52 @@
         <p class="section-label">Troufáš si?</p>
         <h2 class="section-title">Najdi nejlepší úkryt.<br>Napiš svůj příběh.</h2>
         <p class="section-intro">Přihlas se Discordem, potvrď účast a připrav si štětce. Turnaj čeká právě na tebe.</p>
-        <div class="actions"><a class="button button-primary" href="/api/auth/discord">Připojit se přes Discord</a></div>
+        <div class="actions"><a class="button button-primary" data-login href="/api/auth/discord">Připojit se přes Discord</a><button class="button button-primary application-button" data-apply type="button" hidden>Podat přihlášku</button></div>
       </div>
     </section>
   </main>
 
+  <div class="modal" id="applicationModal" role="dialog" aria-modal="true" aria-labelledby="applicationTitle">
+    <div class="modal-panel">
+      <button class="modal-close" data-close="applicationModal" type="button" aria-label="Zavřít">×</button>
+      <p class="modal-kicker">Vstup do soutěže</p>
+      <h2 id="applicationTitle">Turnajová přihláška</h2>
+      <p class="modal-lead">Vyplň herní údaje. Discord účet doplníme automaticky a přihlášku následně zkontroluje organizační tým.</p>
+      <form id="applicationForm">
+        <div class="form-grid">
+          <div class="field"><label for="nickname">Herní přezdívka *</label><input id="nickname" name="nickname" minlength="2" maxlength="32" autocomplete="nickname" required placeholder="Jak ti říkají ve hře?"></div>
+          <div class="field"><label for="country">Země *</label><select id="country" name="country" required><option value="">Vyber zemi</option><option>Česko</option><option>Slovensko</option><option>Jiná</option></select></div>
+          <div class="field full"><label for="steamProfile">Odkaz na Steam profil *</label><input id="steamProfile" name="steamProfile" type="url" required placeholder="https://steamcommunity.com/id/tvujprofil"></div>
+          <div class="field"><label for="steamFriendCode">Steam Friend Code</label><input id="steamFriendCode" name="steamFriendCode" inputmode="numeric" maxlength="24" placeholder="Volitelné"></div>
+          <div class="field"><label for="experience">Zkušenosti s Meccha Chameleon *</label><select id="experience" name="experience" required><option value="">Vyber zkušenost</option><option>Začátečník</option><option>Pokročilý</option><option>Veterán</option></select></div>
+          <div class="field full"><label for="note">Poznámka pro pořadatele</label><textarea id="note" name="note" maxlength="500" placeholder="Cokoliv, co by měl organizační tým vědět…"></textarea></div>
+        </div>
+        <div class="checks">
+          <label class="check"><input name="available" type="checkbox" required> Potvrzuji, že se mohu zúčastnit v oznámeném termínu turnaje.</label>
+          <label class="check"><input name="rulesAccepted" type="checkbox" required> Souhlasím s pravidly turnaje a zpracováním údajů pro organizaci soutěže.</label>
+        </div>
+        <button class="button button-primary" id="submitApplication" type="submit">Odeslat přihlášku</button>
+        <p class="form-message" id="applicationMessage" role="status"></p>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+    <div class="modal-panel wide">
+      <button class="modal-close" data-close="adminModal" type="button" aria-label="Zavřít">×</button>
+      <div class="dashboard-head"><div><p class="modal-kicker">Organizační centrum</p><h2 id="adminTitle">Dashboard přihlášek</h2></div><button class="button button-secondary" id="refreshApplications" type="button">Obnovit</button></div>
+      <div class="dashboard-stats"><div class="dash-stat"><strong id="pendingCount">–</strong><span>Čeká na kontrolu</span></div><div class="dash-stat"><strong id="approvedCount">–</strong><span>Schváleno</span></div><div class="dash-stat"><strong id="rejectedCount">–</strong><span>Zamítnuto</span></div></div>
+      <div class="dashboard-filters"><button class="filter-button active" data-filter="all">Všechny</button><button class="filter-button" data-filter="pending">Čekající</button><button class="filter-button" data-filter="approved">Schválené</button><button class="filter-button" data-filter="rejected">Zamítnuté</button></div>
+      <div class="application-list" id="applicationList"><p class="modal-lead">Načítám přihlášky…</p></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+
   <footer><div class="wrap footer-row"><span>© 2026 MechaTurnaj</span><span>Komunitní turnaj — nejde o oficiální soutěž vydavatele hry.</span></div></footer>
 
   <script>
+    const state = { session: null, applications: [], filter: "all" };
     const statusMessages = {
       "not-member": "Nejdřív se připoj na Discord server MECCHA TURNAJ.",
       "invalid-state": "Přihlášení vypršelo. Zkus to prosím znovu.",
@@ -250,24 +372,191 @@
       "membership-check-failed": "Členství na serveru se nepodařilo ověřit.",
       "server-error": "Při přihlášení nastala chyba. Zkus to znovu."
     };
+    const applicationLabels = {
+      pending: { profile: "Čeká na schválení", button: "Přihláška čeká na schválení" },
+      approved: { profile: "Registrován!", button: "✓ Jsem registrován" },
+      rejected: { profile: "Přihláška zamítnuta", button: "Upravit přihlášku" }
+    };
+
     const params = new URLSearchParams(location.search);
     const authResult = params.get("auth");
     if (statusMessages[authResult]) document.getElementById("status").textContent = statusMessages[authResult];
     if (authResult) history.replaceState({}, "", "/");
 
-    fetch("/api/auth/session", { credentials: "same-origin" }).then(async (response) => {
-      if (!response.ok) return;
-      const { user } = await response.json();
-      document.getElementById("login").hidden = true;
-      document.querySelectorAll('a[href="/api/auth/discord"]').forEach((link) => link.hidden = true);
-      const container = document.getElementById("user");
-      container.classList.add("visible");
-      const avatar = user.avatarUrl ? `<img src="${user.avatarUrl}" alt="">` : "";
-      container.innerHTML = `${avatar}<div><strong>Vítej, ${escapeHtml(user.displayName)}</strong><small>Člen turnajového serveru</small><button class="logout" type="button">Odhlásit se</button></div>`;
-      container.querySelector("button").addEventListener("click", async () => { await fetch("/api/auth/logout", { method: "POST" }); location.reload(); });
-      document.getElementById("status").textContent = "Přihlášení proběhlo úspěšně.";
+    document.getElementById("profileTrigger").addEventListener("click", (event) => {
+      event.stopPropagation();
+      const menu = document.getElementById("profileMenu");
+      menu.classList.toggle("open");
+      event.currentTarget.setAttribute("aria-expanded", String(menu.classList.contains("open")));
     });
-    function escapeHtml(value) { const node = document.createElement("span"); node.textContent = value; return node.innerHTML; }
+    document.addEventListener("click", () => document.getElementById("profileMenu").classList.remove("open"));
+    document.getElementById("profileMenu").addEventListener("click", (event) => event.stopPropagation());
+
+    document.querySelectorAll("[data-close]").forEach((button) => button.addEventListener("click", () => closeModal(button.dataset.close)));
+    document.querySelectorAll(".modal").forEach((modal) => modal.addEventListener("click", (event) => { if (event.target === modal) closeModal(modal.id); }));
+    document.addEventListener("keydown", (event) => { if (event.key === "Escape") document.querySelectorAll(".modal.open").forEach((modal) => closeModal(modal.id)); });
+
+    document.getElementById("heroApplicationButton").addEventListener("click", handleApplicationButton);
+    document.querySelectorAll("[data-apply]").forEach((button) => button.addEventListener("click", handleApplicationButton));
+    document.getElementById("profileApplicationButton").addEventListener("click", handleApplicationButton);
+    document.getElementById("adminButton").addEventListener("click", openDashboard);
+    document.getElementById("refreshApplications").addEventListener("click", loadApplications);
+    document.getElementById("logoutButton").addEventListener("click", async () => { await fetch("/api/auth/logout", { method: "POST" }); location.reload(); });
+    document.querySelectorAll("[data-filter]").forEach((button) => button.addEventListener("click", () => {
+      state.filter = button.dataset.filter;
+      document.querySelectorAll("[data-filter]").forEach((item) => item.classList.toggle("active", item === button));
+      renderApplications();
+    }));
+
+    document.getElementById("applicationForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const submit = document.getElementById("submitApplication");
+      const message = document.getElementById("applicationMessage");
+      const data = Object.fromEntries(new FormData(form));
+      data.available = form.elements.available.checked;
+      data.rulesAccepted = form.elements.rulesAccepted.checked;
+      submit.disabled = true;
+      submit.textContent = "Odesílám…";
+      message.textContent = "";
+      try {
+        const response = await fetch("/api/tournament/application", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Přihlášku se nepodařilo odeslat.");
+        state.session.application = result.application;
+        updateApplicationUi();
+        closeModal("applicationModal");
+        showToast("Přihláška byla odeslána. Pořadatelé právě dostali upozornění.");
+      } catch (error) {
+        message.textContent = error.message;
+      } finally {
+        submit.disabled = false;
+        submit.textContent = "Odeslat přihlášku";
+      }
+    });
+
+    loadSession();
+    setInterval(loadSession, 60000);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden && state.session) loadSession(); });
+
+    async function loadSession() {
+      const response = await fetch("/api/auth/session", { credentials: "same-origin" });
+      if (!response.ok) return;
+      state.session = await response.json();
+      const { user, isOrganizer } = state.session;
+      document.querySelectorAll("[data-login]").forEach((link) => link.hidden = true);
+      ["profileAvatar", "menuAvatar"].forEach((id) => { const image = document.getElementById(id); image.src = user.avatarUrl || "https://cdn.discordapp.com/embed/avatars/0.png"; });
+      document.getElementById("profileName").textContent = user.displayName;
+      document.getElementById("menuName").textContent = user.displayName;
+      document.getElementById("profileTrigger").classList.add("visible");
+      document.getElementById("adminButton").hidden = !isOrganizer;
+      document.getElementById("status").textContent = authResult === "success" ? "Přihlášení proběhlo úspěšně." : "";
+      updateApplicationUi();
+    }
+
+    function updateApplicationUi() {
+      const application = state.session?.application;
+      const label = application ? applicationLabels[application.status] : { profile: "Člen turnajového serveru", button: "Podat přihlášku" };
+      const profileStatus = document.getElementById("profileStatus");
+      profileStatus.textContent = label.profile;
+      profileStatus.classList.toggle("registered", application?.status === "approved");
+      const buttons = [document.getElementById("heroApplicationButton"), document.getElementById("profileApplicationButton"), ...document.querySelectorAll("[data-apply]")];
+      buttons.forEach((button) => {
+        button.hidden = false;
+        button.textContent = label.button;
+        button.disabled = application && ["pending", "approved"].includes(application.status);
+      });
+      if (application?.status === "rejected" && application.rejectionReason) {
+        document.getElementById("status").textContent = `Důvod zamítnutí: ${application.rejectionReason}`;
+      }
+    }
+
+    function handleApplicationButton() {
+      const application = state.session?.application;
+      if (application && ["pending", "approved"].includes(application.status)) return;
+      if (application) {
+        ["nickname", "steamProfile", "steamFriendCode", "country", "experience", "note"].forEach((name) => {
+          if (application[name] !== undefined) document.getElementById(name).value = application[name];
+        });
+      }
+      document.getElementById("profileMenu").classList.remove("open");
+      openModal("applicationModal");
+    }
+
+    async function openDashboard() {
+      document.getElementById("profileMenu").classList.remove("open");
+      openModal("adminModal");
+      await loadApplications();
+    }
+
+    async function loadApplications() {
+      const list = document.getElementById("applicationList");
+      list.innerHTML = '<p class="modal-lead">Načítám přihlášky…</p>';
+      try {
+        const response = await fetch("/api/tournament/admin/applications");
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Přihlášky se nepodařilo načíst.");
+        state.applications = result.applications;
+        ["pending", "approved", "rejected"].forEach((status) => document.getElementById(`${status}Count`).textContent = state.applications.filter((item) => item.status === status).length);
+        renderApplications();
+      } catch (error) {
+        list.innerHTML = `<p class="form-message">${escapeHtml(error.message)}</p>`;
+      }
+    }
+
+    function renderApplications() {
+      const list = document.getElementById("applicationList");
+      const applications = state.applications.filter((item) => state.filter === "all" || item.status === state.filter);
+      if (!applications.length) { list.innerHTML = '<p class="modal-lead">V této kategorii zatím nejsou žádné přihlášky.</p>'; return; }
+      list.innerHTML = applications.map((application) => {
+        const avatar = application.discordAvatar ? `https://cdn.discordapp.com/avatars/${application.discordId}/${application.discordAvatar}.png?size=128` : "https://cdn.discordapp.com/embed/avatars/0.png";
+        const actions = application.status === "pending" ? `<div class="app-actions"><button class="decision approve" data-review="approved" data-id="${application.discordId}">Schválit</button><button class="decision reject" data-review="rejected" data-id="${application.discordId}">Zamítnout</button></div>` : `<span class="status-pill ${application.status}">${statusName(application.status)}</span>`;
+        return `<article class="application-card"><div><div class="app-person"><img src="${avatar}" alt=""><div><strong>${escapeHtml(application.nickname)}</strong><small>${escapeHtml(application.displayName)} · @${escapeHtml(application.discordName)}</small></div></div><div class="app-details"><span>${escapeHtml(application.country)}</span><span>${escapeHtml(application.experience)}</span><a href="${escapeAttribute(application.steamProfile)}" target="_blank" rel="noopener">Steam profil ↗</a>${application.steamFriendCode ? `<span>Friend Code: ${escapeHtml(application.steamFriendCode)}</span>` : ""}</div>${application.note ? `<p class="app-note">${escapeHtml(application.note)}</p>` : ""}${application.rejectionReason ? `<p class="app-note">Důvod zamítnutí: ${escapeHtml(application.rejectionReason)}</p>` : ""}</div>${actions}</article>`;
+      }).join("");
+      list.querySelectorAll("[data-review]").forEach((button) => button.addEventListener("click", () => reviewApplication(button)));
+    }
+
+    async function reviewApplication(button) {
+      const decision = button.dataset.review;
+      let reason = "";
+      if (decision === "rejected") {
+        reason = prompt("Napiš hráči důvod zamítnutí:")?.trim() || "";
+        if (!reason) return;
+      } else if (!confirm("Opravdu chceš tuto přihlášku schválit?")) return;
+      button.disabled = true;
+      try {
+        const response = await fetch("/api/tournament/admin/review", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ discordId: button.dataset.id, decision, reason })
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Rozhodnutí se nepodařilo uložit.");
+        showToast(decision === "approved" ? "Hráč byl schválen a Discord dostal oznámení." : "Přihláška byla zamítnuta.");
+        await loadApplications();
+      } catch (error) {
+        showToast(error.message);
+        button.disabled = false;
+      }
+    }
+
+    function statusName(status) { return ({ pending: "Čeká", approved: "Schváleno", rejected: "Zamítnuto" })[status] || status; }
+    function openModal(id) { document.getElementById(id).classList.add("open"); document.body.style.overflow = "hidden"; }
+    function closeModal(id) { document.getElementById(id).classList.remove("open"); document.body.style.overflow = ""; }
+    function showToast(message) { const toast = document.getElementById("toast"); toast.textContent = message; toast.classList.add("show"); clearTimeout(showToast.timer); showToast.timer = setTimeout(() => toast.classList.remove("show"), 4200); }
+    function escapeHtml(value) { const node = document.createElement("span"); node.textContent = value ?? ""; return node.innerHTML; }
+    function escapeAttribute(value) { return escapeHtml(value).replace(/`/g, "&#96;"); }
+
+    const revealObserver = new IntersectionObserver((entries) => entries.forEach((entry) => { if (entry.isIntersecting) entry.target.classList.add("visible"); }), { threshold: .12 });
+    document.querySelectorAll("section .wrap, .round").forEach((element, index) => { element.classList.add("reveal"); element.style.transitionDelay = `${Math.min(index % 5, 3) * 70}ms`; revealObserver.observe(element); });
+    if (matchMedia("(pointer:fine) and (prefers-reduced-motion:no-preference)").matches) {
+      const glow = document.getElementById("cursorGlow");
+      addEventListener("pointermove", (event) => { glow.style.left = `${event.clientX}px`; glow.style.top = `${event.clientY}px`; });
+    }
   </script>
 </body>
 </html>
