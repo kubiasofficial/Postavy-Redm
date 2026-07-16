@@ -57,7 +57,17 @@ const finishLogin = async (req, res) => {
         redirect_uri: redirectUri
       })
     });
-    if (!tokenResponse.ok) return redirectHome(res, "oauth-failed");
+    if (!tokenResponse.ok) {
+      const tokenError = await tokenResponse.json().catch(() => ({}));
+      console.error("Discord OAuth token exchange failed", {
+        status: tokenResponse.status,
+        error: tokenError.error,
+        errorDescription: tokenError.error_description
+      });
+      if (tokenError.error === "invalid_client") return redirectHome(res, "oauth-invalid-client");
+      if (tokenError.error === "invalid_grant") return redirectHome(res, "oauth-invalid-grant");
+      return redirectHome(res, "oauth-failed");
+    }
 
     const token = await tokenResponse.json();
     const userResponse = await fetch(`${DISCORD_API}/users/@me`, {
