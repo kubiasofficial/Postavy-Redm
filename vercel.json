@@ -1,4 +1,10 @@
 {
+  "rewrites": [
+    { "source": "/api/auth/discord", "destination": "/api/auth?action=discord" },
+    { "source": "/api/auth/discord/callback", "destination": "/api/auth?action=callback" },
+    { "source": "/api/auth/session", "destination": "/api/auth?action=session" },
+    { "source": "/api/auth/logout", "destination": "/api/auth?action=logout" }
+  ],
   "crons": [
     {
       "path": "/api/daily-report",
