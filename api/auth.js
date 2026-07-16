@@ -15,11 +15,14 @@ const {
   patchFirestoreDocument,
   sendDiscordMessage
 } = require("./_west-haven");
+const { handleTournamentRequest } = require("../lib/tournament");
 
 const DISCORD_API = "https://discord.com/api/v10";
 const ORGANIZER_ROLE_ID = "1527318124200722472";
 const ORGANIZER_CHANNEL_ID = "1527335691141251213";
 const REGISTRATION_CHANNEL_ID = "1527322520880021587";
+const INTEREST_ROLE_ID = "1527318234015989801";
+const PARTICIPANT_ROLE_ID = "1527318296372711575";
 const APPLICATIONS_COLLECTION = "tournamentApplications";
 
 const redirectHome = (res, reason) => res.redirect(302, `/?auth=${encodeURIComponent(reason)}`);
@@ -121,6 +124,14 @@ const fetchGuildMember = async (discordId) => {
   if (response.status === 404) return null;
   if (!response.ok) throw new Error(`Discord member request failed: ${await response.text()}`);
   return response.json();
+};
+
+const setDiscordRole = async (discordId, roleId, enabled) => {
+  const response = await fetch(`${DISCORD_API}/guilds/${process.env.DISCORD_GUILD_ID}/members/${discordId}/roles/${roleId}`, {
+    method: enabled ? "PUT" : "DELETE",
+    headers: { Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}` }
+  });
+  if (!response.ok && response.status !== 204) throw new Error(`Discord role update failed: ${await response.text()}`);
 };
 
 const isOrganizer = (member) => Boolean(member?.roles?.includes(ORGANIZER_ROLE_ID));
@@ -279,6 +290,15 @@ const reviewApplication = async (req, res) => {
   if (application.status !== "pending") return res.status(409).json({ error: "O této přihlášce už bylo rozhodnuto." });
 
   const now = new Date().toISOString();
+  if (decision === "approved") {
+    try {
+      await setDiscordRole(discordId, PARTICIPANT_ROLE_ID, true);
+      await setDiscordRole(discordId, INTEREST_ROLE_ID, false);
+    } catch (error) {
+      console.error("Participant role swap failed", error);
+      return res.status(502).json({ error: "Přihláška zatím nebyla schválena, protože bot nedokázal změnit Discord role." });
+    }
+  }
   await patchFirestoreDocument(applicationPath(discordId), {
     status: decision,
     reviewedAt: now,
@@ -320,6 +340,7 @@ module.exports = async (req, res) => {
     if (action === "application" && req.method === "POST") return submitApplication(req, res);
     if (action === "admin-applications" && req.method === "GET") return listApplications(req, res);
     if (action === "review-application" && req.method === "POST") return reviewApplication(req, res);
+    if (action.startsWith("tournament-")) return handleTournamentRequest(req, res, action);
     if (action === "logout" && req.method === "POST") {
       res.setHeader("Set-Cookie", clearCookie(COOKIE_NAMES.session));
       return res.status(204).end();

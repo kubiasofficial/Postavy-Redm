@@ -137,7 +137,7 @@ const fetchFirestoreDocument = async (path) => {
 };
 
 const fetchFirestoreCollection = async (collection) => {
-  const response = await fetch(firestoreUrl(collection));
+  const response = await fetch(firestoreUrl(collection, "pageSize=100"));
   if (response.status === 404) return [];
   if (!response.ok) {
     throw new Error(`Firestore collection request failed: ${await response.text()}`);

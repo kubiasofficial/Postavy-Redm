@@ -220,7 +220,7 @@
   <nav class="nav" aria-label="Hlavní navigace">
     <a class="brand" href="#nahoru">Mecha<i>Turnaj</i></a>
     <div class="nav-links">
-      <a href="#turnaj">O turnaji</a><a href="#kola">Průběh</a><a href="#vyhra">Výhra</a><a href="#pravidla">Pravidla</a>
+      <a href="#turnaj">O turnaji</a><a href="#kola">Průběh</a><a href="#vyhra">Výhra</a><a href="#pravidla">Pravidla</a><a id="tournamentNav" href="/turnaj" hidden>Turnaj</a>
       <div class="nav-account">
         <a class="nav-login" data-login href="/api/auth/discord">Přihlásit se</a>
         <button class="profile-trigger" id="profileTrigger" type="button" aria-expanded="false"><img id="profileAvatar" src="" alt=""><span id="profileName"></span>⌄</button>
@@ -245,6 +245,7 @@
           Připojit se přes Discord
         </a>
         <button class="button button-primary application-button" id="heroApplicationButton" type="button" hidden>Podat přihlášku</button>
+        <a class="button button-secondary" href="/turnaj?mode=spectator">Jsem divák</a>
         <a class="button button-secondary" href="#kola">Jak turnaj probíhá ↓</a>
       </div>
       <p id="status" class="status" role="status"></p>
@@ -400,7 +401,7 @@
     document.getElementById("heroApplicationButton").addEventListener("click", handleApplicationButton);
     document.querySelectorAll("[data-apply]").forEach((button) => button.addEventListener("click", handleApplicationButton));
     document.getElementById("profileApplicationButton").addEventListener("click", handleApplicationButton);
-    document.getElementById("adminButton").addEventListener("click", openDashboard);
+    document.getElementById("adminButton").addEventListener("click", () => location.href = "/admin");
     document.getElementById("refreshApplications").addEventListener("click", loadApplications);
     document.getElementById("logoutButton").addEventListener("click", async () => { await fetch("/api/auth/logout", { method: "POST" }); location.reload(); });
     document.querySelectorAll("[data-filter]").forEach((button) => button.addEventListener("click", () => {
@@ -455,6 +456,7 @@
       document.getElementById("menuName").textContent = user.displayName;
       document.getElementById("profileTrigger").classList.add("visible");
       document.getElementById("adminButton").hidden = !isOrganizer;
+      document.getElementById("tournamentNav").hidden = !(isOrganizer || state.session.application?.status === "approved");
       document.getElementById("status").textContent = authResult === "success" ? "Přihlášení proběhlo úspěšně." : "";
       updateApplicationUi();
     }
