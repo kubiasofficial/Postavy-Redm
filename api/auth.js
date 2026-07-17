@@ -271,6 +271,22 @@ const listApplications = async (req, res) => {
   return res.status(200).json({ applications });
 };
 
+const listPublicParticipants = async (req, res) => {
+  if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
+  const participants = (await fetchFirestoreCollection(APPLICATIONS_COLLECTION))
+    .filter(({ data }) => data.status === "approved")
+    .map(({ id, data }) => ({
+      discordId: id,
+      nickname: data.nickname,
+      displayName: data.displayName,
+      discordAvatar: data.discordAvatar || "",
+      country: data.country,
+      experience: data.experience
+    }))
+    .sort((a, b) => a.nickname.localeCompare(b.nickname, "cs"));
+  return res.status(200).json({ participants });
+};
+
 const reviewApplication = async (req, res) => {
   const session = sessionFromRequest(req);
   if (!session) return res.status(401).json({ error: "Nepřihlášený uživatel." });
@@ -339,6 +355,7 @@ module.exports = async (req, res) => {
     if (action === "session" && req.method === "GET") return getSession(req, res);
     if (action === "application" && req.method === "POST") return submitApplication(req, res);
     if (action === "admin-applications" && req.method === "GET") return listApplications(req, res);
+    if (action === "participants" && req.method === "GET") return listPublicParticipants(req, res);
     if (action === "review-application" && req.method === "POST") return reviewApplication(req, res);
     if (action.startsWith("tournament-")) return handleTournamentRequest(req, res, action);
     if (action === "logout" && req.method === "POST") {
