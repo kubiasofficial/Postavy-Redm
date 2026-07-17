@@ -188,6 +188,13 @@ const createFirestoreDocument = async (collection, documentId, data) => {
   return response.json();
 };
 
+const deleteFirestoreDocument = async (path) => {
+  const response = await fetch(firestoreUrl(path), { method: "DELETE" });
+  if (!response.ok && response.status !== 404) {
+    throw new Error(`Firestore delete failed: ${await response.text()}`);
+  }
+};
+
 const getAvatarExtension = (avatarHash) => (
   avatarHash?.startsWith("a_") ? "gif" : "png"
 );
@@ -263,6 +270,7 @@ module.exports = {
   characters,
   createDiscordDmChannel,
   createFirestoreDocument,
+  deleteFirestoreDocument,
   fetchDiscordMembers,
   fetchFirestoreCollection,
   fetchFirestoreDocument,

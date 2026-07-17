@@ -463,7 +463,11 @@
 
     function updateApplicationUi() {
       const application = state.session?.application;
-      const label = application ? applicationLabels[application.status] : { profile: "Člen turnajového serveru", button: "Podat přihlášku" };
+      const registration = state.session?.registration;
+      const capacityFull = (!application || application.status === "rejected") && registration && registration.count >= registration.max;
+      const label = capacityFull
+        ? { profile: "Kapacita turnaje je naplněná", button: `Kapacita naplněna (${registration.count}/${registration.max})` }
+        : application ? applicationLabels[application.status] : { profile: "Člen turnajového serveru", button: "Podat přihlášku" };
       const profileStatus = document.getElementById("profileStatus");
       profileStatus.textContent = label.profile;
       profileStatus.classList.toggle("registered", application?.status === "approved");
@@ -471,7 +475,7 @@
       buttons.forEach((button) => {
         button.hidden = false;
         button.textContent = label.button;
-        button.disabled = application && ["pending", "approved"].includes(application.status);
+        button.disabled = capacityFull || (application && ["pending", "approved"].includes(application.status));
       });
       if (application?.status === "rejected" && application.rejectionReason) {
         document.getElementById("status").textContent = `Důvod zamítnutí: ${application.rejectionReason}`;
@@ -480,6 +484,8 @@
 
     function handleApplicationButton() {
       const application = state.session?.application;
+      const registration = state.session?.registration;
+      if ((!application || application.status === "rejected") && registration && registration.count >= registration.max) return;
       if (application && ["pending", "approved"].includes(application.status)) return;
       if (application) {
         ["nickname", "steamProfile", "steamFriendCode", "country", "experience", "note"].forEach((name) => {

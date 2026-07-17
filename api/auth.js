@@ -10,6 +10,7 @@ const {
 } = require("../lib/discord-auth");
 const {
   createFirestoreDocument,
+  deleteFirestoreDocument,
   fetchFirestoreCollection,
   fetchFirestoreDocument,
   patchFirestoreDocument,
@@ -24,6 +25,7 @@ const REGISTRATION_CHANNEL_ID = "1527322520880021587";
 const INTEREST_ROLE_ID = "1527318234015989801";
 const PARTICIPANT_ROLE_ID = "1527318296372711575";
 const APPLICATIONS_COLLECTION = "tournamentApplications";
+const MAX_APPLICATIONS = 12;
 
 const redirectHome = (res, reason) => res.redirect(302, `/?auth=${encodeURIComponent(reason)}`);
 
@@ -154,9 +156,10 @@ const getSession = async (req, res) => {
   const session = verify(parseCookies(req.headers.cookie)[COOKIE_NAMES.session]);
   res.setHeader("Cache-Control", "no-store");
   if (!session) return res.status(401).json({ authenticated: false });
-  const [member, application] = await Promise.all([
+  const [member, application, applicationEntries] = await Promise.all([
     fetchGuildMember(session.id),
-    fetchFirestoreDocument(applicationPath(session.id))
+    fetchFirestoreDocument(applicationPath(session.id)),
+    fetchFirestoreCollection(APPLICATIONS_COLLECTION)
   ]);
   if (!member) return res.status(401).json({ authenticated: false });
   const avatarUrl = session.avatar
@@ -171,7 +174,11 @@ const getSession = async (req, res) => {
       avatarUrl
     },
     isOrganizer: isOrganizer(member),
-    application: publicApplication(application)
+    application: publicApplication(application),
+    registration: {
+      count: applicationEntries.filter(({ data }) => ["pending", "approved"].includes(data.status)).length,
+      max: MAX_APPLICATIONS
+    }
   });
 };
 
@@ -210,6 +217,11 @@ const submitApplication = async (req, res) => {
   const existing = await fetchFirestoreDocument(applicationPath(session.id));
   if (existing?.status === "approved") return res.status(409).json({ error: "Tvoje přihláška už byla schválena." });
   if (existing?.status === "pending") return res.status(409).json({ error: "Tvoje přihláška už čeká na schválení." });
+  const activeApplicationCount = (await fetchFirestoreCollection(APPLICATIONS_COLLECTION))
+    .filter(({ data }) => ["pending", "approved"].includes(data.status)).length;
+  if (activeApplicationCount >= MAX_APPLICATIONS) {
+    return res.status(409).json({ error: "Kapacita turnaje je naplněná. Maximum je 12 hráčů." });
+  }
 
   const now = new Date().toISOString();
   const application = {
@@ -296,13 +308,25 @@ const reviewApplication = async (req, res) => {
   const discordId = cleanString(req.body?.discordId, 24);
   const decision = cleanString(req.body?.decision, 16);
   const reason = cleanString(req.body?.reason, 300);
-  if (!/^\d{17,20}$/.test(discordId) || !["approved", "rejected"].includes(decision)) {
+  if (!/^\d{17,20}$/.test(discordId) || !["approved", "rejected", "removed"].includes(decision)) {
     return res.status(400).json({ error: "Neplatné rozhodnutí." });
   }
   if (decision === "rejected" && reason.length < 3) return res.status(400).json({ error: "Napiš důvod zamítnutí." });
 
   const application = await fetchFirestoreDocument(applicationPath(discordId));
   if (!application) return res.status(404).json({ error: "Přihláška nebyla nalezena." });
+  if (decision === "removed") {
+    if (application.status !== "approved") return res.status(409).json({ error: "Odebrat lze pouze schválenou přihlášku." });
+    try {
+      await setDiscordRole(discordId, INTEREST_ROLE_ID, true);
+      await setDiscordRole(discordId, PARTICIPANT_ROLE_ID, false);
+    } catch (error) {
+      console.error("Participant role rollback failed", error);
+      return res.status(502).json({ error: "Přihlášku nelze odebrat, protože bot nedokázal vrátit Discord role." });
+    }
+    await deleteFirestoreDocument(applicationPath(discordId));
+    return res.status(200).json({ status: "removed" });
+  }
   if (application.status !== "pending") return res.status(409).json({ error: "O této přihlášce už bylo rozhodnuto." });
 
   const now = new Date().toISOString();
